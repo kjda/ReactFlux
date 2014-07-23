@@ -1,5 +1,5 @@
 {
-  "name": "ReactFlux",
+  "name": "react-flux",
   "version": "0.0.0",
   "description": "An implementation of React Flux data flow",
   "main": "index.js",
