@@ -12,11 +12,11 @@ var App = React.createClass({
 	},
 
 	componentWillMount: function(){
-		userStore.addChangeListener(this.onUserChange);
+		userStore.onChange(this.onUserChange);
 	},
 
 	componentWillUnount: function(){
-		userStore.removeChangeListener(this.onUserChange);
+		userStore.offChange(this.onUserChange);
 	},
 
 	onUserChange: function(){
@@ -35,7 +35,7 @@ var App = React.createClass({
 	},
 
 	render: function(){
-		if( !this.state.user.isAuth ){
+		if( !this.state.isAuth ){
 			return this.renderLogin();
 		}
 		return this.renderHome();
@@ -44,14 +44,14 @@ var App = React.createClass({
 	renderHome: function(){
 		return (
 			<div>
-			<h3>Hello {this.state.user.data.username}!</h3>
+			<h3>Hello {this.state.data.username}!</h3>
 			<a href="#" onClick={this.logout}>Logout</a>
 			</div>
 		);
 	},
 
 	renderLogin: function(){
-		if( this.state.user.isLoggingIn ){
+		if( this.state.isLoggingIn ){
 			return(<div>Logging in...</div>);
 		}
 		return(
@@ -66,10 +66,10 @@ var App = React.createClass({
 	},
 	
 	renderLoginError: function(){
-		if( !this.state.user.error ){
+		if( !this.state.error ){
 			return;
 		}
-		return (<div style={{color: 'brown'}}>{this.state.user.error}</div>)
+		return (<div style={{color: 'brown'}}>{this.state.error}</div>)
 	}
 
 });

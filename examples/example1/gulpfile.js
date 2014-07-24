@@ -26,7 +26,7 @@ gulp.task('browserify', function(){
     .pipe(plumber())
     .pipe(browserify({
       insertGlobals: true,
-      debug: true
+      debug: false
     }))
     .pipe(concat('index.js'))
     .pipe(gulp.dest('./'));
