@@ -3,6 +3,9 @@ var userConstants = require('../constants/user');
 
 module.exports = ReactFlux.createActions({
 
+	/**
+	* Action may return a value(SUCCESS PAYLOAD), an error, or a promise
+	*/
 	login: [userConstants.USER_LOGIN, function(username, password){
 		var promise = new Promise(function(resolve, reject){
 			setTimeout(function(){
@@ -21,9 +24,10 @@ module.exports = ReactFlux.createActions({
 	}],
 
 
-	logout: [userConstants.USER_LOGOUT, function(){
-
-	}]
+	/**
+	* An actoin without a callback will always be successful
+	*/
+	logout: [userConstants.USER_LOGOUT]
 
 	
 });

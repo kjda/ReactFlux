@@ -23,7 +23,9 @@ var App = React.createClass({displayName: 'App',
 	},
 
 	onUserChange: function(){
-		this.setState(userStore.getState());
+		this.setState({
+			user: userStore.getState()
+		});
 	},
 
 	login: function(){
@@ -38,7 +40,7 @@ var App = React.createClass({displayName: 'App',
 	},
 
 	render: function(){
-		if( !this.state.isAuth ){
+		if( !this.state.user.isAuth ){
 			return this.renderLogin();
 		}
 		return this.renderHome();
@@ -47,14 +49,14 @@ var App = React.createClass({displayName: 'App',
 	renderHome: function(){
 		return (
 			React.DOM.div(null, 
-			React.DOM.h3(null, "Hello ", this.state.data.username, "!"), 
+			React.DOM.h3(null, "Hello ", this.state.user.data.username, "!"), 
 			React.DOM.a({href: "#", onClick: this.logout}, "Logout")
 			)
 		);
 	},
 
 	renderLogin: function(){
-		if( this.state.isLoggingIn ){
+		if( this.state.user.isLoggingIn ){
 			return(React.DOM.div(null, "Logging in..."));
 		}
 		return(
@@ -69,10 +71,10 @@ var App = React.createClass({displayName: 'App',
 	},
 	
 	renderLoginError: function(){
-		if( !this.state.error ){
+		if( !this.state.user.error ){
 			return;
 		}
-		return (React.DOM.div({style: {color: 'brown'}}, this.state.error))
+		return (React.DOM.div({style: {color: 'brown'}}, this.state.user.error))
 	}
 
 });
@@ -80,7 +82,7 @@ var App = React.createClass({displayName: 'App',
 window.onload = function(){
 	React.renderComponent(App(null), document.body);
 };
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_7fdc38a.js","/")
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_ff34a085.js","/")
 },{"../flux/actions/user":2,"../flux/stores/user":6,"1YiZ5S":11,"buffer":7,"react":155}],2:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var ReactFlux = require('../../../../index');
@@ -88,6 +90,9 @@ var userConstants = require('../constants/user');
 
 module.exports = ReactFlux.createActions({
 
+	/**
+	* Action may return a value(SUCCESS PAYLOAD), an error, or a promise
+	*/
 	login: [userConstants.USER_LOGIN, function(username, password){
 		var promise = new Promise(function(resolve, reject){
 			setTimeout(function(){
@@ -106,9 +111,10 @@ module.exports = ReactFlux.createActions({
 	}],
 
 
-	logout: [userConstants.USER_LOGOUT, function(){
-
-	}]
+	/**
+	* An actoin without a callback will always be successful
+	*/
+	logout: [userConstants.USER_LOGOUT]
 
 	
 });
@@ -203,10 +209,7 @@ module.exports = ReactFlux.createStore({
 	},
 
 	getUsername: function(){
-		return this.state.isAuth ? this.state.data.username : null;
-	},
-	getName: function(){
-		return 'User';
+		return this.getState().isAuth ? this.getState().data.username : null;
 	}
 
 }, [
@@ -224,7 +227,7 @@ module.exports = ReactFlux.createStore({
 
 	/**
 	* This gets called if USER_LOGIN action was successfull
-	* This store waits for MasterStore to process this message
+	* This store waits for MotherStore and FatherStore to process this message
 	*/
 	[userConstants.USER_LOGIN_SUCCESS, [MotherStore, FatherStore], function handleLoginSuccess(payload){
 		console.log("UserStore.handleLogin", payload);
@@ -232,7 +235,7 @@ module.exports = ReactFlux.createStore({
 			isLoggingIn: false,
 			error: null,
 			data: payload,
-			isAuth: (!!payload && !!payload.id) 
+			isAuth: true 
 		});
 	}],
 

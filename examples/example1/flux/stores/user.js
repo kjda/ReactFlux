@@ -20,10 +20,7 @@ module.exports = ReactFlux.createStore({
 	},
 
 	getUsername: function(){
-		return this.state.isAuth ? this.state.data.username : null;
-	},
-	getName: function(){
-		return 'User';
+		return this.getState().isAuth ? this.getState().data.username : null;
 	}
 
 }, [
@@ -41,7 +38,7 @@ module.exports = ReactFlux.createStore({
 
 	/**
 	* This gets called if USER_LOGIN action was successfull
-	* This store waits for MasterStore to process this message
+	* This store waits for MotherStore and FatherStore to process this message
 	*/
 	[userConstants.USER_LOGIN_SUCCESS, [MotherStore, FatherStore], function handleLoginSuccess(payload){
 		console.log("UserStore.handleLogin", payload);
@@ -49,7 +46,7 @@ module.exports = ReactFlux.createStore({
 			isLoggingIn: false,
 			error: null,
 			data: payload,
-			isAuth: (!!payload && !!payload.id) 
+			isAuth: true 
 		});
 	}],
 
