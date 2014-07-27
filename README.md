@@ -57,7 +57,7 @@ USER_LOGIN_SUCCESS gets dispatched in two cases:
 
 
 USER_LOGIN_FAIL gets dispatched in two cases:
-1. The action callback returns an Error
+1. The action callback throws an exception or returns an Error
 2. It returns a promise whicht gets rejected
 
 
