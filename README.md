@@ -19,6 +19,9 @@ var userConstants = ReactFlux.createConstants([
   'LOGOUT'
 ], 'USER');
 ```
+The second parameter which is a prefix to be added to all messages is optional
+
+
 this will result in the following:
 
 ```
