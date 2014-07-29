@@ -9,10 +9,6 @@ var sinon = require("sinon");
 
 var constants = ReactFlux.createConstants(['ONE', 'TWO']);
 
-
-
-
-
 describe("dispatcher", function(){
 	var action1Spy, action2Spy;
 	var storeAction1Spy;
@@ -125,5 +121,14 @@ describe("dispatcher", function(){
 			done();	
 		}, 0);
 	});
+
+	it("should be able to dispatch specific messages without going through actions", function(done){
+		ReactFlux.dispatch('ONE_SUCCESS');
+		setTimeout(function(){
+			assert.isTrue( storeAction1SuccessSpy.called );
+			assert.isTrue( store2Action1SuccessSpy.called );
+			done();
+		}, 0);
+	})
 
 })
