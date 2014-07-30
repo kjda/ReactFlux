@@ -178,7 +178,7 @@ var LoginComponent = React.createClass({
   },
   
   render: function(){
-    if( this.state.isAuth ){
+    if( !this.state.isAuth ){
       return this.renderLogin();
     }
     return this.renderLogout();
