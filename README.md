@@ -11,6 +11,15 @@ Use it
 var ReactFlux = require("react-flux");
 ```
 
+ReactFlux
+=========
+ReactFlux expose the following methods:
+1. createConstants(Array constants, String prefix);
+2. createActions(Object actions);
+3. createStore(Object mixin, Array listeners)
+4. dispatch(String constant, Object payload)
+5. mixin(Store store, .....)
+
 Constants
 =========
 ```
@@ -26,12 +35,12 @@ this will result in the following:
 
 ```
 {
-   USER_LOGIN:           'USER_LOGIN',
-   USER_LOGIN_SUCCESS:   'USER_LOGIN_SUCCESS',
-   USER_LOGIN_FAIL:      'USER_LOGIN_FAIL',
-   USER_LOGOUT:          'USER_LOGOUT',
-   USER_LOGOUT_SUCCESS:  'USER_LOGOUT_SUCCESS',
-   USER_LOGOUT_FAIL:     'USER_LOGOUT_FAIL'
+   LOGIN:           'USER_LOGIN',
+   LOGIN_SUCCESS:   'USER_LOGIN_SUCCESS',
+   LOGIN_FAIL:      'USER_LOGIN_FAIL',
+   LOGOUT:          'USER_LOGOUT',
+   LOGOUT_SUCCESS:  'USER_LOGOUT_SUCCESS',
+   LOGOUT_FAIL:     'USER_LOGOUT_FAIL'
 }
 ```
 Actions
@@ -39,14 +48,14 @@ Actions
 ```
 var userActions = ReactFlux.createActions({
   
-  login: [userConstants.USER_LOGIN, function(username, password){
+  login: [userConstants.LOGIN, function(username, password){
     return {
       id: 1,
       username: 'Max Mustermann'
     }
   }],
   
-  logout: [userConstant.USER_LOGOUT, function(){
+  logout: [userConstant.LOGOUT, function(){
     return ....; 
   }]
   
@@ -66,20 +75,10 @@ USER_LOGIN_FAIL gets dispatched in two cases:
 
 an action that returns a promise may look like this:
 ```
-login: [userConstants.USER_LOGIN, function(username, password){
-    var promise = new Promise(function(resolve, reject){
-      setTimeout(function(){
-        if( Math.random() > 0.7 ){
-          reject(new Error("Login failed"));
-          return;
-        }
-        resolve({
-          id: 1,
-          username: 'Max Mustermann'
-        });
-      }, 100);
-    });
-    return promise;
+login: [userConstants.LOGIN, function(username, password){
+    //API.post returns a promise
+    return api.post('/user/login', {username: username, password: password});
+
   }],
 ```
 
@@ -103,7 +102,7 @@ var userStore = ReactFlux.createStore({
   },
   
   isAuth: function(){
-    return this.getState().isAuth
+    return this.state.get('isAuth')
   }
   
 }, [
@@ -111,7 +110,7 @@ var userStore = ReactFlux.createStore({
  /**
  * called directly before executing login action
  */
- [userConstants.USER_LOGIN, function onLogin(){
+ [userConstants.LOGIN, function onLogin(){
   this.setState({
     isLoggingIn: true,
     error: null
@@ -121,7 +120,7 @@ var userStore = ReactFlux.createStore({
  /**
  * called if login action was successful
  */
- [userConstants.USER_LOGIN_SUCCESS, function onLoginSuccess(payload){
+ [userConstants.LOGIN_SUCCESS, function onLoginSuccess(payload){
   this.setState({
     isAuth: true,
     data: payload,
@@ -132,7 +131,7 @@ var userStore = ReactFlux.createStore({
   /**
  * called if login action failed
  */
- [userConstants.USER_LOGIN_FAIL, function onloginFail(error){
+ [userConstants.LOGIN_FAIL, function onloginFail(error){
   this.setState({
     isLoggingIn: false,
     error: error.message
@@ -145,47 +144,43 @@ var userStore = ReactFlux.createStore({
 
 createStore takes two parameters: 1. A mixin object for the store 2. an array of action listeners
 
+
+The state of the store is an [Immutable][1] object
+to get the state of the store, use store.state.
+to set the state use store.setState
+
+To listen to store changes use: store.onChange(onChangeCallback)
+
+To stop listening to store changes use: store.offChange(onChangeCallback)
+
+Each store has a mixin method which returns a ReactMixin, so that you don't need to manually couple the component with the store. If you use this mixin you must implement a getStateFromStores method on the component which will be called in componentWillMount and whenever you set the state of the store 
+
 all *_SUCCESS callbacks get payload as parameter, which is the value returned from an actioin, or the payload passed to it's promise resolve function
 
 all *_FAIL callbacks get an Error object
-
-to get the state of the store, use store.getState();
-
-to listen to store changes use: store.onChange(onChangeCallback)
-
-to stop listening to store changes use: store.offChange(onChangeCallback)
-
 
 Example React component
 =======================
 ```
 var LoginComponent = React.createClass({
   
-  getInitialState: function(){
-    return userStore.getState()
-  },
+  mixins: [ ReactFlux.mixin(userStore) ], //or mixins: [ userStore.mixin() ]
   
-  componentWillMount: function(){
-    userStore.onChange( this.onUserChange );
-  },
-  
-  componentWillUnmount: function(){
-    userStore.offChange( this.onUserChange );
-  },
-  
-  onUserChange: function(){
-    this.setState( userStore.getState() );
+  getStateFromStores: function(){
+    return {
+      user: userStore.state
+    };
   },
   
   render: function(){
-    if( !this.state.isAuth ){
+    if( !this.state.user.get('isAuth') ){
       return this.renderLogin();
     }
     return this.renderLogout();
   },
   
   renderLogin: function(){
-    if( this.state.isLoggingIn ){
+    if( this.state.user.get('isLoggingIn') ){
       return (<div>...</div>);
     }
     return(
@@ -199,7 +194,7 @@ var LoginComponent = React.createClass({
   renderLogout: function(){
     return(
       <div>
-      Hello {this.state.data.username}!
+      Hello {this.state.user.get('data').username}!
       <a href="#" onClick={this.logout}>Logout</a>
       </div>
     );
@@ -217,3 +212,4 @@ var LoginComponent = React.createClass({
   
 });
 ```
+[1]: https://github.com/facebook/immutable-js
