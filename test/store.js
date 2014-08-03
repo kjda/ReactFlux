@@ -1,47 +1,35 @@
 var ReactFlux = require('../');
-var chai = require('chai');
-var assert = chai.assert;
+var assert = require('chai').assert;
 var sinon = require("sinon");
 
 var constants = ReactFlux.createConstants(['ONE','TWO']);
 
 
 var actions = ReactFlux.createActions({
-
-			action1: [constants.ONE, function(){
-
-			}],
-
-			action2: [constants.TWO, function(){
-
-			}]
-
-		});
+	action1: [constants.ONE, function(){}],
+	action2: [constants.TWO, function(){}]
+});
 
 var storeDidMountSpy = sinon.spy();
 var getInitialStateSpy = sinon.spy(function(){
-		return {
-			id: 1,
-			username: 'mustermann'
-		}
-	});
+	return {
+		id: 1,
+		username: 'mustermann'
+	};
+});
 
 var store = ReactFlux.createStore({
+	
 	getInitialState: getInitialStateSpy,
 
 	storeDidMount: storeDidMountSpy,
 
 	getId: function(){
-		return this.getState().id
-	},
-
-	getName: function(){
-		return "STOR!111"
+		return this.state.get('id')
 	}
-}, [
-[constants.ONE, function(){
 
-}]
+}, [
+	[constants.ONE, function(){}]
 ]);
 
 
@@ -65,14 +53,13 @@ describe("store", function(){
 		assert.isTrue( storeDidMountSpy.calledAfter( getInitialStateSpy ) );
 	});
 
-	it("should have getState function", function(){
-		assert.typeOf(store.getState, "function");
+	it("should have a state", function(){
+		assert.typeOf(store.state, "object");
 	});
 
 	it("getState should work", function(){
-		var state = store.getState();
-		assert.equal(state.id, 1);
-		assert.equal(state.username, "mustermann");
+		assert.equal(store.state.get('id'), 1);
+		assert.equal(store.state.get('username'), "mustermann");
 	});
 
 	it("should be able to call mixin methods", function(){
@@ -83,8 +70,8 @@ describe("store", function(){
 		store.setState({
 			id: 3
 		});
-		assert.equal(store.getId(), 3);
-		assert.equal(store.getState().username, 'mustermann');
+		assert.equal(store.state.get('id'), 3);
+		assert.equal(store.state.get('username'), 'mustermann');
 	});
 
 

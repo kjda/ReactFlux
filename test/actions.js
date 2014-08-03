@@ -1,6 +1,5 @@
 var ReactFlux = require('../');
-var chai = require('chai');
-var assert = chai.assert;
+var assert = require('chai').assert;
 var sinon = require("sinon");
 
 describe("actions", function(){

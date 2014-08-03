@@ -1,9 +1,6 @@
 var promise = require('es6-promise').Promise;
 var ReactFlux = require('../');
-
-var chai = require('chai');
-var assert = chai.assert;
-
+var assert = require('chai').assert;
 var sinon = require("sinon");
 
 
@@ -77,6 +74,19 @@ describe("dispatcher", function(){
 			]);
 	});
 
+	it("should throw an error if constant is empty or undefined", function(){
+		function createStore(constant){
+			ReactFlux.createStore({}, [
+				[constant, function(){}]
+			]);
+		}
+		assert.throws(function(){
+			createStore()
+		},  /constant/);
+		assert.throws(function(){
+			createStore('')
+		},  /constant/);
+	});
 
 	it("should  execute action", function(){
 		actions.action1(1, "mustermann");

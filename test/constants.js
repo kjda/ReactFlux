@@ -1,6 +1,5 @@
 var ReactFlux = require('../');
-var chai = require('chai');
-var assert = chai.assert;
+var assert = require('chai').assert;
 
 
 
@@ -16,8 +15,8 @@ describe("constants", function(){
 	});
 
 	it("should create constants with prefix", function(){
-		assert.equal(constantsWithPrefix.PRE_ONE, 'PRE_ONE');
-		assert.equal(constantsWithPrefix.PRE_TWO, 'PRE_TWO');
+		assert.equal(constantsWithPrefix.ONE, 'PRE_ONE');
+		assert.equal(constantsWithPrefix.TWO, 'PRE_TWO');
 	});
 
 	it("should create success constants", function(){

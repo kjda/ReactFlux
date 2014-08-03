@@ -3,8 +3,21 @@
 <head>
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
+	<script type="text/javascript">
+	console.log = function(){
+		var msgs = Array.prototype.slice.call(arguments);
+		var log = [];
+		for(var i=0; i < msgs.length; i++){
+			log.push(msgs[i]);
+		}
+		var logWrap = document.getElementById('__log');
+		logWrap.innerHTML = '<hr />' + log.join(', ') + logWrap.innerHTML;
+	}
+	</script>
 </head>
 <body>
+	<div id="__wrap"></div>
+	<div id="__log" style="position: absolute; top: 5px; right: 5px; width: 50%;"></div>
 	<script type="text/javascript" src="index.js"></script>
 </body>
 </html>

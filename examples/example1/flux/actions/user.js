@@ -6,7 +6,8 @@ module.exports = ReactFlux.createActions({
 	/**
 	* Action may return a value(SUCCESS PAYLOAD), an error, or a promise
 	*/
-	login: [userConstants.USER_LOGIN, function(username, password){
+	login: [userConstants.LOGIN, function(username, password){
+		console.log("UserActions.login", username, password);
 		var promise = new Promise(function(resolve, reject){
 			setTimeout(function(){
 				if( username.length ){
@@ -27,7 +28,7 @@ module.exports = ReactFlux.createActions({
 	/**
 	* An actoin without a callback will always be successful
 	*/
-	logout: [userConstants.USER_LOGOUT]
+	logout: [userConstants.LOGOUT]
 
 	
 });

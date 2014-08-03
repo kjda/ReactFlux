@@ -2,27 +2,15 @@ var React = require('react');
 var userStore = require('../flux/stores/user');
 var userActions = require('../flux/actions/user');
 
-
+var Flux = require('../../../')
 var App = React.createClass({
+	mixins: [ userStore.mixin() ],
 
-	getInitialState: function(){
+	getStateFromStores: function(){
+		console.log("getStateFromStores");
 		return {
-			user: userStore.getState()
+			user: userStore.state
 		};
-	},
-
-	componentWillMount: function(){
-		userStore.onChange(this.onUserChange);
-	},
-
-	componentWillUnount: function(){
-		userStore.offChange(this.onUserChange);
-	},
-
-	onUserChange: function(){
-		this.setState({
-			user: userStore.getState()
-		});
 	},
 
 	login: function(){
@@ -37,7 +25,7 @@ var App = React.createClass({
 	},
 
 	render: function(){
-		if( !this.state.user.isAuth ){
+		if( !this.state.user.get('isAuth') ){
 			return this.renderLogin();
 		}
 		return this.renderHome();
@@ -46,14 +34,14 @@ var App = React.createClass({
 	renderHome: function(){
 		return (
 			<div>
-			<h3>Hello {this.state.user.data.username}!</h3>
+			<h3>Hello {this.state.user.get('data').username}!</h3>
 			<a href="#" onClick={this.logout}>Logout</a>
 			</div>
 		);
 	},
 
 	renderLogin: function(){
-		if( this.state.user.isLoggingIn ){
+		if( this.state.user.get('isLoggingIn') ){
 			return(<div>Logging in...</div>);
 		}
 		return(
@@ -68,14 +56,14 @@ var App = React.createClass({
 	},
 	
 	renderLoginError: function(){
-		if( !this.state.user.error ){
+		if( !this.state.user.get('error') ){
 			return;
 		}
-		return (<div style={{color: 'brown'}}>{this.state.user.error}</div>)
+		return (<div style={{color: 'brown'}}>{this.state.user.get('error')}</div>)
 	}
 
 });
 
 window.onload = function(){
-	React.renderComponent(<App />, document.body);
+	React.renderComponent(<App />, document.getElementById('__wrap'));
 };
