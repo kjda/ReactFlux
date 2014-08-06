@@ -13,12 +13,12 @@ var ReactFlux = require("react-flux");
 
 ReactFlux
 =========
-ReactFlux expose the following methods:
-1. createConstants(Array constants, String prefix);
-2. createActions(Object actions);
-3. createStore(Object mixin, Array listeners)
-4. dispatch(String constant, Object payload)
-5. mixin(Store store, .....)
+ReactFlux expose the following methods:  
+1. createConstants( Array constants, String prefix )  
+2. createActions( Object actions )  
+3. createStore( Object mixin, Array listeners )  
+4. dispatch( String constant, Object payload )  
+5. mixin( Store store, ..... )  
 
 Constants
 =========
