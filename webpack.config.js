@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 
 module.exports = {
-  
+
   context: __dirname + '/lib/',
   
   watch: true,
@@ -22,16 +22,27 @@ module.exports = {
   },
   
   module: {
-        
+
   },
 
   externals: {
-    'immutable': true,
+    immutable: {
+      root: 'Immutable',
+      commonjs: 'immutable',
+      commonjs2: 'immutable',
+      amd: 'immutable'
+    },
     'es6-promise': true,
-    'EventEmitter': true     
+    'EventEmitter': true,
+    react: {
+      root: 'React',
+      commonjs: 'react',
+      commonjs2: 'react',
+      amd: 'react'
+    }   
   },
   
   plugins: [
-    new UglifyJsPlugin()
+  new UglifyJsPlugin()
   ]
 };
