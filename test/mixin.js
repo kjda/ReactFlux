@@ -10,7 +10,7 @@ describe("Mixin", function(){
 		
 		var mixin = Flux.mixin(Flux.createStore());
 		assert.isFunction(mixin.componentDidMount, 'mixin.componentDidMount is misiing');
-		assert.isFunction(mixin.componentWillUnount, 'mixin.componentWillUnount is missing');
+		assert.isFunction(mixin.componentWillUnmount, 'mixin.componentWillUnmount is missing');
 	});
 
 	it("accepts a store or an array of stores only", function(){
