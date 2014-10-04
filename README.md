@@ -43,6 +43,30 @@ this will result in the following:
    LOGOUT_FAIL:     'USER_LOGOUT_FAIL'
 }
 ```
+
+It is also possible to configure constant generation, one may configure separator, success- and fail suffixes
+```
+ReactFlux.configs.constants.setSeparator(':');
+ReactFlux.configs.constants.setSuccessSuffix('OK');
+ReactFlux.configs.constants.setFailSuffix('ERROR');
+```
+
+now the previous example will result in:
+```
+{
+   LOGIN:            'USER:LOGIN',
+   LOGIN_OK:         'USER:LOGIN:OK',
+   LOGIN_ERROR:      'USER:LOGIN:ERROR',
+   LOGOUT:           'USER:LOGOUT',
+   LOGOUT_OK:        'USER:LOGOUT:OK',
+   LOGOUT_ERROR:     'USER:LOGOUT:ERROR'
+}
+```
+to go back to default configurations use:
+```
+ReactFlux.configs.constants.resetToDefaults();
+```
+
 Actions
 =======
 ```
@@ -148,6 +172,7 @@ createStore takes two parameters: 1. A mixin object for the store 2. an array of
 The state of the store is an [Immutable][1] object
 to get the state of the store, use store.state.
 to set the state use store.setState
+to get a specific property from a state, use: store.get('property')
 
 To listen to store changes use: store.onChange(onChangeCallback)
 
