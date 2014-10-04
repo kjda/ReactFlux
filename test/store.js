@@ -57,9 +57,14 @@ describe("store", function(){
 		assert.typeOf(store.state, "object");
 	});
 
-	it("getState should work", function(){
+	it("store.state.get() should work", function(){
 		assert.equal(store.state.get('id'), 1);
 		assert.equal(store.state.get('username'), "mustermann");
+	});
+
+	it("store.get() should work", function(){
+		assert.equal(store.get('id'), 1);
+		assert.equal(store.get('username'), "mustermann");
 	});
 
 	it("should be able to call mixin methods", function(){

@@ -29,4 +29,17 @@ describe("constants", function(){
 		assert.equal(constants.TWO_FAIL, 'TWO_FAIL');
 	});
 
+	it("constant generation should be configurable", function(){
+		ReactFlux.configs.constants.setSeparator(':');
+		ReactFlux.configs.constants.setSuccessSuffix('OK');
+		ReactFlux.configs.constants.setFailSuffix('ERROR');
+
+		var constants = ReactFlux.createConstants(['ONE'], 'NS');
+		assert.equal(constants.ONE_OK, 'NS:ONE:OK');
+		assert.equal(constants.ONE_ERROR, 'NS:ONE:ERROR');
+		
+		//reset configs to defaults
+		ReactFlux.configs.constants.resetToDefaults();
+	});
+
 });

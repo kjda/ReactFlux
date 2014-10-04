@@ -3,10 +3,10 @@ var ReactFlux = require('../');
 var assert = require('chai').assert;
 var sinon = require("sinon");
 
-
 var constants = ReactFlux.createConstants(['ONE', 'TWO']);
 
 describe("dispatcher", function(){
+	
 	var action1Spy, action2Spy;
 	var storeAction1Spy;
 	var storeAction1SuccessSpy;
@@ -21,7 +21,7 @@ describe("dispatcher", function(){
 			return {
 				id: id,
 				username: username
-			}
+			};
 		});
 
 		action2Spy = sinon.spy(function(id, username){
@@ -81,10 +81,10 @@ describe("dispatcher", function(){
 			]);
 		}
 		assert.throws(function(){
-			createStore()
+			createStore();
 		},  /constant/);
 		assert.throws(function(){
-			createStore('')
+			createStore('');
 		},  /constant/);
 	});
 
@@ -112,7 +112,7 @@ describe("dispatcher", function(){
 		actions.action1(1, "mustermann");
 		setTimeout(function(){
 			assert.isTrue(storeAction1SuccessSpy.calledWith({id: 1, username: 'mustermann'}));
-			done();	
+			done();
 		}, 0);
 	});
 
@@ -133,12 +133,12 @@ describe("dispatcher", function(){
 	});
 
 	it("should be able to dispatch specific messages without going through actions", function(done){
-		ReactFlux.dispatch('ONE_SUCCESS');
+		ReactFlux.dispatch(constants.ONE_SUCCESS);
 		setTimeout(function(){
 			assert.isTrue( storeAction1SuccessSpy.called );
 			assert.isTrue( store2Action1SuccessSpy.called );
 			done();
 		}, 0);
-	})
+	});
 
-})
+});
