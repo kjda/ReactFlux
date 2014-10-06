@@ -198,7 +198,8 @@ stores also provide a different way for setting handlers, through StoreActionHan
 
 ```
 UserStore.addHanlder(constants.SAVE_NEW_USERNAME, {
-  //returns initial state specific to the action related to this constant
+
+  //returns initial state specific only to this handler
   getInitialState: function(){
      isSaving: false,
      error: null,
@@ -239,6 +240,7 @@ UserStore.addHanlder(constants.SAVE_NEW_USERNAME, {
       error: error
     });
   }
+  
 });
 ```
 
