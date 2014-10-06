@@ -40,9 +40,11 @@ this will result in the following:
    LOGIN:           'USER_LOGIN',
    LOGIN_SUCCESS:   'USER_LOGIN_SUCCESS',
    LOGIN_FAIL:      'USER_LOGIN_FAIL',
+   LOGIN_AFTER:     'USER_LOGIN_AFTER',
    LOGOUT:          'USER_LOGOUT',
    LOGOUT_SUCCESS:  'USER_LOGOUT_SUCCESS',
-   LOGOUT_FAIL:     'USER_LOGOUT_FAIL'
+   LOGOUT_FAIL:     'USER_LOGOUT_FAIL',
+   LOGOUT_AFTER:    'USER_LOGOUT_AFTER'
 }
 ```
 
@@ -51,6 +53,7 @@ It is also possible to configure constant generation, one may configure separato
 ReactFlux.configs.constants.setSeparator(':');
 ReactFlux.configs.constants.setSuccessSuffix('OK');
 ReactFlux.configs.constants.setFailSuffix('ERROR');
+ReactFlux.configs.constants.setAfterSuffix('DONE');
 ```
 
 now the previous example will result in:
@@ -59,9 +62,11 @@ now the previous example will result in:
    LOGIN:            'USER:LOGIN',
    LOGIN_OK:         'USER:LOGIN:OK',
    LOGIN_ERROR:      'USER:LOGIN:ERROR',
+   LOGIN_DONE:       'USER:LOGIN:DONE',
    LOGOUT:           'USER:LOGOUT',
    LOGOUT_OK:        'USER:LOGOUT:OK',
-   LOGOUT_ERROR:     'USER:LOGOUT:ERROR'
+   LOGOUT_ERROR:     'USER:LOGOUT:ERROR',
+   LOGOUT_DONE:      'USER:LOGOUT:DONE'
 }
 ```
 to go back to default configurations use:
@@ -97,6 +102,8 @@ USER_LOGIN_SUCCESS gets dispatched in two cases:
 USER_LOGIN_FAIL gets dispatched in two cases:
 1. The action callback throws an exception or returns an Error
 2. It returns a promise whicht gets rejected
+
+USER_LOGIN_AFTER gets dispatched always after the action has either succeeded or failed.
 
 
 an action that returns a promise may look like this:
@@ -184,7 +191,76 @@ Each store has a mixin method which returns a ReactMixin, so that you don't need
 
 all *_SUCCESS callbacks get payload as parameter, which is the value returned from an actioin, or the payload passed to it's promise resolve function
 
-all *_FAIL callbacks get an Error object
+all *_FAIL callbacks get an Error object, or whatever you pass to a promise reject callback
+
+stores also provide a different way for setting handlers, through StoreActionHandler, which is an object defining handlers for all action possible constants. It provides a seperate sub-state specific to a single action handler. This could be useful when maintaining different UI states in a store that is used by different UI views. This way we don't need to pollute a Store state with many variables correlating to the state of UI Views, we can just dump those variables into sub-states, while keeping store's state dedicated to real data. 
+
+```
+UserStore.addHanlder(constants.SAVE_NEW_USERNAME, {
+  //returns initial state specific to the action related to this constant
+  getInitialState: function(){
+     isSaving: false,
+     error: null,
+     success: false
+  },
+    
+  //this gets called before the action associated with SAVE_NEW_USERNAME is executed
+  before: function(){
+    //this inside handler callbacks refers to the action handler itself and not to the store
+    this.setState({
+     isSaving: true,
+     error: null
+    });
+  },
+  
+  //this gets called after the action associated with SAVE_NEW_USERNAME succeeds or fails
+  after: function(){
+    this.setState({
+      isSaving: false
+    });
+  },
+  
+  //this gets called if the action associated with SAVE_NEW_USERNAME succeeds
+  success: function(payload){
+    this.setState({
+      success: true
+    });
+    
+    //here we set the state of parent store(UserStore) using this.parent.setState
+    this.parent.setState({
+      username: payload.username
+    });
+  },
+  
+  //this gets called if the action associated with SAVE_NEW_USERNAME fails
+  fail: function(error){
+    this.setState({
+      error: error
+    });
+  }
+});
+```
+
+We can access handler specific state using:
+```
+UserStore.getActionState(constants.SAVE_NEW_USERNAME); // returns the state object
+```
+or we can get a specific property from handler state
+```
+UserStore.getActionState(constants.SAVE_NEW_USERNAME, 'isSaving');
+```
+to reset a handler state use:
+```
+UserStore.resetActionState(constants.SAVE_NEW_USERNAME);
+```
+to set a handler state use:
+```
+UserStore.setActionState(constants.SAVE_NEW_USERNAME, {
+ //.....
+});
+```
+
+setting handler state will cause the store to emit a change event
 
 Example React component
 =======================
