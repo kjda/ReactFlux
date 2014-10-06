@@ -244,6 +244,9 @@ UserStore.addHanlder(constants.SAVE_NEW_USERNAME, {
 });
 ```
 
+getInitialState, before, after, success and fail are optional.
+
+
 We can access handler specific state using:
 ```
 UserStore.getActionState(constants.SAVE_NEW_USERNAME); // returns the state object
