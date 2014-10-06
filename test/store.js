@@ -2,15 +2,11 @@ var ReactFlux = require('../');
 var assert = require('chai').assert;
 var sinon = require("sinon");
 
-var constants = ReactFlux.createConstants(['ONE','TWO']);
+var constants = ReactFlux.createConstants(['ONE','TWO'], 'STORE');
 
-
-var actions = ReactFlux.createActions({
-	action1: [constants.ONE, function(){}],
-	action2: [constants.TWO, function(){}]
-});
 
 var storeDidMountSpy = sinon.spy();
+
 var getInitialStateSpy = sinon.spy(function(){
 	return {
 		id: 1,
@@ -32,13 +28,27 @@ var store = ReactFlux.createStore({
 	[constants.ONE, function(){}]
 ]);
 
+store.addHandler(constants.TWO, {
+	getInitialState: function(){
+		return {
+			name: 'TWO_HANDLER'
+		};
+	},
+	before: function(){
+	},
+	after: function(){
+	},
+	success: function(){
+	},
+	fail: function(){
+	}
+});
 
 describe("store", function(){
 
 	it("should create store with mixins", function(){
 		assert.typeOf(store, 'object');
 		assert.typeOf(store.getId, 'function');
-		assert.typeOf(actions.action2, 'function');
 	});
 
 	it("should call getInitialState", function(){
@@ -99,5 +109,13 @@ describe("store", function(){
 		store.setState({id: 2});
 		assert.isFalse( spy.called );
 	});
+
+	it("getActionState should work", function(){
+		assert.typeOf(store.getActionState, 'function', 'store.getActionState should be a function');
+		var state = store.getActionState(constants.TWO);
+		assert.typeOf(state, 'object', 'store.getActionState should return an object');
+		assert.equal(state.name, 'TWO_HANDLER', 'store.getActionState should return state object correctly');
+		assert.equal(store.getActionState(constants.TWO, 'name'), 'TWO_HANDLER');
+	})
 
 });
