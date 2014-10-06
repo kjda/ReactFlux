@@ -146,7 +146,7 @@ var userStore = ReactFlux.createStore({
   });
  }],
   /**
- * called if login action succeeds or fails
+ * called after login action succeeds or fails
  */
  [userConstants.LOGIN_AFTER, function onloginAfter(error){
   this.setState({
