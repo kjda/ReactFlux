@@ -145,6 +145,14 @@ var userStore = ReactFlux.createStore({
     error: null
   });
  }],
+  /**
+ * called if login action succeeds or fails
+ */
+ [userConstants.LOGIN_AFTER, function onloginAfter(error){
+  this.setState({
+    isLoggingIn: false
+  });
+ }],
  
  /**
  * called if login action was successful
@@ -152,9 +160,7 @@ var userStore = ReactFlux.createStore({
  [userConstants.LOGIN_SUCCESS, function onLoginSuccess(payload){
   this.setState({
     isAuth: true,
-    data: payload,
-    isLoggingIn: false,
-    error: null
+    data: payload
   });
  }],
   /**
@@ -162,7 +168,6 @@ var userStore = ReactFlux.createStore({
  */
  [userConstants.LOGIN_FAIL, function onloginFail(error){
   this.setState({
-    isLoggingIn: false,
     error: error.message
   });
  }]
