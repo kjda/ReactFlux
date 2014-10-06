@@ -42,9 +42,7 @@ this will result in the following:
    LOGIN_FAIL:      'USER_LOGIN_FAIL',
    LOGIN_AFTER:     'USER_LOGIN_AFTER',
    LOGOUT:          'USER_LOGOUT',
-   LOGOUT_SUCCESS:  'USER_LOGOUT_SUCCESS',
-   LOGOUT_FAIL:     'USER_LOGOUT_FAIL',
-   LOGOUT_AFTER:    'USER_LOGOUT_AFTER'
+   ...
 }
 ```
 
@@ -64,9 +62,7 @@ now the previous example will result in:
    LOGIN_ERROR:      'USER:LOGIN:ERROR',
    LOGIN_DONE:       'USER:LOGIN:DONE',
    LOGOUT:           'USER:LOGOUT',
-   LOGOUT_OK:        'USER:LOGOUT:OK',
-   LOGOUT_ERROR:     'USER:LOGOUT:ERROR',
-   LOGOUT_DONE:      'USER:LOGOUT:DONE'
+   ...
 }
 ```
 to go back to default configurations use:
