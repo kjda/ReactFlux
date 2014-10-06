@@ -1,7 +1,7 @@
 {
   "name": "react-flux",
-  "version": "0.0.12",
-  "description": "An implementation of React Flux data flow",
+  "version": "0.0.13",
+  "description": "A library implementing React Flux data flow",
   "main": "index.js",
   "scripts": {
     "test": "mocha -G"
@@ -12,7 +12,8 @@
   },
   "keywords": [
     "React",
-    "Flux"
+    "Flux",
+    "ReactJS"
   ],
   "author": "Khaled Jouda",
   "license": "MIT",
