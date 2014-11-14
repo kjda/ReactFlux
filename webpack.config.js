@@ -32,8 +32,7 @@ module.exports = {
       commonjs2: 'immutable',
       amd: 'immutable'
     },
-    'es6-promise': true,
-    'EventEmitter': true,
+    promise: true,
     react: {
       root: 'React',
       commonjs: 'react',

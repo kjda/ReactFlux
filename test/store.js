@@ -28,7 +28,7 @@ var store = ReactFlux.createStore({
 	[constants.ONE, function(){}]
 ]);
 
-store.addHandler(constants.TWO, {
+store.addActionHandler(constants.TWO, {
 	getInitialState: function(){
 		return {
 			name: 'TWO_HANDLER'

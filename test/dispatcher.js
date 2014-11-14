@@ -1,4 +1,3 @@
-var promise = require('es6-promise').Promise;
 var ReactFlux = require('../');
 var assert = require('chai').assert;
 var sinon = require("sinon");
@@ -59,7 +58,7 @@ describe("dispatcher", function(){
 			[constants.TWO_FAIL, store1Action2FailSpy]
 		]);
 
-		store1.addHandler(constants.THREE, {
+		store1.addActionHandler(constants.THREE, {
 			before: actionHandlerBeforeSpy,
 			after: actionHandlerAfterSpy,
 			success: actionHandlerSuccessSpy,

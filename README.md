@@ -197,7 +197,7 @@ all *_FAIL callbacks get an Error object, or whatever you pass to a promise reje
 stores also provide a different way for setting handlers, through StoreActionHandler, which is an object defining handlers for all action possible constants. It provides a seperate sub-state specific to a single action handler. This could be useful when maintaining different UI states in a store that is used by different UI views. This way we don't need to pollute a Store state with many variables correlating to the state of UI Views, we can just dump those variables into sub-states, while keeping store's state dedicated to real data. 
 
 ```
-UserStore.addHanlder(constants.SAVE_NEW_USERNAME, {
+UserStore.addActionHanlder(constants.SAVE_NEW_USERNAME, {
 
   //returns initial state specific only to this handler
   getInitialState: function(){
@@ -273,7 +273,9 @@ Example React component
 ```
 var LoginComponent = React.createClass({
   
-  mixins: [ ReactFlux.mixin(userStore) ], //or mixins: [ userStore.mixin() ]
+  mixins: [ 
+    ReactFlux.mixin(userStore) //or  userStore.mixin() 
+  ], 
   
   getStateFromStores: function(){
     return {

@@ -2,7 +2,7 @@ var React = require('react');
 var userStore = require('../flux/stores/user');
 var userActions = require('../flux/actions/user');
 
-var Flux = require('../../../')
+var Flux = require('../../../dist/react-flux.js')
 var App = React.createClass({
 	mixins: [ userStore.mixin() ],
 

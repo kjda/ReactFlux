@@ -2,7 +2,7 @@ var ReactFlux = require('../../../../index');
 var userConstants = require('../constants/user');
 
 
-module.exports = ReactFlux.createStore({
+var Store = ReactFlux.createStore({
 
 }, [
 	
@@ -22,3 +22,5 @@ module.exports = ReactFlux.createStore({
 	}]
 
 ]);
+
+module.exports = Store;

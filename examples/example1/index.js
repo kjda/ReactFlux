@@ -1,11 +1,15 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+!function(t,n){"object"==typeof exports&&"object"==typeof module?module.exports=n(require("promise"),require("immutable")):"function"==typeof define&&define.amd?define(["promise","immutable"],n):"object"==typeof exports?exports.ReactFlux=n(require("promise"),require("immutable")):t.ReactFlux=n(t.promise,t.Immutable)}(this,function(t,n){return function(t){function n(r){if(e[r])return e[r].exports;var i=e[r]={exports:{},id:r,loaded:!1};return t[r].call(i.exports,i,i.exports,n),i.loaded=!0,i.exports}var e={};return n.m=t,n.c=e,n.p="",n(0)}([function(t,n,e){var r=e(1),i=e(2),o=e(3),s=e(4),a=e(5),f=e(6),c=new a;t.exports={configs:f,createActions:function(t){return new i(c,t)},createStore:function(t,n){return new o(c,t,n)},createConstants:function(t,n){return new r(t,n)},dispatch:function(t,n){c.dispatch(t,n)},mixin:s}},function(t,n,e){var r=e(10),i=e(11),o=e(12),s=e(6).constants.get();t.exports=function(t,n){if(!i(t))throw new Error("Constants expects first parameter to be an array of strings");if(n=n||"",!o(n))throw new Error("Constants expects second parameter string");n.length>0&&(n+=s.separator);var e={};return r(t,function(t){if(!o(t))throw new Error("Constants expects first parameter to be an array of strings");e[t]=n+t,e[t+"_"+s.successSuffix]=n+t+s.separator+s.successSuffix,e[t+"_"+s.failSuffix]=n+t+s.separator+s.failSuffix,e[t+"_"+s.afterSuffix]=n+t+s.separator+s.afterSuffix}),e}},function(t,n,e){var r=e(13),i=e(10),o=e(11),s=e(7),a=e(6).constants.get(),f=function(t,n){this._dispatcher=t,this._registerActions(n)};f.prototype=r(f.prototype,{_registerActions:function(t){i(t,function(t,n){if(!o(t))throw new Error("ReactFlux.Actions: Action must be an array {login: [CONSTANT, callback]}");var e=t[0],r=t[1];if("undefined"==typeof r)r=function(){};else if("function"!=typeof r)throw new Error("ReactFlux.Actions: you did not provide a valid callback for action: "+n);this[n]=this._createAction(n,e,r)}.bind(this))},_createAction:function(t,n,e){return function(){this._dispatch(n,null,arguments);try{var t=e.apply(this,arguments);if(t&&"object"==typeof t&&"[object Error]"==Object.prototype.toString.call(t))throw t}catch(r){t=new s(function(t,n){n(r)})}s.resolve(t).then(function(t){this._dispatch(n,"successSuffix",t),this._dispatch(n,"afterSuffix",t)}.bind(this),function(t){this._dispatch(n,"failSuffix",t),this._dispatch(n,"afterSuffix",t)}.bind(this))}.bind(this)},_dispatch:function(t,n,e){n&&(t+=a.separator+a[n]),this._dispatcher.dispatch(t,e)}}),t.exports=f},function(t,n,e){var r=e(8),i=e(13),o=e(10),s=e(11),a=e(4),f="change",c=e(9),u=function(t,n,e){this.state=r.Map({_action_states:{}}),this._events={},this._actionHandlers={},this._constantHandlers={},this._dispatcherIndexes={},this._dispatcher=t,this._mixin(n),this._setInitialState(),e&&this.setConstantHandlers(e),!!this.storeDidMount&&this.storeDidMount()};u.prototype={setState:function(t){this.state=this.state.merge(t),this.emit(f)},setActionState:function(t,n){var e=this.state.get("_action_states");e[t]=i(e[t]||{},n),this.setState({_action_states:e})},resetActionState:function(t){if("undefined"==typeof this._actionHandlers[t])throw new Error("Store.resetActionState constant handler for ["+t+"] is not defined");this.setActionState(t,this._actionHandlers[t].getInitialState())},getActionState:function(t,n){if("undefined"==typeof this._actionHandlers[t])throw new Error("Store.getActionState constant handler for ["+t+"] is not defined");var e=this.state.get("_action_states");return"undefined"==typeof e[t]?void 0:"undefined"==typeof n?e[t]:e[t][n]},get:function(t){return this.state.get(t)},replaceState:function(t){this.state=r.Map(t)},toJS:function(){return this.state.toJS()},toObject:function(){return this.state.toObject()},toJSON:function(){return this.state.toJSON()},isStore:function(){return!0},onChange:function(t){this.on(f,t)},offChange:function(t){this.off(f,t)},_mixin:function(t){o(t,function(t,n){"function"!=typeof t&&(t=t.bind(this)),this[n]=t}.bind(this))},addActionHandler:function(t,n){return this._actionHandlers[t]=new c(this,t,n),this},setConstantHandlers:function(t){if(!s(t))throw new Error("Store.setConstantHandlers expects first parameter to be an array");o(t,function(t){var n,e,r;n=t[0],2==t.length?(r=null,e=t[1]):(r=t[1],e=t[2]);var i=null;r&&(i=r.map(function(t){return t.getHandlerIndex(n)})),this._constantHandlers[n]=e.bind(this);var o=this._dispatcher.register(n,this._constantHandlers[n],i);this._dispatcherIndexes[n]=o}.bind(this))},getHandlerIndex:function(t){if("undefined"==typeof this._dispatcherIndexes[t])throw new Error("Can not get store handler for constant: "+t);return this._dispatcherIndexes[t]},_setInitialState:function(){!!this.getInitialState&&this.setState(this.getInitialState())},mixin:function(){return a(this)},on:function(t,n){return"undefined"==typeof this._events[t]&&(this._events[t]=[]),this._events[t].push(n),n},off:function(t,n){if("undefined"!=typeof this._events[t])for(var e=0,r=this._events[t].length;r>e;e++)if(this._events[t][e]==n){this._events[t].splice(e,1);break}},emit:function(t){if("undefined"!=typeof this._events[t]){var n=Array.prototype.slice.call(arguments,1);o(this._events[t],function(t){t.apply(null,n)})}}},t.exports=u},function(t,n,e){var r=e(10);t.exports=function(){var t=Array.prototype.slice.call(arguments);if(!t.length)throw new Error("Flux.mixin expects a store or a list of stores");return r(t,function(t){var n="undefined"==typeof t||"function"!=typeof t.onChange||"function"!=typeof t.offChange;if(n)throw new Error("Flux.mixin expects a store or an array of stores")}),{componentWillMount:function(){"undefined"==typeof this._react_flux_onChange&&(this._react_flux_onChange=function(){this.isMounted()&&this.setState(this.getStateFromStores())}.bind(this)),this.setState(this.getStateFromStores())},componentDidMount:function(){for(var n=0;n<t.length;n++){if("function"!=typeof t[n].onChange)throw new Error("Mixin expects stores");t[n].onChange(this._react_flux_onChange)}},componentWillUnmount:function(){for(var n=0;n<t.length;n++)t[n].offChange(this._react_flux_onChange)}}}},function(t,n,e){function r(){this._registry={}}var i=e(7),o=e(13),s=e(11),a=e(12),f=e(10);r.prototype=o(r.prototype,{register:function(t,n,e){if(!a(t)||0==t.length)throw new Error("Dispatcher.register: constant must be a string");if(e=e||null,"function"!=typeof n)throw new Error("Dispatcher.register expects second parameter to be a callback");if(null!==e&&!s(e))throw new Error("Dispatcher.register expects third parameter to be null or an array");var r=this._getRegistry(t);return r.callbacks.push(n),r.waitFor.push(e),r.callbacks.length-1},dispatch:function(t,n){var e=this._getRegistry(t);e.dispatchQueue.push({constant:t,payload:n}),this._dispatch(e)},_dispatch:function(t){if(!t.isDispatching&&0!=t.dispatchQueue.length){t.isDispatching=!0;var n=t.dispatchQueue.shift();this._createDispatchPromises(t),f(t.callbacks,function(e,r){var o=function(t,n,e){return function(){i.resolve(t.callbacks[n](e)).then(function(){t.resolves[n](e)},function(){t.rejects[n](new Error("Dispatch callback error"))})}}(t,r,n.payload),s=t.waitFor[r];if(s){var a=this._getPromisesByIndexes(t,s);i.all(a).then(o,o)}else o()}.bind(this)),i.all(t.promises).then(function(){this._onDispatchEnd(t)}.bind(this),function(){this._onDispatchEnd(t)})}},_getRegistry:function(t){return"undefined"==typeof this._registry[t]&&(this._registry[t]={callbacks:[],waitFor:[],promises:[],resolves:[],rejects:[],dispatchQueue:[],isDispatching:!1}),this._registry[t]},_getPromisesByIndexes:function(t,n){return n.map(function(n){return t.promises[n]})},_createDispatchPromises:function(t){t.promises=[],t.resolves=[],t.rejects=[],f(t.callbacks,function(n,e){t.promises[e]=new i(function(n,r){t.resolves[e]=n,t.rejects[e]=r})})},_onDispatchEnd:function(t){t.promises=[],t.resolves=[],t.rejects=[],t.isDispatching=!1,this._dispatch(t)}}),t.exports=r},function(t,n,e){var r=e(12),i="_",o="SUCCESS",s="FAIL",a="AFTER",f={constants:{separator:i,successSuffix:o,failSuffix:s,afterSuffix:a}};t.exports={constants:{setSeparator:function(t){if(!r(t)||!t.length)throw new Error("Constants.separator must be a non empty string");f.constants.separator=t},setSuccessSuffix:function(t){if(!r(t)||!t.length)throw new Error("Constants.successSuffix must be a non empty string");f.constants.successSuffix=t},setFailSuffix:function(t){if(!r(t)||!t.length)throw new Error("Constants.failSuffix must be a non empty string");f.constants.failSuffix=t},setAfterSuffix:function(t){if(!r(t)||!t.length)throw new Error("Constants.afterSuffix must be a non empty string");f.constants.afterSuffix=t},resetToDefaults:function(){f.constants.separator=i,f.constants.successSuffix=o,f.constants.failSuffix=s,f.constants.afterSuffix=a},get:function(){return f.constants}}}},function(n){n.exports=t},function(t){t.exports=n},function(t,n,e){function r(t,n,e){if(!t.isStore())throw new Error("StoreActionHandler expects first parameter to be a store");if(!i(n))throw new Error("StoreActionHandler expects second parameter to be a constant(string)");if("undefined"==typeof e.getInitialState&&(e.getInitialState=function(){return{}}),"function"!=typeof e.getInitialState)throw new Error("StoreActionHandler expects getInitialState to be a function");e=e||{},this.parent=t,this.constant=n,this.getInitialState=e.getInitialState,this.before=e.before||null,this.after=e.after||null,this.success=e.success||null,this.fail=e.fail||null,this.parent.setActionState(this.constant,this.getInitialState());for(var r=[],a=s.length,f=0;a>f;f++){var c=s[f];if(null!=this[c]){if("function"!=typeof this[c])throw new Error('StoreActionHandler expects "'+c+'" to be a function');var n=this.constant;"before"!=c&&(n+=o.separator+o[c+"Suffix"]),r.push([n,this[c].bind(this)])}}t.setConstantHandlers(r)}var i=e(12),o=e(6).constants.get(),s=["before","after","success","fail"];r.prototype={setState:function(t){this.parent.setActionState(this.constant,t)},getState:function(){return this.parent.getActionState(this.constant)}},t.exports=r},function(t,n,e){function r(t,n,e){var r=-1,s=t?t.length:0;if(n=n&&"undefined"==typeof e?n:i(n,e,3),"number"==typeof s)for(;++r<s&&n(t[r],r,t)!==!1;);else o(t,n);return t}var i=e(16),o=e(14);t.exports=r},function(t,n,e){var r=e(17),i="[object Array]",o=Object.prototype,s=o.toString,a=r(a=Array.isArray)&&a,f=a||function(t){return t&&"object"==typeof t&&"number"==typeof t.length&&s.call(t)==i||!1};t.exports=f},function(t){function n(t){return"string"==typeof t||t&&"object"==typeof t&&i.call(t)==e||!1}var e="[object String]",r=Object.prototype,i=r.toString;t.exports=n},function(t,n,e){function r(t){var n=arguments,e=2;if(!a(t))return t;if("number"!=typeof n[2]&&(e=n.length),e>3&&"function"==typeof n[e-2])var r=i(n[--e-1],n[e--],2);else e>2&&"function"==typeof n[e-1]&&(r=n[--e]);for(var u=c(arguments,1,e),p=-1,h=s(),l=s();++p<e;)o(t,u[p],r,h,l);return f(h),f(l),t}var i=e(16),o=e(18),s=e(19),a=e(15),f=e(20),c=e(21);t.exports=r},function(t,n,e){var r=e(16),i=e(22),o=e(23),s=function(t,n,e){var s,a=t,f=a;if(!a)return f;if(!o[typeof a])return f;n=n&&"undefined"==typeof e?n:r(n,e,3);for(var c=-1,u=o[typeof a]&&i(a),p=u?u.length:0;++c<p;)if(s=u[c],n(a[s],s,t)===!1)return f;return f};t.exports=s},function(t,n,e){function r(t){return!(!t||!i[typeof t])}var i=e(23);t.exports=r},function(t,n,e){function r(t,n,e){if("function"!=typeof t)return o;if("undefined"==typeof n||!("prototype"in t))return t;var r=t.__bindData__;if("undefined"==typeof r&&(a.funcNames&&(r=!t.name),r=r||!a.funcDecomp,!r)){var p=u.call(t);a.funcNames||(r=!f.test(p)),r||(r=c.test(p),s(t,r))}if(r===!1||r!==!0&&1&r[1])return t;switch(e){case 1:return function(e){return t.call(n,e)};case 2:return function(e,r){return t.call(n,e,r)};case 3:return function(e,r,i){return t.call(n,e,r,i)};case 4:return function(e,r,i,o){return t.call(n,e,r,i,o)}}return i(t,n)}var i=e(29),o=e(30),s=e(24),a=e(25),f=/^\s*function[ \n\r\t]+\w/,c=/\bthis\b/,u=Function.prototype.toString;t.exports=r},function(t){function n(t){return"function"==typeof t&&i.test(t)}var e=Object.prototype,r=e.toString,i=RegExp("^"+String(r).replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/toString| for [^\]]+/g,".*?")+"$");t.exports=n},function(t,n,e){function r(t,n,e,f,c){(s(n)?i:o)(n,function(n,i){var o,u,p=n,h=t[i];if(n&&((u=s(n))||a(n))){for(var l=f.length;l--;)if(o=f[l]==n){h=c[l];break}if(!o){var d;e&&(p=e(h,n),(d="undefined"!=typeof p)&&(h=p)),d||(h=u?s(h)?h:[]:a(h)?h:{}),f.push(n),c.push(h),d||r(h,n,e,f,c)}}else e&&(p=e(h,n),"undefined"==typeof p&&(p=n)),"undefined"!=typeof p&&(h=p);t[i]=h})}var i=e(10),o=e(14),s=e(11),a=e(28);t.exports=r},function(t,n,e){function r(){return i.pop()||[]}var i=e(26);t.exports=r},function(t,n,e){function r(t){t.length=0,i.length<o&&i.push(t)}var i=e(26),o=e(27);t.exports=r},function(t){function n(t,n,e){n||(n=0),"undefined"==typeof e&&(e=t?t.length:0);for(var r=-1,i=e-n||0,o=Array(0>i?0:i);++r<i;)o[r]=t[n+r];return o}t.exports=n},function(t,n,e){var r=e(17),i=e(15),o=e(31),s=r(s=Object.keys)&&s,a=s?function(t){return i(t)?s(t):[]}:o;t.exports=a},function(t){var n={"boolean":!1,"function":!0,object:!0,number:!1,string:!1,undefined:!1};t.exports=n},function(t,n,e){var r=e(17),i=e(32),o={configurable:!1,enumerable:!1,value:null,writable:!1},s=function(){try{var t={},n=r(n=Object.defineProperty)&&n,e=n(t,t,t)&&n}catch(i){}return e}(),a=s?function(t,n){o.value=n,s(t,"__bindData__",o)}:i;t.exports=a},function(t,n,e){(function(n){var r=e(17),i=/\bthis\b/,o={};o.funcDecomp=!r(n.WinRTError)&&i.test(function(){return this}),o.funcNames="string"==typeof Function.name,t.exports=o}).call(n,function(){return this}())},function(t){var n=[];t.exports=n},function(t){var n=40;t.exports=n},function(t,n,e){var r=e(17),i=e(33),o="[object Object]",s=Object.prototype,a=s.toString,f=r(f=Object.getPrototypeOf)&&f,c=f?function(t){if(!t||a.call(t)!=o)return!1;var n=t.valueOf,e=r(n)&&(e=f(n))&&f(e);return e?t==e||f(t)==e:i(t)}:i;t.exports=c},function(t,n,e){function r(t,n){return arguments.length>2?i(t,17,o(arguments,2),null,n):i(t,1,null,null,n)}var i=e(34),o=e(21);t.exports=r},function(t){function n(t){return t}t.exports=n},function(t,n,e){var r=e(23),i=Object.prototype,o=i.hasOwnProperty,s=function(t){var n,e=t,i=[];if(!e)return i;if(!r[typeof t])return i;for(n in e)o.call(e,n)&&i.push(n);return i};t.exports=s},function(t){function n(){}t.exports=n},function(t,n,e){function r(t){var n,e;return t&&f.call(t)==s&&(n=t.constructor,!o(n)||n instanceof n)?(i(t,function(t,n){e=n}),"undefined"==typeof e||c.call(t,e)):!1}var i=e(35),o=e(36),s="[object Object]",a=Object.prototype,f=a.toString,c=a.hasOwnProperty;t.exports=r},function(t,n,e){function r(t,n,e,f,p,h){var l=1&n,d=2&n,g=4&n,y=16&n,x=32&n;if(!d&&!s(t))throw new TypeError;y&&!e.length&&(n&=-17,y=e=!1),x&&!f.length&&(n&=-33,x=f=!1);var v=t&&t.__bindData__;if(v&&v!==!0)return v=a(v),v[2]&&(v[2]=a(v[2])),v[3]&&(v[3]=a(v[3])),!l||1&v[1]||(v[4]=p),!l&&1&v[1]&&(n|=8),!g||4&v[1]||(v[5]=h),y&&c.apply(v[2]||(v[2]=[]),e),x&&u.apply(v[3]||(v[3]=[]),f),v[1]|=n,r.apply(null,v);var _=1==n||17===n?i:o;return _([t,n,e,f,p,h])}var i=e(37),o=e(38),s=e(36),a=e(21),f=[],c=f.push,u=f.unshift;t.exports=r},function(t,n,e){var r=e(16),i=e(23),o=function(t,n,e){var o,s=t,a=s;if(!s)return a;if(!i[typeof s])return a;n=n&&"undefined"==typeof e?n:r(n,e,3);for(o in s)if(n(s[o],o,t)===!1)return a;return a};t.exports=o},function(t){function n(t){return"function"==typeof t}t.exports=n},function(t,n,e){function r(t){function n(){if(r){var t=a(r);c.apply(t,arguments)}if(this instanceof n){var s=i(e.prototype),u=e.apply(s,t||arguments);return o(u)?u:s}return e.apply(f,t||arguments)}var e=t[0],r=t[2],f=t[4];return s(n,t),n}var i=e(39),o=e(15),s=e(24),a=e(21),f=[],c=f.push;t.exports=r},function(t,n,e){function r(t){function n(){var t=d?h:this;if(u){var s=a(u);c.apply(s,arguments)}if((p||y)&&(s||(s=a(arguments)),p&&c.apply(s,p),y&&s.length<l))return f|=16,r([e,x?f:-4&f,s,null,h,l]);if(s||(s=arguments),g&&(e=t[v]),this instanceof n){t=i(e.prototype);var _=e.apply(t,s);return o(_)?_:t}return e.apply(t,s)}var e=t[0],f=t[1],u=t[2],p=t[3],h=t[4],l=t[5],d=1&f,g=2&f,y=4&f,x=8&f,v=e;return s(n,t),n}var i=e(39),o=e(15),s=e(24),a=e(21),f=[],c=f.push;t.exports=r},function(t,n,e){(function(n){function r(t){return o(t)?s(t):{}}var i=e(17),o=e(15),s=(e(32),i(s=Object.create)&&s);s||(r=function(){function t(){}return function(e){if(o(e)){t.prototype=e;var r=new t;t.prototype=null}return r||n.Object()}}()),t.exports=r}).call(n,function(){return this}())}])});
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../dist/react-flux.js","/../../../dist")
+},{"1YiZ5S":11,"buffer":8,"immutable":165,"promise":196}],2:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /** @jsx React.DOM */
 var React = require('react');
 var userStore = require('../flux/stores/user');
 var userActions = require('../flux/actions/user');
 
-var Flux = require('../../../')
+var Flux = require('../../../dist/react-flux.js')
 var App = React.createClass({displayName: 'App',
 	mixins: [ userStore.mixin() ],
 
@@ -70,8 +74,8 @@ var App = React.createClass({displayName: 'App',
 window.onload = function(){
 	React.renderComponent(App(null), document.getElementById('__wrap'));
 };
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_4b7b5f42.js","/")
-},{"../../../":156,"../flux/actions/user":2,"../flux/stores/user":6,"1YiZ5S":11,"buffer":7,"react":155}],2:[function(require,module,exports){
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_e2ad0824.js","/")
+},{"../../../dist/react-flux.js":1,"../flux/actions/user":3,"../flux/stores/user":7,"1YiZ5S":11,"buffer":8,"react":155}],3:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var ReactFlux = require('../../../../index');
 var userConstants = require('../constants/user');
@@ -110,7 +114,7 @@ module.exports = ReactFlux.createActions({
 
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../flux/actions/user.js","/../flux/actions")
-},{"../../../../index":156,"../constants/user":3,"1YiZ5S":11,"buffer":7}],3:[function(require,module,exports){
+},{"../../../../index":156,"../constants/user":4,"1YiZ5S":11,"buffer":8}],4:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var ReactFlux = require('../../../../index');
 
@@ -119,14 +123,14 @@ module.exports = ReactFlux.createConstants([
 	'LOGOUT'
 ], 'USER');
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../flux/constants/user.js","/../flux/constants")
-},{"../../../../index":156,"1YiZ5S":11,"buffer":7}],4:[function(require,module,exports){
+},{"../../../../index":156,"1YiZ5S":11,"buffer":8}],5:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var ReactFlux = require('../../../../index');
 var userConstants = require('../constants/user');
 
 var MotherStore = require('./mother');
 
-module.exports = ReactFlux.createStore(null, [
+var Store = ReactFlux.createStore(null, [
 	
 	[userConstants.LOGIN_SUCCESS, [MotherStore],  function notifyFatherOfLogin(payload){
 
@@ -144,14 +148,17 @@ module.exports = ReactFlux.createStore(null, [
 	}]
 
 ]);
+
+
+module.exports = Store;
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../flux/stores/father.js","/../flux/stores")
-},{"../../../../index":156,"../constants/user":3,"./mother":5,"1YiZ5S":11,"buffer":7}],5:[function(require,module,exports){
+},{"../../../../index":156,"../constants/user":4,"./mother":6,"1YiZ5S":11,"buffer":8}],6:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var ReactFlux = require('../../../../index');
 var userConstants = require('../constants/user');
 
 
-module.exports = ReactFlux.createStore({
+var Store = ReactFlux.createStore({
 
 }, [
 	
@@ -171,8 +178,10 @@ module.exports = ReactFlux.createStore({
 	}]
 
 ]);
+
+module.exports = Store;
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../flux/stores/mother.js","/../flux/stores")
-},{"../../../../index":156,"../constants/user":3,"1YiZ5S":11,"buffer":7}],6:[function(require,module,exports){
+},{"../../../../index":156,"../constants/user":4,"1YiZ5S":11,"buffer":8}],7:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var ReactFlux = require('../../../../index');
 var userConstants = require('../constants/user');
@@ -250,7 +259,7 @@ module.exports = ReactFlux.createStore({
 	
 ]);
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../flux/stores/user.js","/../flux/stores")
-},{"../../../../index":156,"../constants/user":3,"./father":4,"./mother":5,"1YiZ5S":11,"buffer":7}],7:[function(require,module,exports){
+},{"../../../../index":156,"../constants/user":4,"./father":5,"./mother":6,"1YiZ5S":11,"buffer":8}],8:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /*!
  * The buffer module from node.js, for the browser.
@@ -1363,7 +1372,7 @@ function assert (test, message) {
 }
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/index.js","/../node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer")
-},{"1YiZ5S":11,"base64-js":8,"buffer":7,"ieee754":9}],8:[function(require,module,exports){
+},{"1YiZ5S":11,"base64-js":9,"buffer":8,"ieee754":10}],9:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
@@ -1487,7 +1496,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js","/../node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib")
-},{"1YiZ5S":11,"buffer":7}],9:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],10:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
@@ -1575,314 +1584,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
 };
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js","/../node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/ieee754")
-},{"1YiZ5S":11,"buffer":7}],10:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-function EventEmitter() {
-  this._events = this._events || {};
-  this._maxListeners = this._maxListeners || undefined;
-}
-module.exports = EventEmitter;
-
-// Backwards-compat with node 0.10.x
-EventEmitter.EventEmitter = EventEmitter;
-
-EventEmitter.prototype._events = undefined;
-EventEmitter.prototype._maxListeners = undefined;
-
-// By default EventEmitters will print a warning if more than 10 listeners are
-// added to it. This is a useful default which helps finding memory leaks.
-EventEmitter.defaultMaxListeners = 10;
-
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!isNumber(n) || n < 0 || isNaN(n))
-    throw TypeError('n must be a positive number');
-  this._maxListeners = n;
-  return this;
-};
-
-EventEmitter.prototype.emit = function(type) {
-  var er, handler, len, args, i, listeners;
-
-  if (!this._events)
-    this._events = {};
-
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events.error ||
-        (isObject(this._events.error) && !this._events.error.length)) {
-      er = arguments[1];
-      if (er instanceof Error) {
-        throw er; // Unhandled 'error' event
-      } else {
-        throw TypeError('Uncaught, unspecified "error" event.');
-      }
-      return false;
-    }
-  }
-
-  handler = this._events[type];
-
-  if (isUndefined(handler))
-    return false;
-
-  if (isFunction(handler)) {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        len = arguments.length;
-        args = new Array(len - 1);
-        for (i = 1; i < len; i++)
-          args[i - 1] = arguments[i];
-        handler.apply(this, args);
-    }
-  } else if (isObject(handler)) {
-    len = arguments.length;
-    args = new Array(len - 1);
-    for (i = 1; i < len; i++)
-      args[i - 1] = arguments[i];
-
-    listeners = handler.slice();
-    len = listeners.length;
-    for (i = 0; i < len; i++)
-      listeners[i].apply(this, args);
-  }
-
-  return true;
-};
-
-EventEmitter.prototype.addListener = function(type, listener) {
-  var m;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events)
-    this._events = {};
-
-  // To avoid recursion in the case that type === "newListener"! Before
-  // adding it to the listeners, first emit "newListener".
-  if (this._events.newListener)
-    this.emit('newListener', type,
-              isFunction(listener.listener) ?
-              listener.listener : listener);
-
-  if (!this._events[type])
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  else if (isObject(this._events[type]))
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  else
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-
-  // Check for listener leak
-  if (isObject(this._events[type]) && !this._events[type].warned) {
-    var m;
-    if (!isUndefined(this._maxListeners)) {
-      m = this._maxListeners;
-    } else {
-      m = EventEmitter.defaultMaxListeners;
-    }
-
-    if (m && m > 0 && this._events[type].length > m) {
-      this._events[type].warned = true;
-      console.error('(node) warning: possible EventEmitter memory ' +
-                    'leak detected. %d listeners added. ' +
-                    'Use emitter.setMaxListeners() to increase limit.',
-                    this._events[type].length);
-      if (typeof console.trace === 'function') {
-        // not supported in IE 10
-        console.trace();
-      }
-    }
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  var fired = false;
-
-  function g() {
-    this.removeListener(type, g);
-
-    if (!fired) {
-      fired = true;
-      listener.apply(this, arguments);
-    }
-  }
-
-  g.listener = listener;
-  this.on(type, g);
-
-  return this;
-};
-
-// emits a 'removeListener' event iff the listener was removed
-EventEmitter.prototype.removeListener = function(type, listener) {
-  var list, position, length, i;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events || !this._events[type])
-    return this;
-
-  list = this._events[type];
-  length = list.length;
-  position = -1;
-
-  if (list === listener ||
-      (isFunction(list.listener) && list.listener === listener)) {
-    delete this._events[type];
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-
-  } else if (isObject(list)) {
-    for (i = length; i-- > 0;) {
-      if (list[i] === listener ||
-          (list[i].listener && list[i].listener === listener)) {
-        position = i;
-        break;
-      }
-    }
-
-    if (position < 0)
-      return this;
-
-    if (list.length === 1) {
-      list.length = 0;
-      delete this._events[type];
-    } else {
-      list.splice(position, 1);
-    }
-
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  var key, listeners;
-
-  if (!this._events)
-    return this;
-
-  // not listening for removeListener, no need to emit
-  if (!this._events.removeListener) {
-    if (arguments.length === 0)
-      this._events = {};
-    else if (this._events[type])
-      delete this._events[type];
-    return this;
-  }
-
-  // emit removeListener for all listeners on all events
-  if (arguments.length === 0) {
-    for (key in this._events) {
-      if (key === 'removeListener') continue;
-      this.removeAllListeners(key);
-    }
-    this.removeAllListeners('removeListener');
-    this._events = {};
-    return this;
-  }
-
-  listeners = this._events[type];
-
-  if (isFunction(listeners)) {
-    this.removeListener(type, listeners);
-  } else {
-    // LIFO order
-    while (listeners.length)
-      this.removeListener(type, listeners[listeners.length - 1]);
-  }
-  delete this._events[type];
-
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  var ret;
-  if (!this._events || !this._events[type])
-    ret = [];
-  else if (isFunction(this._events[type]))
-    ret = [this._events[type]];
-  else
-    ret = this._events[type].slice();
-  return ret;
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  var ret;
-  if (!emitter._events || !emitter._events[type])
-    ret = 0;
-  else if (isFunction(emitter._events[type]))
-    ret = 1;
-  else
-    ret = emitter._events[type].length;
-  return ret;
-};
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/gulp-browserify/node_modules/browserify/node_modules/events/events.js","/../node_modules/gulp-browserify/node_modules/browserify/node_modules/events")
-},{"1YiZ5S":11,"buffer":7}],11:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],11:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 // shim for using process in browser
 
@@ -1949,7 +1651,7 @@ process.chdir = function (dir) {
 };
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/gulp-browserify/node_modules/browserify/node_modules/process/browser.js","/../node_modules/gulp-browserify/node_modules/browserify/node_modules/process")
-},{"1YiZ5S":11,"buffer":7}],12:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],12:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -1985,7 +1687,7 @@ var AutoFocusMixin = {
 module.exports = AutoFocusMixin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/AutoFocusMixin.js","/../node_modules/react/lib")
-},{"./focusNode":117,"1YiZ5S":11,"buffer":7}],13:[function(require,module,exports){
+},{"./focusNode":117,"1YiZ5S":11,"buffer":8}],13:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013 Facebook, Inc.
@@ -2211,7 +1913,7 @@ var BeforeInputEventPlugin = {
 module.exports = BeforeInputEventPlugin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/BeforeInputEventPlugin.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPropagators":31,"./ExecutionEnvironment":32,"./SyntheticInputEvent":97,"./keyOf":138,"1YiZ5S":11,"buffer":7}],14:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPropagators":31,"./ExecutionEnvironment":32,"./SyntheticInputEvent":97,"./keyOf":138,"1YiZ5S":11,"buffer":8}],14:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -2336,7 +2038,7 @@ var CSSProperty = {
 module.exports = CSSProperty;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/CSSProperty.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],15:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],15:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -2437,7 +2139,7 @@ var CSSPropertyOperations = {
 module.exports = CSSPropertyOperations;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/CSSPropertyOperations.js","/../node_modules/react/lib")
-},{"./CSSProperty":14,"./dangerousStyleValue":112,"./hyphenateStyleName":129,"./memoizeStringOnly":140,"1YiZ5S":11,"buffer":7}],16:[function(require,module,exports){
+},{"./CSSProperty":14,"./dangerousStyleValue":112,"./hyphenateStyleName":129,"./memoizeStringOnly":140,"1YiZ5S":11,"buffer":8}],16:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -2544,7 +2246,7 @@ PooledClass.addPoolingTo(CallbackQueue);
 module.exports = CallbackQueue;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/CallbackQueue.js","/../node_modules/react/lib")
-},{"./PooledClass":37,"./invariant":131,"./mixInto":144,"1YiZ5S":11,"buffer":7}],17:[function(require,module,exports){
+},{"./PooledClass":37,"./invariant":131,"./mixInto":144,"1YiZ5S":11,"buffer":8}],17:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -2935,7 +2637,7 @@ var ChangeEventPlugin = {
 module.exports = ChangeEventPlugin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ChangeEventPlugin.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPluginHub":28,"./EventPropagators":31,"./ExecutionEnvironment":32,"./ReactUpdates":87,"./SyntheticEvent":95,"./isEventSupported":132,"./isTextInputElement":134,"./keyOf":138,"1YiZ5S":11,"buffer":7}],18:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPluginHub":28,"./EventPropagators":31,"./ExecutionEnvironment":32,"./ReactUpdates":87,"./SyntheticEvent":95,"./isEventSupported":132,"./isTextInputElement":134,"./keyOf":138,"1YiZ5S":11,"buffer":8}],18:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -2969,7 +2671,7 @@ var ClientReactRootIndex = {
 module.exports = ClientReactRootIndex;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ClientReactRootIndex.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],19:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],19:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -3237,7 +2939,7 @@ var CompositionEventPlugin = {
 module.exports = CompositionEventPlugin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/CompositionEventPlugin.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPropagators":31,"./ExecutionEnvironment":32,"./ReactInputSelection":69,"./SyntheticCompositionEvent":93,"./getTextContentAccessor":126,"./keyOf":138,"1YiZ5S":11,"buffer":7}],20:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPropagators":31,"./ExecutionEnvironment":32,"./ReactInputSelection":69,"./SyntheticCompositionEvent":93,"./getTextContentAccessor":126,"./keyOf":138,"1YiZ5S":11,"buffer":8}],20:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -3419,7 +3121,7 @@ var DOMChildrenOperations = {
 module.exports = DOMChildrenOperations;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/DOMChildrenOperations.js","/../node_modules/react/lib")
-},{"./Danger":23,"./ReactMultiChildUpdateTypes":74,"./getTextContentAccessor":126,"./invariant":131,"1YiZ5S":11,"buffer":7}],21:[function(require,module,exports){
+},{"./Danger":23,"./ReactMultiChildUpdateTypes":74,"./getTextContentAccessor":126,"./invariant":131,"1YiZ5S":11,"buffer":8}],21:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -3721,7 +3423,7 @@ var DOMProperty = {
 module.exports = DOMProperty;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/DOMProperty.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],22:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],22:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -3918,7 +3620,7 @@ var DOMPropertyOperations = {
 module.exports = DOMPropertyOperations;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/DOMPropertyOperations.js","/../node_modules/react/lib")
-},{"./DOMProperty":21,"./escapeTextForBrowser":115,"./memoizeStringOnly":140,"./warning":154,"1YiZ5S":11,"buffer":7}],23:[function(require,module,exports){
+},{"./DOMProperty":21,"./escapeTextForBrowser":115,"./memoizeStringOnly":140,"./warning":154,"1YiZ5S":11,"buffer":8}],23:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -4109,7 +3811,7 @@ var Danger = {
 module.exports = Danger;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/Danger.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"./createNodesFromMarkup":111,"./emptyFunction":113,"./getMarkupWrap":123,"./invariant":131,"1YiZ5S":11,"buffer":7}],24:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"./createNodesFromMarkup":111,"./emptyFunction":113,"./getMarkupWrap":123,"./invariant":131,"1YiZ5S":11,"buffer":8}],24:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -4158,7 +3860,7 @@ var DefaultEventPluginOrder = [
 module.exports = DefaultEventPluginOrder;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/DefaultEventPluginOrder.js","/../node_modules/react/lib")
-},{"./keyOf":138,"1YiZ5S":11,"buffer":7}],25:[function(require,module,exports){
+},{"./keyOf":138,"1YiZ5S":11,"buffer":8}],25:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -4307,7 +4009,7 @@ var EnterLeaveEventPlugin = {
 module.exports = EnterLeaveEventPlugin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/EnterLeaveEventPlugin.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPropagators":31,"./ReactMount":72,"./SyntheticMouseEvent":99,"./keyOf":138,"1YiZ5S":11,"buffer":7}],26:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPropagators":31,"./ReactMount":72,"./SyntheticMouseEvent":99,"./keyOf":138,"1YiZ5S":11,"buffer":8}],26:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -4388,7 +4090,7 @@ var EventConstants = {
 module.exports = EventConstants;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/EventConstants.js","/../node_modules/react/lib")
-},{"./keyMirror":137,"1YiZ5S":11,"buffer":7}],27:[function(require,module,exports){
+},{"./keyMirror":137,"1YiZ5S":11,"buffer":8}],27:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * @providesModule EventListener
@@ -4464,7 +4166,7 @@ var EventListener = {
 module.exports = EventListener;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/EventListener.js","/../node_modules/react/lib")
-},{"./emptyFunction":113,"1YiZ5S":11,"buffer":7}],28:[function(require,module,exports){
+},{"./emptyFunction":113,"1YiZ5S":11,"buffer":8}],28:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -4758,7 +4460,7 @@ var EventPluginHub = {
 module.exports = EventPluginHub;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/EventPluginHub.js","/../node_modules/react/lib")
-},{"./EventPluginRegistry":29,"./EventPluginUtils":30,"./accumulate":105,"./forEachAccumulated":118,"./invariant":131,"./isEventSupported":132,"./monitorCodeUse":145,"1YiZ5S":11,"buffer":7}],29:[function(require,module,exports){
+},{"./EventPluginRegistry":29,"./EventPluginUtils":30,"./accumulate":105,"./forEachAccumulated":118,"./invariant":131,"./isEventSupported":132,"./monitorCodeUse":145,"1YiZ5S":11,"buffer":8}],29:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -5045,7 +4747,7 @@ var EventPluginRegistry = {
 module.exports = EventPluginRegistry;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/EventPluginRegistry.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],30:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],30:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -5273,7 +4975,7 @@ var EventPluginUtils = {
 module.exports = EventPluginUtils;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/EventPluginUtils.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./invariant":131,"1YiZ5S":11,"buffer":7}],31:[function(require,module,exports){
+},{"./EventConstants":26,"./invariant":131,"1YiZ5S":11,"buffer":8}],31:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -5420,7 +5122,7 @@ var EventPropagators = {
 module.exports = EventPropagators;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/EventPropagators.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPluginHub":28,"./accumulate":105,"./forEachAccumulated":118,"1YiZ5S":11,"buffer":7}],32:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPluginHub":28,"./accumulate":105,"./forEachAccumulated":118,"1YiZ5S":11,"buffer":8}],32:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -5474,7 +5176,7 @@ var ExecutionEnvironment = {
 module.exports = ExecutionEnvironment;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ExecutionEnvironment.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],33:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],33:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -5587,6 +5289,7 @@ var HTMLDOMPropertyConfig = {
     loop: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
     max: null,
     maxLength: MUST_USE_ATTRIBUTE,
+    media: MUST_USE_ATTRIBUTE,
     mediaGroup: null,
     method: null,
     min: null,
@@ -5594,6 +5297,7 @@ var HTMLDOMPropertyConfig = {
     muted: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
     name: null,
     noValidate: HAS_BOOLEAN_VALUE,
+    open: null,
     pattern: null,
     placeholder: null,
     poster: null,
@@ -5614,11 +5318,12 @@ var HTMLDOMPropertyConfig = {
     selected: MUST_USE_PROPERTY | HAS_BOOLEAN_VALUE,
     shape: null,
     size: MUST_USE_ATTRIBUTE | HAS_POSITIVE_NUMERIC_VALUE,
+    sizes: MUST_USE_ATTRIBUTE,
     span: HAS_POSITIVE_NUMERIC_VALUE,
     spellCheck: null,
     src: null,
     srcDoc: MUST_USE_PROPERTY,
-    srcSet: null,
+    srcSet: MUST_USE_ATTRIBUTE,
     start: HAS_NUMERIC_VALUE,
     step: null,
     style: null,
@@ -5664,7 +5369,7 @@ var HTMLDOMPropertyConfig = {
 module.exports = HTMLDOMPropertyConfig;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/HTMLDOMPropertyConfig.js","/../node_modules/react/lib")
-},{"./DOMProperty":21,"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":7}],34:[function(require,module,exports){
+},{"./DOMProperty":21,"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":8}],34:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -5827,7 +5532,7 @@ var LinkedValueUtils = {
 module.exports = LinkedValueUtils;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/LinkedValueUtils.js","/../node_modules/react/lib")
-},{"./ReactPropTypes":80,"./invariant":131,"1YiZ5S":11,"buffer":7}],35:[function(require,module,exports){
+},{"./ReactPropTypes":80,"./invariant":131,"1YiZ5S":11,"buffer":8}],35:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -5883,7 +5588,7 @@ var LocalEventTrapMixin = {
 module.exports = LocalEventTrapMixin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/LocalEventTrapMixin.js","/../node_modules/react/lib")
-},{"./ReactBrowserEventEmitter":40,"./accumulate":105,"./forEachAccumulated":118,"./invariant":131,"1YiZ5S":11,"buffer":7}],36:[function(require,module,exports){
+},{"./ReactBrowserEventEmitter":40,"./accumulate":105,"./forEachAccumulated":118,"./invariant":131,"1YiZ5S":11,"buffer":8}],36:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -5950,7 +5655,7 @@ var MobileSafariClickEventPlugin = {
 module.exports = MobileSafariClickEventPlugin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/MobileSafariClickEventPlugin.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./emptyFunction":113,"1YiZ5S":11,"buffer":7}],37:[function(require,module,exports){
+},{"./EventConstants":26,"./emptyFunction":113,"1YiZ5S":11,"buffer":8}],37:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -6073,7 +5778,7 @@ var PooledClass = {
 module.exports = PooledClass;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/PooledClass.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],38:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],38:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -6115,8 +5820,20 @@ var ReactServerRendering = require("./ReactServerRendering");
 var ReactTextComponent = require("./ReactTextComponent");
 
 var onlyChild = require("./onlyChild");
+var warning = require("./warning");
 
 ReactDefaultInjection.inject();
+
+// Specifying arguments isn't necessary since we just use apply anyway, but it
+// makes it clear for those actually consuming this API.
+function createDescriptor(type, props, children) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return type.apply(null, args);
+}
+
+if ("production" !== process.env.NODE_ENV) {
+  var _warnedForDeprecation = false;
+}
 
 var React = {
   Children: {
@@ -6131,10 +5848,18 @@ var React = {
     EventPluginUtils.useTouchEvents = shouldUseTouch;
   },
   createClass: ReactCompositeComponent.createClass,
-  createDescriptor: function(type, props, children) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return type.apply(null, args);
+  createDescriptor: function() {
+    if ("production" !== process.env.NODE_ENV) {
+      ("production" !== process.env.NODE_ENV ? warning(
+        _warnedForDeprecation,
+        'React.createDescriptor is deprecated and will be removed in the ' +
+        'next version of React. Use React.createElement instead.'
+      ) : null);
+      _warnedForDeprecation = true;
+    }
+    return createDescriptor.apply(this, arguments);
   },
+  createElement: createDescriptor,
   constructAndRenderComponent: ReactMount.constructAndRenderComponent,
   constructAndRenderComponentByID: ReactMount.constructAndRenderComponentByID,
   renderComponent: ReactPerf.measure(
@@ -6203,12 +5928,12 @@ if ("production" !== process.env.NODE_ENV) {
 
 // Version exists only in the open-source version of React, not in Facebook's
 // internal version.
-React.version = '0.11.0';
+React.version = '0.11.2';
 
 module.exports = React;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/React.js","/../node_modules/react/lib")
-},{"./DOMPropertyOperations":22,"./EventPluginUtils":30,"./ExecutionEnvironment":32,"./ReactChildren":41,"./ReactComponent":42,"./ReactCompositeComponent":44,"./ReactContext":45,"./ReactCurrentOwner":46,"./ReactDOM":47,"./ReactDOMComponent":49,"./ReactDefaultInjection":59,"./ReactDescriptor":62,"./ReactInstanceHandles":70,"./ReactMount":72,"./ReactMultiChild":73,"./ReactPerf":76,"./ReactPropTypes":80,"./ReactServerRendering":84,"./ReactTextComponent":86,"./onlyChild":146,"1YiZ5S":11,"buffer":7}],39:[function(require,module,exports){
+},{"./DOMPropertyOperations":22,"./EventPluginUtils":30,"./ExecutionEnvironment":32,"./ReactChildren":41,"./ReactComponent":42,"./ReactCompositeComponent":44,"./ReactContext":45,"./ReactCurrentOwner":46,"./ReactDOM":47,"./ReactDOMComponent":49,"./ReactDefaultInjection":59,"./ReactDescriptor":62,"./ReactInstanceHandles":70,"./ReactMount":72,"./ReactMultiChild":73,"./ReactPerf":76,"./ReactPropTypes":80,"./ReactServerRendering":84,"./ReactTextComponent":86,"./onlyChild":146,"./warning":154,"1YiZ5S":11,"buffer":8}],39:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -6258,7 +5983,7 @@ var ReactBrowserComponentMixin = {
 module.exports = ReactBrowserComponentMixin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactBrowserComponentMixin.js","/../node_modules/react/lib")
-},{"./ReactEmptyComponent":64,"./ReactMount":72,"./invariant":131,"1YiZ5S":11,"buffer":7}],40:[function(require,module,exports){
+},{"./ReactEmptyComponent":64,"./ReactMount":72,"./invariant":131,"1YiZ5S":11,"buffer":8}],40:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -6622,7 +6347,7 @@ var ReactBrowserEventEmitter = merge(ReactEventEmitterMixin, {
 module.exports = ReactBrowserEventEmitter;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactBrowserEventEmitter.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPluginHub":28,"./EventPluginRegistry":29,"./ReactEventEmitterMixin":66,"./ViewportMetrics":104,"./isEventSupported":132,"./merge":141,"1YiZ5S":11,"buffer":7}],41:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPluginHub":28,"./EventPluginRegistry":29,"./ReactEventEmitterMixin":66,"./ViewportMetrics":104,"./isEventSupported":132,"./merge":141,"1YiZ5S":11,"buffer":8}],41:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -6779,7 +6504,7 @@ var ReactChildren = {
 module.exports = ReactChildren;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactChildren.js","/../node_modules/react/lib")
-},{"./PooledClass":37,"./traverseAllChildren":153,"./warning":154,"1YiZ5S":11,"buffer":7}],42:[function(require,module,exports){
+},{"./PooledClass":37,"./traverseAllChildren":153,"./warning":154,"1YiZ5S":11,"buffer":8}],42:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -7229,7 +6954,7 @@ var ReactComponent = {
 module.exports = ReactComponent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactComponent.js","/../node_modules/react/lib")
-},{"./ReactDescriptor":62,"./ReactOwner":75,"./ReactUpdates":87,"./invariant":131,"./keyMirror":137,"./merge":141,"1YiZ5S":11,"buffer":7}],43:[function(require,module,exports){
+},{"./ReactDescriptor":62,"./ReactOwner":75,"./ReactUpdates":87,"./invariant":131,"./keyMirror":137,"./merge":141,"1YiZ5S":11,"buffer":8}],43:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -7358,7 +7083,7 @@ var ReactComponentBrowserEnvironment = {
 module.exports = ReactComponentBrowserEnvironment;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactComponentBrowserEnvironment.js","/../node_modules/react/lib")
-},{"./ReactDOMIDOperations":51,"./ReactMarkupChecksum":71,"./ReactMount":72,"./ReactPerf":76,"./ReactReconcileTransaction":82,"./getReactRootElementInContainer":125,"./invariant":131,"./setInnerHTML":149,"1YiZ5S":11,"buffer":7}],44:[function(require,module,exports){
+},{"./ReactDOMIDOperations":51,"./ReactMarkupChecksum":71,"./ReactMount":72,"./ReactPerf":76,"./ReactReconcileTransaction":82,"./getReactRootElementInContainer":125,"./invariant":131,"./setInnerHTML":149,"1YiZ5S":11,"buffer":8}],44:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -8230,7 +7955,15 @@ var ReactCompositeComponentMixin = {
   replaceState: function(completeState, callback) {
     validateLifeCycleOnReplaceState(this);
     this._pendingState = completeState;
-    ReactUpdates.enqueueUpdate(this, callback);
+    if (this._compositeLifeCycleState !== CompositeLifeCycle.MOUNTING) {
+      // If we're in a componentWillMount handler, don't enqueue a rerender
+      // because ReactUpdates assumes we're in a browser context (which is wrong
+      // for server rendering) and we're about to do a render anyway.
+      // TODO: The callback here is ignored when setState is called from
+      // componentWillMount. Either fix it or disallow doing so completely in
+      // favor of getInitialState.
+      ReactUpdates.enqueueUpdate(this, callback);
+    }
   },
 
   /**
@@ -8779,7 +8512,7 @@ var ReactCompositeComponent = {
 module.exports = ReactCompositeComponent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactCompositeComponent.js","/../node_modules/react/lib")
-},{"./ReactComponent":42,"./ReactContext":45,"./ReactCurrentOwner":46,"./ReactDescriptor":62,"./ReactDescriptorValidator":63,"./ReactEmptyComponent":64,"./ReactErrorUtils":65,"./ReactOwner":75,"./ReactPerf":76,"./ReactPropTransferer":77,"./ReactPropTypeLocationNames":78,"./ReactPropTypeLocations":79,"./ReactUpdates":87,"./instantiateReactComponent":130,"./invariant":131,"./keyMirror":137,"./mapObject":139,"./merge":141,"./mixInto":144,"./monitorCodeUse":145,"./shouldUpdateReactComponent":151,"./warning":154,"1YiZ5S":11,"buffer":7}],45:[function(require,module,exports){
+},{"./ReactComponent":42,"./ReactContext":45,"./ReactCurrentOwner":46,"./ReactDescriptor":62,"./ReactDescriptorValidator":63,"./ReactEmptyComponent":64,"./ReactErrorUtils":65,"./ReactOwner":75,"./ReactPerf":76,"./ReactPropTransferer":77,"./ReactPropTypeLocationNames":78,"./ReactPropTypeLocations":79,"./ReactUpdates":87,"./instantiateReactComponent":130,"./invariant":131,"./keyMirror":137,"./mapObject":139,"./merge":141,"./mixInto":144,"./monitorCodeUse":145,"./shouldUpdateReactComponent":151,"./warning":154,"1YiZ5S":11,"buffer":8}],45:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -8850,7 +8583,7 @@ var ReactContext = {
 module.exports = ReactContext;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactContext.js","/../node_modules/react/lib")
-},{"./merge":141,"1YiZ5S":11,"buffer":7}],46:[function(require,module,exports){
+},{"./merge":141,"1YiZ5S":11,"buffer":8}],46:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -8893,7 +8626,7 @@ var ReactCurrentOwner = {
 module.exports = ReactCurrentOwner;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactCurrentOwner.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],47:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],47:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -8992,6 +8725,7 @@ var ReactDOM = mapObject({
   del: false,
   details: false,
   dfn: false,
+  dialog: false,
   div: false,
   dl: false,
   dt: false,
@@ -9039,6 +8773,7 @@ var ReactDOM = mapObject({
   output: false,
   p: false,
   param: true,
+  picture: false,
   pre: false,
   progress: false,
   q: false,
@@ -9106,7 +8841,7 @@ ReactDOM.injection = injection;
 module.exports = ReactDOM;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOM.js","/../node_modules/react/lib")
-},{"./ReactDOMComponent":49,"./ReactDescriptor":62,"./ReactDescriptorValidator":63,"./mapObject":139,"./mergeInto":143,"1YiZ5S":11,"buffer":7}],48:[function(require,module,exports){
+},{"./ReactDOMComponent":49,"./ReactDescriptor":62,"./ReactDescriptorValidator":63,"./mapObject":139,"./mergeInto":143,"1YiZ5S":11,"buffer":8}],48:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9179,7 +8914,7 @@ var ReactDOMButton = ReactCompositeComponent.createClass({
 module.exports = ReactDOMButton;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMButton.js","/../node_modules/react/lib")
-},{"./AutoFocusMixin":12,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./keyMirror":137,"1YiZ5S":11,"buffer":7}],49:[function(require,module,exports){
+},{"./AutoFocusMixin":12,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./keyMirror":137,"1YiZ5S":11,"buffer":8}],49:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9601,7 +9336,7 @@ mixInto(ReactDOMComponent, ReactBrowserComponentMixin);
 module.exports = ReactDOMComponent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMComponent.js","/../node_modules/react/lib")
-},{"./CSSPropertyOperations":15,"./DOMProperty":21,"./DOMPropertyOperations":22,"./ReactBrowserComponentMixin":39,"./ReactBrowserEventEmitter":40,"./ReactComponent":42,"./ReactMount":72,"./ReactMultiChild":73,"./ReactPerf":76,"./escapeTextForBrowser":115,"./invariant":131,"./keyOf":138,"./merge":141,"./mixInto":144,"1YiZ5S":11,"buffer":7}],50:[function(require,module,exports){
+},{"./CSSPropertyOperations":15,"./DOMProperty":21,"./DOMPropertyOperations":22,"./ReactBrowserComponentMixin":39,"./ReactBrowserEventEmitter":40,"./ReactComponent":42,"./ReactMount":72,"./ReactMultiChild":73,"./ReactPerf":76,"./escapeTextForBrowser":115,"./invariant":131,"./keyOf":138,"./merge":141,"./mixInto":144,"1YiZ5S":11,"buffer":8}],50:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9659,7 +9394,7 @@ var ReactDOMForm = ReactCompositeComponent.createClass({
 module.exports = ReactDOMForm;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMForm.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./LocalEventTrapMixin":35,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"1YiZ5S":11,"buffer":7}],51:[function(require,module,exports){
+},{"./EventConstants":26,"./LocalEventTrapMixin":35,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"1YiZ5S":11,"buffer":8}],51:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9852,7 +9587,7 @@ var ReactDOMIDOperations = {
 module.exports = ReactDOMIDOperations;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMIDOperations.js","/../node_modules/react/lib")
-},{"./CSSPropertyOperations":15,"./DOMChildrenOperations":20,"./DOMPropertyOperations":22,"./ReactMount":72,"./ReactPerf":76,"./invariant":131,"./setInnerHTML":149,"1YiZ5S":11,"buffer":7}],52:[function(require,module,exports){
+},{"./CSSPropertyOperations":15,"./DOMChildrenOperations":20,"./DOMPropertyOperations":22,"./ReactMount":72,"./ReactPerf":76,"./invariant":131,"./setInnerHTML":149,"1YiZ5S":11,"buffer":8}],52:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -9908,7 +9643,7 @@ var ReactDOMImg = ReactCompositeComponent.createClass({
 module.exports = ReactDOMImg;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMImg.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./LocalEventTrapMixin":35,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"1YiZ5S":11,"buffer":7}],53:[function(require,module,exports){
+},{"./EventConstants":26,"./LocalEventTrapMixin":35,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"1YiZ5S":11,"buffer":8}],53:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10094,7 +9829,7 @@ var ReactDOMInput = ReactCompositeComponent.createClass({
 module.exports = ReactDOMInput;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMInput.js","/../node_modules/react/lib")
-},{"./AutoFocusMixin":12,"./DOMPropertyOperations":22,"./LinkedValueUtils":34,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./ReactMount":72,"./invariant":131,"./merge":141,"1YiZ5S":11,"buffer":7}],54:[function(require,module,exports){
+},{"./AutoFocusMixin":12,"./DOMPropertyOperations":22,"./LinkedValueUtils":34,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./ReactMount":72,"./invariant":131,"./merge":141,"1YiZ5S":11,"buffer":8}],54:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10153,7 +9888,7 @@ var ReactDOMOption = ReactCompositeComponent.createClass({
 module.exports = ReactDOMOption;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMOption.js","/../node_modules/react/lib")
-},{"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./warning":154,"1YiZ5S":11,"buffer":7}],55:[function(require,module,exports){
+},{"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./warning":154,"1YiZ5S":11,"buffer":8}],55:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10338,7 +10073,7 @@ var ReactDOMSelect = ReactCompositeComponent.createClass({
 module.exports = ReactDOMSelect;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMSelect.js","/../node_modules/react/lib")
-},{"./AutoFocusMixin":12,"./LinkedValueUtils":34,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./merge":141,"1YiZ5S":11,"buffer":7}],56:[function(require,module,exports){
+},{"./AutoFocusMixin":12,"./LinkedValueUtils":34,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./merge":141,"1YiZ5S":11,"buffer":8}],56:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10556,7 +10291,7 @@ var ReactDOMSelection = {
 module.exports = ReactDOMSelection;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMSelection.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"./getNodeForCharacterOffset":124,"./getTextContentAccessor":126,"1YiZ5S":11,"buffer":7}],57:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"./getNodeForCharacterOffset":124,"./getTextContentAccessor":126,"1YiZ5S":11,"buffer":8}],57:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10702,7 +10437,7 @@ var ReactDOMTextarea = ReactCompositeComponent.createClass({
 module.exports = ReactDOMTextarea;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDOMTextarea.js","/../node_modules/react/lib")
-},{"./AutoFocusMixin":12,"./DOMPropertyOperations":22,"./LinkedValueUtils":34,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./invariant":131,"./merge":141,"./warning":154,"1YiZ5S":11,"buffer":7}],58:[function(require,module,exports){
+},{"./AutoFocusMixin":12,"./DOMPropertyOperations":22,"./LinkedValueUtils":34,"./ReactBrowserComponentMixin":39,"./ReactCompositeComponent":44,"./ReactDOM":47,"./invariant":131,"./merge":141,"./warning":154,"1YiZ5S":11,"buffer":8}],58:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10781,7 +10516,7 @@ var ReactDefaultBatchingStrategy = {
 module.exports = ReactDefaultBatchingStrategy;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDefaultBatchingStrategy.js","/../node_modules/react/lib")
-},{"./ReactUpdates":87,"./Transaction":103,"./emptyFunction":113,"./mixInto":144,"1YiZ5S":11,"buffer":7}],59:[function(require,module,exports){
+},{"./ReactUpdates":87,"./Transaction":103,"./emptyFunction":113,"./mixInto":144,"1YiZ5S":11,"buffer":8}],59:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -10913,7 +10648,7 @@ module.exports = {
 };
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDefaultInjection.js","/../node_modules/react/lib")
-},{"./BeforeInputEventPlugin":13,"./ChangeEventPlugin":17,"./ClientReactRootIndex":18,"./CompositionEventPlugin":19,"./DefaultEventPluginOrder":24,"./EnterLeaveEventPlugin":25,"./ExecutionEnvironment":32,"./HTMLDOMPropertyConfig":33,"./MobileSafariClickEventPlugin":36,"./ReactBrowserComponentMixin":39,"./ReactComponentBrowserEnvironment":43,"./ReactDOM":47,"./ReactDOMButton":48,"./ReactDOMForm":50,"./ReactDOMImg":52,"./ReactDOMInput":53,"./ReactDOMOption":54,"./ReactDOMSelect":55,"./ReactDOMTextarea":57,"./ReactDefaultBatchingStrategy":58,"./ReactDefaultPerf":60,"./ReactEventListener":67,"./ReactInjection":68,"./ReactInstanceHandles":70,"./ReactMount":72,"./SVGDOMPropertyConfig":88,"./SelectEventPlugin":89,"./ServerReactRootIndex":90,"./SimpleEventPlugin":91,"./createFullPageComponent":110,"1YiZ5S":11,"buffer":7}],60:[function(require,module,exports){
+},{"./BeforeInputEventPlugin":13,"./ChangeEventPlugin":17,"./ClientReactRootIndex":18,"./CompositionEventPlugin":19,"./DefaultEventPluginOrder":24,"./EnterLeaveEventPlugin":25,"./ExecutionEnvironment":32,"./HTMLDOMPropertyConfig":33,"./MobileSafariClickEventPlugin":36,"./ReactBrowserComponentMixin":39,"./ReactComponentBrowserEnvironment":43,"./ReactDOM":47,"./ReactDOMButton":48,"./ReactDOMForm":50,"./ReactDOMImg":52,"./ReactDOMInput":53,"./ReactDOMOption":54,"./ReactDOMSelect":55,"./ReactDOMTextarea":57,"./ReactDefaultBatchingStrategy":58,"./ReactDefaultPerf":60,"./ReactEventListener":67,"./ReactInjection":68,"./ReactInstanceHandles":70,"./ReactMount":72,"./SVGDOMPropertyConfig":88,"./SelectEventPlugin":89,"./ServerReactRootIndex":90,"./SimpleEventPlugin":91,"./createFullPageComponent":110,"1YiZ5S":11,"buffer":8}],60:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -11178,7 +10913,7 @@ var ReactDefaultPerf = {
 module.exports = ReactDefaultPerf;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDefaultPerf.js","/../node_modules/react/lib")
-},{"./DOMProperty":21,"./ReactDefaultPerfAnalysis":61,"./ReactMount":72,"./ReactPerf":76,"./performanceNow":148,"1YiZ5S":11,"buffer":7}],61:[function(require,module,exports){
+},{"./DOMProperty":21,"./ReactDefaultPerfAnalysis":61,"./ReactMount":72,"./ReactPerf":76,"./performanceNow":148,"1YiZ5S":11,"buffer":8}],61:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -11385,7 +11120,7 @@ var ReactDefaultPerfAnalysis = {
 module.exports = ReactDefaultPerfAnalysis;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDefaultPerfAnalysis.js","/../node_modules/react/lib")
-},{"./merge":141,"1YiZ5S":11,"buffer":7}],62:[function(require,module,exports){
+},{"./merge":141,"1YiZ5S":11,"buffer":8}],62:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -11640,7 +11375,7 @@ ReactDescriptor.isValidDescriptor = function(object) {
 module.exports = ReactDescriptor;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDescriptor.js","/../node_modules/react/lib")
-},{"./ReactContext":45,"./ReactCurrentOwner":46,"./merge":141,"./warning":154,"1YiZ5S":11,"buffer":7}],63:[function(require,module,exports){
+},{"./ReactContext":45,"./ReactCurrentOwner":46,"./merge":141,"./warning":154,"1YiZ5S":11,"buffer":8}],63:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -11927,7 +11662,7 @@ var ReactDescriptorValidator = {
 module.exports = ReactDescriptorValidator;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactDescriptorValidator.js","/../node_modules/react/lib")
-},{"./ReactCurrentOwner":46,"./ReactDescriptor":62,"./ReactPropTypeLocations":79,"./monitorCodeUse":145,"1YiZ5S":11,"buffer":7}],64:[function(require,module,exports){
+},{"./ReactCurrentOwner":46,"./ReactDescriptor":62,"./ReactPropTypeLocations":79,"./monitorCodeUse":145,"1YiZ5S":11,"buffer":8}],64:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -12009,7 +11744,7 @@ var ReactEmptyComponent = {
 module.exports = ReactEmptyComponent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactEmptyComponent.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],65:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],65:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12050,7 +11785,7 @@ var ReactErrorUtils = {
 module.exports = ReactErrorUtils;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactErrorUtils.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],66:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],66:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12109,7 +11844,7 @@ var ReactEventEmitterMixin = {
 module.exports = ReactEventEmitterMixin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactEventEmitterMixin.js","/../node_modules/react/lib")
-},{"./EventPluginHub":28,"1YiZ5S":11,"buffer":7}],67:[function(require,module,exports){
+},{"./EventPluginHub":28,"1YiZ5S":11,"buffer":8}],67:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12302,7 +12037,7 @@ var ReactEventListener = {
 module.exports = ReactEventListener;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactEventListener.js","/../node_modules/react/lib")
-},{"./EventListener":27,"./ExecutionEnvironment":32,"./PooledClass":37,"./ReactInstanceHandles":70,"./ReactMount":72,"./ReactUpdates":87,"./getEventTarget":122,"./getUnboundedScrollPosition":127,"./mixInto":144,"1YiZ5S":11,"buffer":7}],68:[function(require,module,exports){
+},{"./EventListener":27,"./ExecutionEnvironment":32,"./PooledClass":37,"./ReactInstanceHandles":70,"./ReactMount":72,"./ReactUpdates":87,"./getEventTarget":122,"./getUnboundedScrollPosition":127,"./mixInto":144,"1YiZ5S":11,"buffer":8}],68:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12351,7 +12086,7 @@ var ReactInjection = {
 module.exports = ReactInjection;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactInjection.js","/../node_modules/react/lib")
-},{"./DOMProperty":21,"./EventPluginHub":28,"./ReactBrowserEventEmitter":40,"./ReactComponent":42,"./ReactCompositeComponent":44,"./ReactDOM":47,"./ReactEmptyComponent":64,"./ReactPerf":76,"./ReactRootIndex":83,"./ReactUpdates":87,"1YiZ5S":11,"buffer":7}],69:[function(require,module,exports){
+},{"./DOMProperty":21,"./EventPluginHub":28,"./ReactBrowserEventEmitter":40,"./ReactComponent":42,"./ReactCompositeComponent":44,"./ReactDOM":47,"./ReactEmptyComponent":64,"./ReactPerf":76,"./ReactRootIndex":83,"./ReactUpdates":87,"1YiZ5S":11,"buffer":8}],69:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12496,7 +12231,7 @@ var ReactInputSelection = {
 module.exports = ReactInputSelection;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactInputSelection.js","/../node_modules/react/lib")
-},{"./ReactDOMSelection":56,"./containsNode":107,"./focusNode":117,"./getActiveElement":119,"1YiZ5S":11,"buffer":7}],70:[function(require,module,exports){
+},{"./ReactDOMSelection":56,"./containsNode":107,"./focusNode":117,"./getActiveElement":119,"1YiZ5S":11,"buffer":8}],70:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12838,7 +12573,7 @@ var ReactInstanceHandles = {
 module.exports = ReactInstanceHandles;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactInstanceHandles.js","/../node_modules/react/lib")
-},{"./ReactRootIndex":83,"./invariant":131,"1YiZ5S":11,"buffer":7}],71:[function(require,module,exports){
+},{"./ReactRootIndex":83,"./invariant":131,"1YiZ5S":11,"buffer":8}],71:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -12895,7 +12630,7 @@ var ReactMarkupChecksum = {
 module.exports = ReactMarkupChecksum;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactMarkupChecksum.js","/../node_modules/react/lib")
-},{"./adler32":106,"1YiZ5S":11,"buffer":7}],72:[function(require,module,exports){
+},{"./adler32":106,"1YiZ5S":11,"buffer":8}],72:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -13580,7 +13315,7 @@ var ReactMount = {
 module.exports = ReactMount;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactMount.js","/../node_modules/react/lib")
-},{"./DOMProperty":21,"./ReactBrowserEventEmitter":40,"./ReactCurrentOwner":46,"./ReactDescriptor":62,"./ReactInstanceHandles":70,"./ReactPerf":76,"./containsNode":107,"./getReactRootElementInContainer":125,"./instantiateReactComponent":130,"./invariant":131,"./shouldUpdateReactComponent":151,"./warning":154,"1YiZ5S":11,"buffer":7}],73:[function(require,module,exports){
+},{"./DOMProperty":21,"./ReactBrowserEventEmitter":40,"./ReactCurrentOwner":46,"./ReactDescriptor":62,"./ReactInstanceHandles":70,"./ReactPerf":76,"./containsNode":107,"./getReactRootElementInContainer":125,"./instantiateReactComponent":130,"./invariant":131,"./shouldUpdateReactComponent":151,"./warning":154,"1YiZ5S":11,"buffer":8}],73:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14014,7 +13749,7 @@ var ReactMultiChild = {
 module.exports = ReactMultiChild;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactMultiChild.js","/../node_modules/react/lib")
-},{"./ReactComponent":42,"./ReactMultiChildUpdateTypes":74,"./flattenChildren":116,"./instantiateReactComponent":130,"./shouldUpdateReactComponent":151,"1YiZ5S":11,"buffer":7}],74:[function(require,module,exports){
+},{"./ReactComponent":42,"./ReactMultiChildUpdateTypes":74,"./flattenChildren":116,"./instantiateReactComponent":130,"./shouldUpdateReactComponent":151,"1YiZ5S":11,"buffer":8}],74:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14056,7 +13791,7 @@ var ReactMultiChildUpdateTypes = keyMirror({
 module.exports = ReactMultiChildUpdateTypes;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactMultiChildUpdateTypes.js","/../node_modules/react/lib")
-},{"./keyMirror":137,"1YiZ5S":11,"buffer":7}],75:[function(require,module,exports){
+},{"./keyMirror":137,"1YiZ5S":11,"buffer":8}],75:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14219,7 +13954,7 @@ var ReactOwner = {
 module.exports = ReactOwner;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactOwner.js","/../node_modules/react/lib")
-},{"./emptyObject":114,"./invariant":131,"1YiZ5S":11,"buffer":7}],76:[function(require,module,exports){
+},{"./emptyObject":114,"./invariant":131,"1YiZ5S":11,"buffer":8}],76:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14308,7 +14043,7 @@ function _noMeasure(objName, fnName, func) {
 module.exports = ReactPerf;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactPerf.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],77:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],77:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14474,7 +14209,7 @@ var ReactPropTransferer = {
 module.exports = ReactPropTransferer;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactPropTransferer.js","/../node_modules/react/lib")
-},{"./emptyFunction":113,"./invariant":131,"./joinClasses":136,"./merge":141,"1YiZ5S":11,"buffer":7}],78:[function(require,module,exports){
+},{"./emptyFunction":113,"./invariant":131,"./joinClasses":136,"./merge":141,"1YiZ5S":11,"buffer":8}],78:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14509,7 +14244,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = ReactPropTypeLocationNames;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactPropTypeLocationNames.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],79:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],79:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14542,7 +14277,7 @@ var ReactPropTypeLocations = keyMirror({
 module.exports = ReactPropTypeLocations;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactPropTypeLocations.js","/../node_modules/react/lib")
-},{"./keyMirror":137,"1YiZ5S":11,"buffer":7}],80:[function(require,module,exports){
+},{"./keyMirror":137,"1YiZ5S":11,"buffer":8}],80:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14889,7 +14624,7 @@ function getPreciseType(propValue) {
 module.exports = ReactPropTypes;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactPropTypes.js","/../node_modules/react/lib")
-},{"./ReactDescriptor":62,"./ReactPropTypeLocationNames":78,"./emptyFunction":113,"1YiZ5S":11,"buffer":7}],81:[function(require,module,exports){
+},{"./ReactDescriptor":62,"./ReactPropTypeLocationNames":78,"./emptyFunction":113,"1YiZ5S":11,"buffer":8}],81:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -14954,7 +14689,7 @@ PooledClass.addPoolingTo(ReactPutListenerQueue);
 module.exports = ReactPutListenerQueue;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactPutListenerQueue.js","/../node_modules/react/lib")
-},{"./PooledClass":37,"./ReactBrowserEventEmitter":40,"./mixInto":144,"1YiZ5S":11,"buffer":7}],82:[function(require,module,exports){
+},{"./PooledClass":37,"./ReactBrowserEventEmitter":40,"./mixInto":144,"1YiZ5S":11,"buffer":8}],82:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -15140,7 +14875,7 @@ PooledClass.addPoolingTo(ReactReconcileTransaction);
 module.exports = ReactReconcileTransaction;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactReconcileTransaction.js","/../node_modules/react/lib")
-},{"./CallbackQueue":16,"./PooledClass":37,"./ReactBrowserEventEmitter":40,"./ReactInputSelection":69,"./ReactPutListenerQueue":81,"./Transaction":103,"./mixInto":144,"1YiZ5S":11,"buffer":7}],83:[function(require,module,exports){
+},{"./CallbackQueue":16,"./PooledClass":37,"./ReactBrowserEventEmitter":40,"./ReactInputSelection":69,"./ReactPutListenerQueue":81,"./Transaction":103,"./mixInto":144,"1YiZ5S":11,"buffer":8}],83:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -15180,7 +14915,7 @@ var ReactRootIndex = {
 module.exports = ReactRootIndex;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactRootIndex.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],84:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],84:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -15273,7 +15008,7 @@ module.exports = {
 };
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactServerRendering.js","/../node_modules/react/lib")
-},{"./ReactDescriptor":62,"./ReactInstanceHandles":70,"./ReactMarkupChecksum":71,"./ReactServerRenderingTransaction":85,"./instantiateReactComponent":130,"./invariant":131,"1YiZ5S":11,"buffer":7}],85:[function(require,module,exports){
+},{"./ReactDescriptor":62,"./ReactInstanceHandles":70,"./ReactMarkupChecksum":71,"./ReactServerRenderingTransaction":85,"./instantiateReactComponent":130,"./invariant":131,"1YiZ5S":11,"buffer":8}],85:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -15392,7 +15127,7 @@ PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 module.exports = ReactServerRenderingTransaction;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactServerRenderingTransaction.js","/../node_modules/react/lib")
-},{"./CallbackQueue":16,"./PooledClass":37,"./ReactPutListenerQueue":81,"./Transaction":103,"./emptyFunction":113,"./mixInto":144,"1YiZ5S":11,"buffer":7}],86:[function(require,module,exports){
+},{"./CallbackQueue":16,"./PooledClass":37,"./ReactPutListenerQueue":81,"./Transaction":103,"./emptyFunction":113,"./mixInto":144,"1YiZ5S":11,"buffer":8}],86:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -15503,7 +15238,7 @@ mixInto(ReactTextComponent, {
 module.exports = ReactDescriptor.createFactory(ReactTextComponent);
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactTextComponent.js","/../node_modules/react/lib")
-},{"./DOMPropertyOperations":22,"./ReactBrowserComponentMixin":39,"./ReactComponent":42,"./ReactDescriptor":62,"./escapeTextForBrowser":115,"./mixInto":144,"1YiZ5S":11,"buffer":7}],87:[function(require,module,exports){
+},{"./DOMPropertyOperations":22,"./ReactBrowserComponentMixin":39,"./ReactComponent":42,"./ReactDescriptor":62,"./escapeTextForBrowser":115,"./mixInto":144,"1YiZ5S":11,"buffer":8}],87:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -15772,7 +15507,7 @@ var ReactUpdates = {
 module.exports = ReactUpdates;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ReactUpdates.js","/../node_modules/react/lib")
-},{"./CallbackQueue":16,"./PooledClass":37,"./ReactCurrentOwner":46,"./ReactPerf":76,"./Transaction":103,"./invariant":131,"./mixInto":144,"./warning":154,"1YiZ5S":11,"buffer":7}],88:[function(require,module,exports){
+},{"./CallbackQueue":16,"./PooledClass":37,"./ReactCurrentOwner":46,"./ReactPerf":76,"./Transaction":103,"./invariant":131,"./mixInto":144,"./warning":154,"1YiZ5S":11,"buffer":8}],88:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -15873,7 +15608,7 @@ var SVGDOMPropertyConfig = {
 module.exports = SVGDOMPropertyConfig;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SVGDOMPropertyConfig.js","/../node_modules/react/lib")
-},{"./DOMProperty":21,"1YiZ5S":11,"buffer":7}],89:[function(require,module,exports){
+},{"./DOMProperty":21,"1YiZ5S":11,"buffer":8}],89:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16077,7 +15812,7 @@ var SelectEventPlugin = {
 module.exports = SelectEventPlugin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SelectEventPlugin.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPropagators":31,"./ReactInputSelection":69,"./SyntheticEvent":95,"./getActiveElement":119,"./isTextInputElement":134,"./keyOf":138,"./shallowEqual":150,"1YiZ5S":11,"buffer":7}],90:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPropagators":31,"./ReactInputSelection":69,"./SyntheticEvent":95,"./getActiveElement":119,"./isTextInputElement":134,"./keyOf":138,"./shallowEqual":150,"1YiZ5S":11,"buffer":8}],90:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16117,7 +15852,7 @@ var ServerReactRootIndex = {
 module.exports = ServerReactRootIndex;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ServerReactRootIndex.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],91:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],91:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16540,7 +16275,7 @@ var SimpleEventPlugin = {
 module.exports = SimpleEventPlugin;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SimpleEventPlugin.js","/../node_modules/react/lib")
-},{"./EventConstants":26,"./EventPluginUtils":30,"./EventPropagators":31,"./SyntheticClipboardEvent":92,"./SyntheticDragEvent":94,"./SyntheticEvent":95,"./SyntheticFocusEvent":96,"./SyntheticKeyboardEvent":98,"./SyntheticMouseEvent":99,"./SyntheticTouchEvent":100,"./SyntheticUIEvent":101,"./SyntheticWheelEvent":102,"./invariant":131,"./keyOf":138,"1YiZ5S":11,"buffer":7}],92:[function(require,module,exports){
+},{"./EventConstants":26,"./EventPluginUtils":30,"./EventPropagators":31,"./SyntheticClipboardEvent":92,"./SyntheticDragEvent":94,"./SyntheticEvent":95,"./SyntheticFocusEvent":96,"./SyntheticKeyboardEvent":98,"./SyntheticMouseEvent":99,"./SyntheticTouchEvent":100,"./SyntheticUIEvent":101,"./SyntheticWheelEvent":102,"./invariant":131,"./keyOf":138,"1YiZ5S":11,"buffer":8}],92:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16595,7 +16330,7 @@ module.exports = SyntheticClipboardEvent;
 
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticClipboardEvent.js","/../node_modules/react/lib")
-},{"./SyntheticEvent":95,"1YiZ5S":11,"buffer":7}],93:[function(require,module,exports){
+},{"./SyntheticEvent":95,"1YiZ5S":11,"buffer":8}],93:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16650,7 +16385,7 @@ module.exports = SyntheticCompositionEvent;
 
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticCompositionEvent.js","/../node_modules/react/lib")
-},{"./SyntheticEvent":95,"1YiZ5S":11,"buffer":7}],94:[function(require,module,exports){
+},{"./SyntheticEvent":95,"1YiZ5S":11,"buffer":8}],94:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16698,7 +16433,7 @@ SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 module.exports = SyntheticDragEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticDragEvent.js","/../node_modules/react/lib")
-},{"./SyntheticMouseEvent":99,"1YiZ5S":11,"buffer":7}],95:[function(require,module,exports){
+},{"./SyntheticMouseEvent":99,"1YiZ5S":11,"buffer":8}],95:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16866,7 +16601,7 @@ PooledClass.addPoolingTo(SyntheticEvent, PooledClass.threeArgumentPooler);
 module.exports = SyntheticEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticEvent.js","/../node_modules/react/lib")
-},{"./PooledClass":37,"./emptyFunction":113,"./getEventTarget":122,"./merge":141,"./mergeInto":143,"1YiZ5S":11,"buffer":7}],96:[function(require,module,exports){
+},{"./PooledClass":37,"./emptyFunction":113,"./getEventTarget":122,"./merge":141,"./mergeInto":143,"1YiZ5S":11,"buffer":8}],96:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -16914,7 +16649,7 @@ SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 module.exports = SyntheticFocusEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticFocusEvent.js","/../node_modules/react/lib")
-},{"./SyntheticUIEvent":101,"1YiZ5S":11,"buffer":7}],97:[function(require,module,exports){
+},{"./SyntheticUIEvent":101,"1YiZ5S":11,"buffer":8}],97:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013 Facebook, Inc.
@@ -16970,7 +16705,7 @@ module.exports = SyntheticInputEvent;
 
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticInputEvent.js","/../node_modules/react/lib")
-},{"./SyntheticEvent":95,"1YiZ5S":11,"buffer":7}],98:[function(require,module,exports){
+},{"./SyntheticEvent":95,"1YiZ5S":11,"buffer":8}],98:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17061,7 +16796,7 @@ SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 module.exports = SyntheticKeyboardEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticKeyboardEvent.js","/../node_modules/react/lib")
-},{"./SyntheticUIEvent":101,"./getEventKey":120,"./getEventModifierState":121,"1YiZ5S":11,"buffer":7}],99:[function(require,module,exports){
+},{"./SyntheticUIEvent":101,"./getEventKey":120,"./getEventModifierState":121,"1YiZ5S":11,"buffer":8}],99:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17102,7 +16837,7 @@ var MouseEventInterface = {
   shiftKey: null,
   altKey: null,
   metaKey: null,
-  getEventModifierState: getEventModifierState,
+  getModifierState: getEventModifierState,
   button: function(event) {
     // Webkit, Firefox, IE9+
     // which:  1 2 3
@@ -17153,7 +16888,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 module.exports = SyntheticMouseEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticMouseEvent.js","/../node_modules/react/lib")
-},{"./SyntheticUIEvent":101,"./ViewportMetrics":104,"./getEventModifierState":121,"1YiZ5S":11,"buffer":7}],100:[function(require,module,exports){
+},{"./SyntheticUIEvent":101,"./ViewportMetrics":104,"./getEventModifierState":121,"1YiZ5S":11,"buffer":8}],100:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17210,7 +16945,7 @@ SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 module.exports = SyntheticTouchEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticTouchEvent.js","/../node_modules/react/lib")
-},{"./SyntheticUIEvent":101,"./getEventModifierState":121,"1YiZ5S":11,"buffer":7}],101:[function(require,module,exports){
+},{"./SyntheticUIEvent":101,"./getEventModifierState":121,"1YiZ5S":11,"buffer":8}],101:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17281,7 +17016,7 @@ SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 module.exports = SyntheticUIEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticUIEvent.js","/../node_modules/react/lib")
-},{"./SyntheticEvent":95,"./getEventTarget":122,"1YiZ5S":11,"buffer":7}],102:[function(require,module,exports){
+},{"./SyntheticEvent":95,"./getEventTarget":122,"1YiZ5S":11,"buffer":8}],102:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17351,7 +17086,7 @@ SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 module.exports = SyntheticWheelEvent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/SyntheticWheelEvent.js","/../node_modules/react/lib")
-},{"./SyntheticMouseEvent":99,"1YiZ5S":11,"buffer":7}],103:[function(require,module,exports){
+},{"./SyntheticMouseEvent":99,"1YiZ5S":11,"buffer":8}],103:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17599,7 +17334,7 @@ var Transaction = {
 module.exports = Transaction;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/Transaction.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],104:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],104:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17640,7 +17375,7 @@ var ViewportMetrics = {
 module.exports = ViewportMetrics;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/ViewportMetrics.js","/../node_modules/react/lib")
-},{"./getUnboundedScrollPosition":127,"1YiZ5S":11,"buffer":7}],105:[function(require,module,exports){
+},{"./getUnboundedScrollPosition":127,"1YiZ5S":11,"buffer":8}],105:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17698,7 +17433,7 @@ function accumulate(current, next) {
 module.exports = accumulate;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/accumulate.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],106:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],106:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17741,7 +17476,7 @@ function adler32(data) {
 module.exports = adler32;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/adler32.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],107:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],107:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17794,7 +17529,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/containsNode.js","/../node_modules/react/lib")
-},{"./isTextNode":135,"1YiZ5S":11,"buffer":7}],108:[function(require,module,exports){
+},{"./isTextNode":135,"1YiZ5S":11,"buffer":8}],108:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17852,7 +17587,7 @@ function copyProperties(obj, a, b, c, d, e, f) {
 module.exports = copyProperties;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/copyProperties.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],109:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],109:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -17947,7 +17682,7 @@ function createArrayFrom(obj) {
 module.exports = createArrayFrom;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/createArrayFrom.js","/../node_modules/react/lib")
-},{"./toArray":152,"1YiZ5S":11,"buffer":7}],110:[function(require,module,exports){
+},{"./toArray":152,"1YiZ5S":11,"buffer":8}],110:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18014,7 +17749,7 @@ function createFullPageComponent(componentClass) {
 module.exports = createFullPageComponent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/createFullPageComponent.js","/../node_modules/react/lib")
-},{"./ReactCompositeComponent":44,"./invariant":131,"1YiZ5S":11,"buffer":7}],111:[function(require,module,exports){
+},{"./ReactCompositeComponent":44,"./invariant":131,"1YiZ5S":11,"buffer":8}],111:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18111,7 +17846,7 @@ function createNodesFromMarkup(markup, handleScript) {
 module.exports = createNodesFromMarkup;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/createNodesFromMarkup.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"./createArrayFrom":109,"./getMarkupWrap":123,"./invariant":131,"1YiZ5S":11,"buffer":7}],112:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"./createArrayFrom":109,"./getMarkupWrap":123,"./invariant":131,"1YiZ5S":11,"buffer":8}],112:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18178,7 +17913,7 @@ function dangerousStyleValue(name, value) {
 module.exports = dangerousStyleValue;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/dangerousStyleValue.js","/../node_modules/react/lib")
-},{"./CSSProperty":14,"1YiZ5S":11,"buffer":7}],113:[function(require,module,exports){
+},{"./CSSProperty":14,"1YiZ5S":11,"buffer":8}],113:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18225,7 +17960,7 @@ copyProperties(emptyFunction, {
 module.exports = emptyFunction;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/emptyFunction.js","/../node_modules/react/lib")
-},{"./copyProperties":108,"1YiZ5S":11,"buffer":7}],114:[function(require,module,exports){
+},{"./copyProperties":108,"1YiZ5S":11,"buffer":8}],114:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18256,7 +17991,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = emptyObject;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/emptyObject.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],115:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],115:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18306,7 +18041,7 @@ function escapeTextForBrowser(text) {
 module.exports = escapeTextForBrowser;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/escapeTextForBrowser.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],116:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],116:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18369,7 +18104,7 @@ function flattenChildren(children) {
 module.exports = flattenChildren;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/flattenChildren.js","/../node_modules/react/lib")
-},{"./traverseAllChildren":153,"./warning":154,"1YiZ5S":11,"buffer":7}],117:[function(require,module,exports){
+},{"./traverseAllChildren":153,"./warning":154,"1YiZ5S":11,"buffer":8}],117:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -18406,7 +18141,7 @@ function focusNode(node) {
 module.exports = focusNode;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/focusNode.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],118:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],118:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18446,7 +18181,7 @@ var forEachAccumulated = function(arr, cb, scope) {
 module.exports = forEachAccumulated;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/forEachAccumulated.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],119:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],119:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18484,7 +18219,7 @@ function getActiveElement() /*?DOMElement*/ {
 module.exports = getActiveElement;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getActiveElement.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],120:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],120:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18603,7 +18338,7 @@ function getEventKey(nativeEvent) {
 module.exports = getEventKey;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getEventKey.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],121:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],121:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013 Facebook, Inc.
@@ -18632,10 +18367,10 @@ module.exports = getEventKey;
  */
 
 var modifierKeyToProp = {
-  'alt': 'altKey',
-  'control': 'ctrlKey',
-  'meta': 'metaKey',
-  'shift': 'shiftKey'
+  'Alt': 'altKey',
+  'Control': 'ctrlKey',
+  'Meta': 'metaKey',
+  'Shift': 'shiftKey'
 };
 
 // IE8 does not implement getModifierState so we simply map it to the only
@@ -18648,8 +18383,8 @@ function modifierStateGetter(keyArg) {
   if (nativeEvent.getModifierState) {
     return nativeEvent.getModifierState(keyArg);
   }
-  var keyProp = modifierKeyToProp[keyArg.toLowerCase()];
-  return keyProp && nativeEvent[keyProp];
+  var keyProp = modifierKeyToProp[keyArg];
+  return keyProp ? !!nativeEvent[keyProp] : false;
 }
 
 function getEventModifierState(nativeEvent) {
@@ -18659,7 +18394,7 @@ function getEventModifierState(nativeEvent) {
 module.exports = getEventModifierState;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getEventModifierState.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],122:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],122:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18699,7 +18434,7 @@ function getEventTarget(nativeEvent) {
 module.exports = getEventTarget;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getEventTarget.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],123:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],123:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18823,7 +18558,7 @@ function getMarkupWrap(nodeName) {
 module.exports = getMarkupWrap;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getMarkupWrap.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"./invariant":131,"1YiZ5S":11,"buffer":7}],124:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"./invariant":131,"1YiZ5S":11,"buffer":8}],124:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18907,7 +18642,7 @@ function getNodeForCharacterOffset(root, offset) {
 module.exports = getNodeForCharacterOffset;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getNodeForCharacterOffset.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],125:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],125:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18951,7 +18686,7 @@ function getReactRootElementInContainer(container) {
 module.exports = getReactRootElementInContainer;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getReactRootElementInContainer.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],126:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],126:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -18997,7 +18732,7 @@ function getTextContentAccessor() {
 module.exports = getTextContentAccessor;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getTextContentAccessor.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":7}],127:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":8}],127:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19046,7 +18781,7 @@ function getUnboundedScrollPosition(scrollable) {
 module.exports = getUnboundedScrollPosition;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/getUnboundedScrollPosition.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],128:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],128:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19088,7 +18823,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/hyphenate.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],129:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],129:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19138,7 +18873,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/hyphenateStyleName.js","/../node_modules/react/lib")
-},{"./hyphenate":128,"1YiZ5S":11,"buffer":7}],130:[function(require,module,exports){
+},{"./hyphenate":128,"1YiZ5S":11,"buffer":8}],130:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19204,7 +18939,7 @@ function instantiateReactComponent(descriptor) {
 module.exports = instantiateReactComponent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/instantiateReactComponent.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],131:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],131:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19268,7 +19003,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/invariant.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],132:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],132:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19342,7 +19077,7 @@ function isEventSupported(eventNameSuffix, capture) {
 module.exports = isEventSupported;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/isEventSupported.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":7}],133:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":8}],133:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19379,7 +19114,7 @@ function isNode(object) {
 module.exports = isNode;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/isNode.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],134:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],134:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19432,7 +19167,7 @@ function isTextInputElement(elem) {
 module.exports = isTextInputElement;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/isTextInputElement.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],135:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],135:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19466,7 +19201,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/isTextNode.js","/../node_modules/react/lib")
-},{"./isNode":133,"1YiZ5S":11,"buffer":7}],136:[function(require,module,exports){
+},{"./isNode":133,"1YiZ5S":11,"buffer":8}],136:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19514,7 +19249,7 @@ function joinClasses(className/*, ... */) {
 module.exports = joinClasses;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/joinClasses.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],137:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],137:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19576,7 +19311,7 @@ var keyMirror = function(obj) {
 module.exports = keyMirror;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/keyMirror.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],138:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],138:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19621,7 +19356,7 @@ var keyOf = function(oneKeyObj) {
 module.exports = keyOf;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/keyOf.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],139:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],139:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19677,7 +19412,7 @@ function mapObject(obj, func, context) {
 module.exports = mapObject;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/mapObject.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],140:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],140:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19720,7 +19455,7 @@ function memoizeStringOnly(callback) {
 module.exports = memoizeStringOnly;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/memoizeStringOnly.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],141:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],141:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19761,7 +19496,7 @@ var merge = function(one, two) {
 module.exports = merge;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/merge.js","/../node_modules/react/lib")
-},{"./mergeInto":143,"1YiZ5S":11,"buffer":7}],142:[function(require,module,exports){
+},{"./mergeInto":143,"1YiZ5S":11,"buffer":8}],142:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19912,7 +19647,7 @@ var mergeHelpers = {
 module.exports = mergeHelpers;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/mergeHelpers.js","/../node_modules/react/lib")
-},{"./invariant":131,"./keyMirror":137,"1YiZ5S":11,"buffer":7}],143:[function(require,module,exports){
+},{"./invariant":131,"./keyMirror":137,"1YiZ5S":11,"buffer":8}],143:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -19962,7 +19697,7 @@ function mergeInto(one, two) {
 module.exports = mergeInto;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/mergeInto.js","/../node_modules/react/lib")
-},{"./mergeHelpers":142,"1YiZ5S":11,"buffer":7}],144:[function(require,module,exports){
+},{"./mergeHelpers":142,"1YiZ5S":11,"buffer":8}],144:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20000,7 +19735,7 @@ var mixInto = function(constructor, methodBag) {
 module.exports = mixInto;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/mixInto.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],145:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],145:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -20041,7 +19776,7 @@ function monitorCodeUse(eventName, data) {
 module.exports = monitorCodeUse;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/monitorCodeUse.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],146:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],146:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20088,7 +19823,7 @@ function onlyChild(children) {
 module.exports = onlyChild;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/onlyChild.js","/../node_modules/react/lib")
-},{"./ReactDescriptor":62,"./invariant":131,"1YiZ5S":11,"buffer":7}],147:[function(require,module,exports){
+},{"./ReactDescriptor":62,"./invariant":131,"1YiZ5S":11,"buffer":8}],147:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20125,7 +19860,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = performance || {};
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/performance.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":7}],148:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":8}],148:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20162,7 +19897,7 @@ var performanceNow = performance.now.bind(performance);
 module.exports = performanceNow;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/performanceNow.js","/../node_modules/react/lib")
-},{"./performance":147,"1YiZ5S":11,"buffer":7}],149:[function(require,module,exports){
+},{"./performance":147,"1YiZ5S":11,"buffer":8}],149:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20232,7 +19967,15 @@ if (ExecutionEnvironment.canUseDOM) {
         // Recover leading whitespace by temporarily prepending any character.
         // \uFEFF has the potential advantage of being zero-width/invisible.
         node.innerHTML = '\uFEFF' + html;
-        node.firstChild.deleteData(0, 1);
+
+        // deleteData leaves an empty `TextNode` which offsets the index of all
+        // children. Definitely want to avoid this.
+        var textNode = node.firstChild;
+        if (textNode.data.length === 1) {
+          node.removeChild(textNode);
+        } else {
+          textNode.deleteData(0, 1);
+        }
       } else {
         node.innerHTML = html;
       }
@@ -20243,7 +19986,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = setInnerHTML;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/setInnerHTML.js","/../node_modules/react/lib")
-},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":7}],150:[function(require,module,exports){
+},{"./ExecutionEnvironment":32,"1YiZ5S":11,"buffer":8}],150:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20296,7 +20039,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/shallowEqual.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],151:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],151:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20344,7 +20087,7 @@ function shouldUpdateReactComponent(prevDescriptor, nextDescriptor) {
 module.exports = shouldUpdateReactComponent;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/shouldUpdateReactComponent.js","/../node_modules/react/lib")
-},{"1YiZ5S":11,"buffer":7}],152:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],152:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -20423,7 +20166,7 @@ function toArray(obj) {
 module.exports = toArray;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/toArray.js","/../node_modules/react/lib")
-},{"./invariant":131,"1YiZ5S":11,"buffer":7}],153:[function(require,module,exports){
+},{"./invariant":131,"1YiZ5S":11,"buffer":8}],153:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2013-2014 Facebook, Inc.
@@ -20620,7 +20363,7 @@ function traverseAllChildren(children, callback, traverseContext) {
 module.exports = traverseAllChildren;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/traverseAllChildren.js","/../node_modules/react/lib")
-},{"./ReactInstanceHandles":70,"./ReactTextComponent":86,"./invariant":131,"1YiZ5S":11,"buffer":7}],154:[function(require,module,exports){
+},{"./ReactInstanceHandles":70,"./ReactTextComponent":86,"./invariant":131,"1YiZ5S":11,"buffer":8}],154:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copyright 2014 Facebook, Inc.
@@ -20672,22 +20415,23 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = warning;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/lib/warning.js","/../node_modules/react/lib")
-},{"./emptyFunction":113,"1YiZ5S":11,"buffer":7}],155:[function(require,module,exports){
+},{"./emptyFunction":113,"1YiZ5S":11,"buffer":8}],155:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 module.exports = require('./lib/React');
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../node_modules/react/react.js","/../node_modules/react")
-},{"./lib/React":38,"1YiZ5S":11,"buffer":7}],156:[function(require,module,exports){
+},{"./lib/React":38,"1YiZ5S":11,"buffer":8}],156:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 module.exports = require('./lib/index');
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../index.js","/../../..")
-},{"./lib/index":160,"1YiZ5S":11,"buffer":7}],157:[function(require,module,exports){
+},{"./lib/index":161,"1YiZ5S":11,"buffer":8}],157:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var _merge = require('lodash-node/modern/objects/merge');
 var _forEach = require('lodash-node/modern/collections/forEach');
 var _isArray = require('lodash-node/modern/objects/isArray');
-var _isFunction = require('lodash-node/modern/objects/isFunction');
-var Promise = require('es6-promise').Promise;
+var Promise = require('promise');
+
+var constantsConfigs = require('./configs').constants.get();
 
 var Actions = function(dispather, actions){
 
@@ -20711,7 +20455,7 @@ Actions.prototype = _merge(Actions.prototype, {
 			if( typeof callback === "undefined" ){
 				callback = function(){};
 			}
-			else if( !_isFunction(callback) ){
+			else if( typeof callback != 'function' ){
 				throw new Error('ReactFlux.Actions: you did not provide a valid callback for action: ' + actionName);
 			}
 			this[actionName] = this._createAction(actionName, constant, callback);
@@ -20725,7 +20469,7 @@ Actions.prototype = _merge(Actions.prototype, {
 	*/
 	_createAction: function(name, constant, callback){
 		return function(){
-			this._dispatcher.dispatch(constant, arguments);
+			this._dispatch(constant, null, arguments);
 			try{
 				var resp = callback.apply(this, arguments);
 				if( !!resp && typeof resp == 'object' && Object.prototype.toString.call(resp) == '[object Error]' ){
@@ -20737,11 +20481,25 @@ Actions.prototype = _merge(Actions.prototype, {
 				});
 			}
 			Promise.resolve(resp).then(function(payload){
-				this._dispatcher.dispatch(constant + '_SUCCESS', payload);
-			}.bind(this), function(error){
-				this._dispatcher.dispatch(constant + '_FAIL', error);
+				this._dispatch(constant, 'successSuffix', payload);
+				this._dispatch(constant, 'afterSuffix', payload);
+			}.bind(this), function(payload){
+				this._dispatch(constant, 'failSuffix', payload);
+				this._dispatch(constant, 'afterSuffix', payload);
 			}.bind(this));
 		}.bind(this);
+	},
+
+		/**
+	*@param {string} constant
+	*@param {string} suffixName
+	*@param {mixed} payload
+	*/
+	_dispatch: function(constant, suffixName, payload){
+		if( !!suffixName ){
+			constant += constantsConfigs.separator + constantsConfigs[suffixName];
+		}
+		this._dispatcher.dispatch(constant, payload);
 	}
 
 });
@@ -20749,12 +20507,97 @@ Actions.prototype = _merge(Actions.prototype, {
 module.exports = Actions;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/actions.js","/../../../lib")
-},{"1YiZ5S":11,"buffer":7,"es6-promise":163,"lodash-node/modern/collections/forEach":182,"lodash-node/modern/objects/isArray":206,"lodash-node/modern/objects/isFunction":207,"lodash-node/modern/objects/merge":212}],158:[function(require,module,exports){
+},{"./configs":158,"1YiZ5S":11,"buffer":8,"lodash-node/modern/collections/forEach":166,"lodash-node/modern/objects/isArray":186,"lodash-node/modern/objects/merge":192,"promise":196}],158:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var _isString = require('lodash-node/modern/objects/isString');
+
+var CONSTANTS_DEFAULT_SEPARATOR = '_';
+var CONSTANTS_DEFAULT_SUCCESS_SUFFIX = 'SUCCESS';
+var CONSTANTS_DEFAULT_FAIL_SUFFIX = 'FAIL';
+var CONSTANTS_DEFAULT_AFTER_SUFFIX = 'AFTER';
+
+var CONFIGS = {
+	constants: {
+		separator: CONSTANTS_DEFAULT_SEPARATOR,
+		successSuffix: CONSTANTS_DEFAULT_SUCCESS_SUFFIX,
+		failSuffix: CONSTANTS_DEFAULT_FAIL_SUFFIX,
+		afterSuffix: CONSTANTS_DEFAULT_AFTER_SUFFIX
+
+	}
+};
+
+module.exports = {
+	
+	/**
+	* constants
+	*/
+	constants: {
+		
+		/**
+		* @param {string} separator
+		*/
+		setSeparator: function(separator){
+			if( !_isString(separator) || !separator.length ){
+				throw new Error('Constants.separator must be a non empty string');
+			}
+			CONFIGS.constants.separator = separator;
+		},
+		
+		/**
+		* @param {string} suffix
+		*/
+		setSuccessSuffix: function(suffix){
+			if( !_isString(suffix) || !suffix.length ){
+				throw new Error('Constants.successSuffix must be a non empty string');
+			}
+			CONFIGS.constants.successSuffix = suffix;
+		},
+		
+		/**
+		* @param {string} suffix
+		*/
+		setFailSuffix: function(suffix){
+			if( !_isString(suffix) || !suffix.length ){
+				throw new Error('Constants.failSuffix must be a non empty string');
+			}
+			CONFIGS.constants.failSuffix = suffix;
+		},
+
+		/**
+		* @param {string} suffix
+		*/
+		setAfterSuffix: function(suffix){
+			if( !_isString(suffix) || !suffix.length ){
+				throw new Error('Constants.afterSuffix must be a non empty string');
+			}
+			CONFIGS.constants.afterSuffix = suffix;
+		},
+		
+		/**
+		* 
+		*/
+		resetToDefaults: function(){
+			CONFIGS.constants.separator = CONSTANTS_DEFAULT_SEPARATOR;
+			CONFIGS.constants.successSuffix = CONSTANTS_DEFAULT_SUCCESS_SUFFIX;
+			CONFIGS.constants.failSuffix = CONSTANTS_DEFAULT_FAIL_SUFFIX;
+			CONFIGS.constants.afterSuffix = CONSTANTS_DEFAULT_AFTER_SUFFIX;
+		},
+
+		get: function(){
+			return CONFIGS.constants;
+		}
+
+	}
+
+};
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/configs.js","/../../../lib")
+},{"1YiZ5S":11,"buffer":8,"lodash-node/modern/objects/isString":190}],159:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var _forEach = require('lodash-node/modern/collections/forEach');
 var _isArray = require('lodash-node/modern/objects/isArray');
 var _isString = require('lodash-node/modern/objects/isString');
 
+var cfgs = require('./configs').constants.get();
 
 module.exports = function(constants, prefix){
 	
@@ -20769,7 +20612,7 @@ module.exports = function(constants, prefix){
 	}
 
 	if( prefix.length > 0 ){
-		prefix += '_';
+		prefix += cfgs.separator;
 	}
 
 	var ret = {};
@@ -20780,21 +20623,20 @@ module.exports = function(constants, prefix){
 		}
 	
 		ret[constant] = prefix + constant;
-		ret[constant + '_SUCCESS'] = prefix + constant + '_SUCCESS';
-		ret[constant + '_FAIL'] = prefix + constant + '_FAIL';	
+		ret[constant + '_' + cfgs.successSuffix] = prefix + constant + cfgs.separator + cfgs.successSuffix;
+		ret[constant + '_' + cfgs.failSuffix] = prefix + constant + cfgs.separator + cfgs.failSuffix;	
+		ret[constant + '_' + cfgs.afterSuffix] = prefix + constant + cfgs.separator + cfgs.afterSuffix;	
 	});
 	return ret;
 
 };
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/constants.js","/../../../lib")
-},{"1YiZ5S":11,"buffer":7,"lodash-node/modern/collections/forEach":182,"lodash-node/modern/objects/isArray":206,"lodash-node/modern/objects/isString":210}],159:[function(require,module,exports){
+},{"./configs":158,"1YiZ5S":11,"buffer":8,"lodash-node/modern/collections/forEach":166,"lodash-node/modern/objects/isArray":186,"lodash-node/modern/objects/isString":190}],160:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var Promise = require('es6-promise').Promise;
+var Promise = require('promise');
 var _merge = require('lodash-node/modern/objects/merge');
-var _isFunction = require('lodash-node/modern/objects/isFunction');
 var _isArray = require('lodash-node/modern/objects/isArray');
 var _isString= require('lodash-node/modern/objects/isString');
-var _map   = require('lodash-node/modern/collections/map');
 var _forEach  = require('lodash-node/modern/collections/forEach');
 
 /**
@@ -20822,7 +20664,7 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 		}
 		waitForIndexes = waitForIndexes || null;
 		
-		if( !_isFunction(callback) ){
+		if( typeof callback != 'function' ){
 			throw new Error('Dispatcher.register expects second parameter to be a callback');
 		}
 		
@@ -20960,18 +20802,20 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 module.exports = Dispatcher;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/dispatcher.js","/../../../lib")
-},{"1YiZ5S":11,"buffer":7,"es6-promise":163,"lodash-node/modern/collections/forEach":182,"lodash-node/modern/collections/map":183,"lodash-node/modern/objects/isArray":206,"lodash-node/modern/objects/isFunction":207,"lodash-node/modern/objects/isString":210,"lodash-node/modern/objects/merge":212}],160:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8,"lodash-node/modern/collections/forEach":166,"lodash-node/modern/objects/isArray":186,"lodash-node/modern/objects/isString":190,"lodash-node/modern/objects/merge":192,"promise":196}],161:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var Constants = require('./constants');
 var Actions = require('./actions');
 var Store = require('./store');
 var Mixin = require('./mixin');
 var Dispatcher = require('./dispatcher');
+var Configs = require('./configs');
 
 var  dispatcher = new Dispatcher();
 
 module.exports = {
 	
+	configs: Configs,
 	/**
 	* createActions
 	* @param {object} actions
@@ -21015,10 +20859,8 @@ module.exports = {
 };
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/index.js","/../../../lib")
-},{"./actions":157,"./constants":158,"./dispatcher":159,"./mixin":161,"./store":162,"1YiZ5S":11,"buffer":7}],161:[function(require,module,exports){
+},{"./actions":157,"./configs":158,"./constants":159,"./dispatcher":160,"./mixin":162,"./store":163,"1YiZ5S":11,"buffer":8}],162:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var _isArray = require('lodash-node/modern/objects/isArray');
-var _isFunction = require('lodash-node/modern/objects/isFunction');
 var _forEach = require('lodash-node/modern/collections/forEach');
 
 
@@ -21028,52 +20870,61 @@ module.exports = function(){
 		throw new Error('Flux.mixin expects a store or a list of stores');
 	}
 	_forEach(stores, function(store){
-		if( typeof store == 'undefined' || !_isFunction(store.onChange) || !_isFunction(store.offChange) ){
+		var isNotOk = (
+			typeof store == 'undefined'
+		  || typeof store.onChange != 'function'
+		  || typeof store.offChange != 'function'
+		);
+		if( isNotOk ){
 			throw new Error('Flux.mixin expects a store or an array of stores');
 		}
 	});
+
+
 	return {
 		
 		componentWillMount: function(){
+			if( typeof this._react_flux_onChange == "undefined" ){
+				this._react_flux_onChange = function() {
+					if( !this.isMounted() ){
+						return;
+					}
+					this.setState( this.getStateFromStores() );
+				}.bind(this);
+			}
 			this.setState( this.getStateFromStores() );
 		},
 
 		componentDidMount: function(){
 			for(var i=0; i < stores.length; i++){
-				if( !_isFunction(stores[i].onChange) ){
+				if( typeof stores[i].onChange != 'function' ){
 					throw new Error('Mixin expects stores');
 				}
-				stores[i].onChange( this._reactFluxOnChange )
+				stores[i].onChange(this._react_flux_onChange);
 			}
 		},
 		
-		componentWillUnount: function(){
+		componentWillUnmount: function(){
 			for(var i=0; i < stores.length; i++){
-				stores[i].offChange( this._reactFluxOnChange )
+				stores[i].offChange(this._react_flux_onChange);
 			}
-		},
-
-		_reactFluxOnChange: function() {
-			this.setState( this.getStateFromStores() );
 		}
 	};
 
 };
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/mixin.js","/../../../lib")
-},{"1YiZ5S":11,"buffer":7,"lodash-node/modern/collections/forEach":182,"lodash-node/modern/objects/isArray":206,"lodash-node/modern/objects/isFunction":207}],162:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8,"lodash-node/modern/collections/forEach":166}],163:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var Immutable = require('immutable');
-var _assign = require('lodash-node/modern/objects/assign');
+var _merge = require('lodash-node/modern/objects/merge');
 var _forEach = require('lodash-node/modern/collections/forEach');
 var _isArray = require('lodash-node/modern/objects/isArray');
-var _isFunction = require('lodash-node/modern/objects/isFunction');
-
-var Promise = require('es6-promise').Promise;
-var EventEmitter = require('events').EventEmitter;
 
 var Mixin = require('./mixin');
 
 var CHANGE_EVENT = 'change';
+
+var StoreActionHandler = require('./storeActionHandler');
 
 /**
 * Flux Store 
@@ -21082,19 +20933,26 @@ var CHANGE_EVENT = 'change';
 * @param {array} handlers
 */
 var Store = function(dispatcher, storeMixin, handlers){
-	this.state = Immutable.Map({});
-	this._handlers = {};
+	this.state = Immutable.Map({
+		_action_states: {}
+	});
+	this._events = {};//used by store event emitter 
+	this._actionHandlers = {};
+	this._constantHandlers = {};
 	this._dispatcherIndexes = {};
 	this._dispatcher = dispatcher;
 	
 	this._mixin(storeMixin);
 	this._setInitialState();
-	this._setHandlers(handlers);
+	if( !!handlers ){
+		this.setConstantHandlers(handlers);	
+	}
+	
 	!!this.storeDidMount && this.storeDidMount();
 }
 
 
-Store.prototype = _assign(EventEmitter.prototype, {
+Store.prototype =  {
 
 	/**
 	* @param {object} newState
@@ -21102,6 +20960,57 @@ Store.prototype = _assign(EventEmitter.prototype, {
 	setState: function(newState){
 		this.state = this.state.merge(newState);
 		this.emit(CHANGE_EVENT);
+	},
+
+	/**
+	* @param {string} constant
+	* @param {object} newState
+	*/
+	setActionState: function(constant, newState){
+		var actionStates = this.state.get('_action_states');
+		actionStates[constant] = _merge(actionStates[constant] || {}, newState);
+		this.setState({
+			'_action_states': actionStates
+		});
+	},
+
+	/**
+	* @param {string} constant
+	*/
+	resetActionState: function(constant){
+		if( typeof this._actionHandlers[constant] == 'undefined' ){
+			throw new Error('Store.resetActionState constant handler for [' + constant + '] is not defined');
+		}
+		this.setActionState(
+			constant,
+			this._actionHandlers[constant].getInitialState()
+		);
+	},
+
+	/**
+	* @param {string} constant
+	* @param {string} key
+	*/
+	getActionState: function(constant, key){
+		if( typeof this._actionHandlers[constant] == 'undefined' ){
+			throw new Error('Store.getActionState constant handler for [' + constant + '] is not defined');
+		}
+		var actionState = this.state.get('_action_states');
+		if( typeof actionState[constant] == "undefined" ){
+			return undefined;
+		}
+		if( typeof key == "undefined" ){
+			return actionState[constant];
+		}
+		return actionState[constant][key];
+	},
+
+	/**
+	* @param {string} propertyName
+	* @return {mixed}
+	*/
+	get: function(propertyName){
+		return this.state.get(propertyName);
 	},
 
 	/**
@@ -21150,7 +21059,7 @@ Store.prototype = _assign(EventEmitter.prototype, {
 	* @param {function} callback
 	*/
 	offChange: function(callback){
-		this.removeListener(CHANGE_EVENT, callback);
+		this.off(CHANGE_EVENT, callback);
 	},
 
 
@@ -21160,7 +21069,7 @@ Store.prototype = _assign(EventEmitter.prototype, {
 	*/
 	_mixin: function(storeMixin){
 		_forEach(storeMixin, function(prop, propName){
-			if( _isFunction(prop) ){
+			if( typeof prop != 'function' ){
 				prop = prop.bind(this);
 			} 
 			this[propName] = prop;
@@ -21168,15 +21077,27 @@ Store.prototype = _assign(EventEmitter.prototype, {
 	},
 
 	/**
-	* Set handlers for this Store
+	* @param {string} constant
+	* @param {object} configs
+	* @return {FluxStore} self
+	*/
+	addActionHandler: function(constant, configs){
+		this._actionHandlers[constant] = new StoreActionHandler(this, constant, configs);
+		return this;
+	},
+
+	/**
+	* Set constant handlers for this Store
 	* @param {array} handlers
 	*/
-	_setHandlers: function(handlers){
-		this._dispatcherIndexes = {};
+	setConstantHandlers: function(handlers){
+		if( !_isArray(handlers) ){
+			throw new Error('Store.setConstantHandlers expects first parameter to be an array');
+		}
 		_forEach(handlers, function(options){
 			var constant, handler, waitFor;
-			constant = options[0];
 			
+			constant = options[0];
 			if( options.length == 2 ){
 				waitFor = null;
 				handler = options[1];
@@ -21192,8 +21113,8 @@ Store.prototype = _assign(EventEmitter.prototype, {
 				});
 			}
 			
-			this._handlers[constant] = handler.bind(this);
-			var dispatcherIndex = this._dispatcher.register(constant, this._handlers[constant], waitForIndexes);
+			this._constantHandlers[constant] = handler.bind(this);
+			var dispatcherIndex = this._dispatcher.register(constant, this._constantHandlers[constant], waitForIndexes);
 			this._dispatcherIndexes[constant] = dispatcherIndex;
 		}.bind(this));
 	},
@@ -21219,640 +21140,133 @@ Store.prototype = _assign(EventEmitter.prototype, {
 
 	mixin: function(){
 		return Mixin(this);
-	}
+	},
 
-});
+	/**
+	*
+	* @param {String} evt
+	* @param {Function} handler
+	* @return  {Function} handler
+	*/
+	on: function(evt, handler){
+		if( typeof this._events[evt] === 'undefined' ) {
+			this._events[evt] = [];
+		}
+    this._events[evt].push(handler);
+    return handler;
+  },
+
+  /**
+	*
+	* @param {String} evt
+	* @param {Function} handler
+	*/
+  off: function(evt, handler){
+    if( typeof this._events[evt] === 'undefined' ){
+      return;
+    }
+    
+    for(var i=0, len = this._events[evt].length; i < len; i++){
+    	if( this._events[evt][i] == handler ){
+    		this._events[evt].splice(i, 1);
+    		break;
+    	}
+    }
+  },
+
+  /**
+	*
+	* @param {String} evt
+	*/
+  emit: function(evt){
+    if( typeof this._events[evt] == 'undefined' ){
+      return;
+    }
+    var args = Array.prototype.slice.call(arguments, 1);
+    _forEach(this._events[evt], function(listner){
+    	listner.apply(null, args)
+    });
+  },
+
+};
 
 module.exports = Store;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/store.js","/../../../lib")
-},{"./mixin":161,"1YiZ5S":11,"buffer":7,"es6-promise":163,"events":10,"immutable":173,"lodash-node/modern/collections/forEach":182,"lodash-node/modern/objects/assign":203,"lodash-node/modern/objects/isArray":206,"lodash-node/modern/objects/isFunction":207}],163:[function(require,module,exports){
+},{"./mixin":162,"./storeActionHandler":164,"1YiZ5S":11,"buffer":8,"immutable":165,"lodash-node/modern/collections/forEach":166,"lodash-node/modern/objects/isArray":186,"lodash-node/modern/objects/merge":192}],164:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-var Promise = require("./promise/promise").Promise;
-var polyfill = require("./promise/polyfill").polyfill;
-exports.Promise = Promise;
-exports.polyfill = polyfill;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/main.js","/../../../node_modules/es6-promise/dist/commonjs")
-},{"./promise/polyfill":167,"./promise/promise":168,"1YiZ5S":11,"buffer":7}],164:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-/* global toString */
+var _isString = require('lodash-node/modern/objects/isString');
 
-var isArray = require("./utils").isArray;
-var isFunction = require("./utils").isFunction;
+var constantsConfigs = require('./configs').constants.get();
 
-/**
-  Returns a promise that is fulfilled when all the given promises have been
-  fulfilled, or rejected if any of them become rejected. The return promise
-  is fulfilled with an array that gives all the values in the order they were
-  passed in the `promises` array argument.
+var HANDLER_NAMES = ['before', 'after', 'success', 'fail'];
 
-  Example:
+function StoreActionHandler(store, constant, configs){
+	if( !store.isStore() ){
+		throw new Error('StoreActionHandler expects first parameter to be a store');
+	}
+	if( !_isString(constant) ){
+		throw new Error('StoreActionHandler expects second parameter to be a constant(string)');
+	}
+	if( typeof configs.getInitialState == 'undefined' ){
+		configs.getInitialState = function(){
+			return {};
+		};
+	}
+	if( typeof configs.getInitialState != 'function' ){
+		throw new Error('StoreActionHandler expects getInitialState to be a function');
+	}
 
-  ```javascript
-  var promise1 = RSVP.resolve(1);
-  var promise2 = RSVP.resolve(2);
-  var promise3 = RSVP.resolve(3);
-  var promises = [ promise1, promise2, promise3 ];
+	configs = configs || {};
+	this.parent = store;
+	this.constant = constant;
+	this.getInitialState = configs.getInitialState;
+	this.before =  configs.before || null;
+	this.after = configs.after || null;
+	this.success = configs.success || null;
+	this.fail = configs.fail || null;
+	
+	this.parent.setActionState(this.constant, this.getInitialState());
 
-  RSVP.all(promises).then(function(array){
-    // The array here would be [ 1, 2, 3 ];
-  });
-  ```
-
-  If any of the `promises` given to `RSVP.all` are rejected, the first promise
-  that is rejected will be given as an argument to the returned promises's
-  rejection handler. For example:
-
-  Example:
-
-  ```javascript
-  var promise1 = RSVP.resolve(1);
-  var promise2 = RSVP.reject(new Error("2"));
-  var promise3 = RSVP.reject(new Error("3"));
-  var promises = [ promise1, promise2, promise3 ];
-
-  RSVP.all(promises).then(function(array){
-    // Code here never runs because there are rejected promises!
-  }, function(error) {
-    // error.message === "2"
-  });
-  ```
-
-  @method all
-  @for RSVP
-  @param {Array} promises
-  @param {String} label
-  @return {Promise} promise that is fulfilled when all `promises` have been
-  fulfilled, or rejected if any of them become rejected.
-*/
-function all(promises) {
-  /*jshint validthis:true */
-  var Promise = this;
-
-  if (!isArray(promises)) {
-    throw new TypeError('You must pass an array to all.');
-  }
-
-  return new Promise(function(resolve, reject) {
-    var results = [], remaining = promises.length,
-    promise;
-
-    if (remaining === 0) {
-      resolve([]);
-    }
-
-    function resolver(index) {
-      return function(value) {
-        resolveAll(index, value);
-      };
-    }
-
-    function resolveAll(index, value) {
-      results[index] = value;
-      if (--remaining === 0) {
-        resolve(results);
-      }
-    }
-
-    for (var i = 0; i < promises.length; i++) {
-      promise = promises[i];
-
-      if (promise && isFunction(promise.then)) {
-        promise.then(resolver(i), reject);
-      } else {
-        resolveAll(i, promise);
-      }
-    }
-  });
+	//register handlers for this constant
+	var handlers = [];
+	var len = HANDLER_NAMES.length;
+	for(var i = 0; i < len; i++){
+		var handlerName = HANDLER_NAMES[i];
+		if( this[handlerName] == null ){
+			continue;
+		}
+		if( typeof this[handlerName] != 'function' ){
+			throw new Error('StoreActionHandler expects "' + handlerName + '" to be a function');
+		}
+		var constant = this.constant;
+		if( handlerName != 'before' ){
+			constant += constantsConfigs.separator + constantsConfigs[handlerName + 'Suffix'];
+		} 
+		handlers.push( [constant, this[handlerName].bind(this) ] );
+	}
+	store.setConstantHandlers(handlers);
 }
 
-exports.all = all;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/all.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"./utils":172,"1YiZ5S":11,"buffer":7}],165:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-var browserGlobal = (typeof window !== 'undefined') ? window : {};
-var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
-var local = (typeof global !== 'undefined') ? global : (this === undefined? window:this);
-
-// node
-function useNextTick() {
-  return function() {
-    process.nextTick(flush);
-  };
-}
-
-function useMutationObserver() {
-  var iterations = 0;
-  var observer = new BrowserMutationObserver(flush);
-  var node = document.createTextNode('');
-  observer.observe(node, { characterData: true });
-
-  return function() {
-    node.data = (iterations = ++iterations % 2);
-  };
-}
-
-function useSetTimeout() {
-  return function() {
-    local.setTimeout(flush, 1);
-  };
-}
-
-var queue = [];
-function flush() {
-  for (var i = 0; i < queue.length; i++) {
-    var tuple = queue[i];
-    var callback = tuple[0], arg = tuple[1];
-    callback(arg);
-  }
-  queue = [];
-}
-
-var scheduleFlush;
-
-// Decide what async method to use to triggering processing of queued callbacks:
-if (typeof process !== 'undefined' && {}.toString.call(process) === '[object process]') {
-  scheduleFlush = useNextTick();
-} else if (BrowserMutationObserver) {
-  scheduleFlush = useMutationObserver();
-} else {
-  scheduleFlush = useSetTimeout();
-}
-
-function asap(callback, arg) {
-  var length = queue.push([callback, arg]);
-  if (length === 1) {
-    // If length is 1, that means that we need to schedule an async flush.
-    // If additional callbacks are queued before the queue is flushed, they
-    // will be processed by this flush that we are scheduling.
-    scheduleFlush();
-  }
-}
-
-exports.asap = asap;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/asap.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"1YiZ5S":11,"buffer":7}],166:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-var config = {
-  instrument: false
+StoreActionHandler.prototype = {
+	/**
+	* @param {object} newState
+	*/
+	setState: function(newState){
+		this.parent.setActionState(this.constant, newState);
+	},
+	/**
+	* @return {object} state
+	*/
+	getState: function(){
+		return this.parent.getActionState(this.constant);
+	}
 };
 
-function configure(name, value) {
-  if (arguments.length === 2) {
-    config[name] = value;
-  } else {
-    return config[name];
-  }
-}
 
-exports.config = config;
-exports.configure = configure;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/config.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"1YiZ5S":11,"buffer":7}],167:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-/*global self*/
-var RSVPPromise = require("./promise").Promise;
-var isFunction = require("./utils").isFunction;
-
-function polyfill() {
-  var local;
-
-  if (typeof global !== 'undefined') {
-    local = global;
-  } else if (typeof window !== 'undefined' && window.document) {
-    local = window;
-  } else {
-    local = self;
-  }
-
-  var es6PromiseSupport = 
-    "Promise" in local &&
-    // Some of these methods are missing from
-    // Firefox/Chrome experimental implementations
-    "resolve" in local.Promise &&
-    "reject" in local.Promise &&
-    "all" in local.Promise &&
-    "race" in local.Promise &&
-    // Older version of the spec had a resolver object
-    // as the arg rather than a function
-    (function() {
-      var resolve;
-      new local.Promise(function(r) { resolve = r; });
-      return isFunction(resolve);
-    }());
-
-  if (!es6PromiseSupport) {
-    local.Promise = RSVPPromise;
-  }
-}
-
-exports.polyfill = polyfill;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/polyfill.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"./promise":168,"./utils":172,"1YiZ5S":11,"buffer":7}],168:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-var config = require("./config").config;
-var configure = require("./config").configure;
-var objectOrFunction = require("./utils").objectOrFunction;
-var isFunction = require("./utils").isFunction;
-var now = require("./utils").now;
-var all = require("./all").all;
-var race = require("./race").race;
-var staticResolve = require("./resolve").resolve;
-var staticReject = require("./reject").reject;
-var asap = require("./asap").asap;
-
-var counter = 0;
-
-config.async = asap; // default async is asap;
-
-function Promise(resolver) {
-  if (!isFunction(resolver)) {
-    throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
-  }
-
-  if (!(this instanceof Promise)) {
-    throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
-  }
-
-  this._subscribers = [];
-
-  invokeResolver(resolver, this);
-}
-
-function invokeResolver(resolver, promise) {
-  function resolvePromise(value) {
-    resolve(promise, value);
-  }
-
-  function rejectPromise(reason) {
-    reject(promise, reason);
-  }
-
-  try {
-    resolver(resolvePromise, rejectPromise);
-  } catch(e) {
-    rejectPromise(e);
-  }
-}
-
-function invokeCallback(settled, promise, callback, detail) {
-  var hasCallback = isFunction(callback),
-      value, error, succeeded, failed;
-
-  if (hasCallback) {
-    try {
-      value = callback(detail);
-      succeeded = true;
-    } catch(e) {
-      failed = true;
-      error = e;
-    }
-  } else {
-    value = detail;
-    succeeded = true;
-  }
-
-  if (handleThenable(promise, value)) {
-    return;
-  } else if (hasCallback && succeeded) {
-    resolve(promise, value);
-  } else if (failed) {
-    reject(promise, error);
-  } else if (settled === FULFILLED) {
-    resolve(promise, value);
-  } else if (settled === REJECTED) {
-    reject(promise, value);
-  }
-}
-
-var PENDING   = void 0;
-var SEALED    = 0;
-var FULFILLED = 1;
-var REJECTED  = 2;
-
-function subscribe(parent, child, onFulfillment, onRejection) {
-  var subscribers = parent._subscribers;
-  var length = subscribers.length;
-
-  subscribers[length] = child;
-  subscribers[length + FULFILLED] = onFulfillment;
-  subscribers[length + REJECTED]  = onRejection;
-}
-
-function publish(promise, settled) {
-  var child, callback, subscribers = promise._subscribers, detail = promise._detail;
-
-  for (var i = 0; i < subscribers.length; i += 3) {
-    child = subscribers[i];
-    callback = subscribers[i + settled];
-
-    invokeCallback(settled, child, callback, detail);
-  }
-
-  promise._subscribers = null;
-}
-
-Promise.prototype = {
-  constructor: Promise,
-
-  _state: undefined,
-  _detail: undefined,
-  _subscribers: undefined,
-
-  then: function(onFulfillment, onRejection) {
-    var promise = this;
-
-    var thenPromise = new this.constructor(function() {});
-
-    if (this._state) {
-      var callbacks = arguments;
-      config.async(function invokePromiseCallback() {
-        invokeCallback(promise._state, thenPromise, callbacks[promise._state - 1], promise._detail);
-      });
-    } else {
-      subscribe(this, thenPromise, onFulfillment, onRejection);
-    }
-
-    return thenPromise;
-  },
-
-  'catch': function(onRejection) {
-    return this.then(null, onRejection);
-  }
-};
-
-Promise.all = all;
-Promise.race = race;
-Promise.resolve = staticResolve;
-Promise.reject = staticReject;
-
-function handleThenable(promise, value) {
-  var then = null,
-  resolved;
-
-  try {
-    if (promise === value) {
-      throw new TypeError("A promises callback cannot return that same promise.");
-    }
-
-    if (objectOrFunction(value)) {
-      then = value.then;
-
-      if (isFunction(then)) {
-        then.call(value, function(val) {
-          if (resolved) { return true; }
-          resolved = true;
-
-          if (value !== val) {
-            resolve(promise, val);
-          } else {
-            fulfill(promise, val);
-          }
-        }, function(val) {
-          if (resolved) { return true; }
-          resolved = true;
-
-          reject(promise, val);
-        });
-
-        return true;
-      }
-    }
-  } catch (error) {
-    if (resolved) { return true; }
-    reject(promise, error);
-    return true;
-  }
-
-  return false;
-}
-
-function resolve(promise, value) {
-  if (promise === value) {
-    fulfill(promise, value);
-  } else if (!handleThenable(promise, value)) {
-    fulfill(promise, value);
-  }
-}
-
-function fulfill(promise, value) {
-  if (promise._state !== PENDING) { return; }
-  promise._state = SEALED;
-  promise._detail = value;
-
-  config.async(publishFulfillment, promise);
-}
-
-function reject(promise, reason) {
-  if (promise._state !== PENDING) { return; }
-  promise._state = SEALED;
-  promise._detail = reason;
-
-  config.async(publishRejection, promise);
-}
-
-function publishFulfillment(promise) {
-  publish(promise, promise._state = FULFILLED);
-}
-
-function publishRejection(promise) {
-  publish(promise, promise._state = REJECTED);
-}
-
-exports.Promise = Promise;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/promise.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"./all":164,"./asap":165,"./config":166,"./race":169,"./reject":170,"./resolve":171,"./utils":172,"1YiZ5S":11,"buffer":7}],169:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-/* global toString */
-var isArray = require("./utils").isArray;
-
-/**
-  `RSVP.race` allows you to watch a series of promises and act as soon as the
-  first promise given to the `promises` argument fulfills or rejects.
-
-  Example:
-
-  ```javascript
-  var promise1 = new RSVP.Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve("promise 1");
-    }, 200);
-  });
-
-  var promise2 = new RSVP.Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve("promise 2");
-    }, 100);
-  });
-
-  RSVP.race([promise1, promise2]).then(function(result){
-    // result === "promise 2" because it was resolved before promise1
-    // was resolved.
-  });
-  ```
-
-  `RSVP.race` is deterministic in that only the state of the first completed
-  promise matters. For example, even if other promises given to the `promises`
-  array argument are resolved, but the first completed promise has become
-  rejected before the other promises became fulfilled, the returned promise
-  will become rejected:
-
-  ```javascript
-  var promise1 = new RSVP.Promise(function(resolve, reject){
-    setTimeout(function(){
-      resolve("promise 1");
-    }, 200);
-  });
-
-  var promise2 = new RSVP.Promise(function(resolve, reject){
-    setTimeout(function(){
-      reject(new Error("promise 2"));
-    }, 100);
-  });
-
-  RSVP.race([promise1, promise2]).then(function(result){
-    // Code here never runs because there are rejected promises!
-  }, function(reason){
-    // reason.message === "promise2" because promise 2 became rejected before
-    // promise 1 became fulfilled
-  });
-  ```
-
-  @method race
-  @for RSVP
-  @param {Array} promises array of promises to observe
-  @param {String} label optional string for describing the promise returned.
-  Useful for tooling.
-  @return {Promise} a promise that becomes fulfilled with the value the first
-  completed promises is resolved with if the first completed promise was
-  fulfilled, or rejected with the reason that the first completed promise
-  was rejected with.
-*/
-function race(promises) {
-  /*jshint validthis:true */
-  var Promise = this;
-
-  if (!isArray(promises)) {
-    throw new TypeError('You must pass an array to race.');
-  }
-  return new Promise(function(resolve, reject) {
-    var results = [], promise;
-
-    for (var i = 0; i < promises.length; i++) {
-      promise = promises[i];
-
-      if (promise && typeof promise.then === 'function') {
-        promise.then(resolve, reject);
-      } else {
-        resolve(promise);
-      }
-    }
-  });
-}
-
-exports.race = race;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/race.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"./utils":172,"1YiZ5S":11,"buffer":7}],170:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-/**
-  `RSVP.reject` returns a promise that will become rejected with the passed
-  `reason`. `RSVP.reject` is essentially shorthand for the following:
-
-  ```javascript
-  var promise = new RSVP.Promise(function(resolve, reject){
-    reject(new Error('WHOOPS'));
-  });
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  Instead of writing the above, your code now simply becomes the following:
-
-  ```javascript
-  var promise = RSVP.reject(new Error('WHOOPS'));
-
-  promise.then(function(value){
-    // Code here doesn't run because the promise is rejected!
-  }, function(reason){
-    // reason.message === 'WHOOPS'
-  });
-  ```
-
-  @method reject
-  @for RSVP
-  @param {Any} reason value that the returned promise will be rejected with.
-  @param {String} label optional string for identifying the returned promise.
-  Useful for tooling.
-  @return {Promise} a promise that will become rejected with the given
-  `reason`.
-*/
-function reject(reason) {
-  /*jshint validthis:true */
-  var Promise = this;
-
-  return new Promise(function (resolve, reject) {
-    reject(reason);
-  });
-}
-
-exports.reject = reject;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/reject.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"1YiZ5S":11,"buffer":7}],171:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-function resolve(value) {
-  /*jshint validthis:true */
-  if (value && typeof value === 'object' && value.constructor === this) {
-    return value;
-  }
-
-  var Promise = this;
-
-  return new Promise(function(resolve) {
-    resolve(value);
-  });
-}
-
-exports.resolve = resolve;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/resolve.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"1YiZ5S":11,"buffer":7}],172:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-"use strict";
-function objectOrFunction(x) {
-  return isFunction(x) || (typeof x === "object" && x !== null);
-}
-
-function isFunction(x) {
-  return typeof x === "function";
-}
-
-function isArray(x) {
-  return Object.prototype.toString.call(x) === "[object Array]";
-}
-
-// Date.now is not available in browsers < IE9
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now#Compatibility
-var now = Date.now || function() { return new Date().getTime(); };
-
-
-exports.objectOrFunction = objectOrFunction;
-exports.isFunction = isFunction;
-exports.isArray = isArray;
-exports.now = now;
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/es6-promise/dist/commonjs/promise/utils.js","/../../../node_modules/es6-promise/dist/commonjs/promise")
-},{"1YiZ5S":11,"buffer":7}],173:[function(require,module,exports){
+module.exports = StoreActionHandler;
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../lib/storeActionHandler.js","/../../../lib")
+},{"./configs":158,"1YiZ5S":11,"buffer":8,"lodash-node/modern/objects/isString":190}],165:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  *  Copyright (c) 2014, Facebook, Inc.
@@ -21862,21 +21276,41 @@ exports.now = now;
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
+function universalModule() {
+  var $Object = Object;
 
-var Sequence = require('./Sequence').Sequence;
-var ImmutableMap = require('./Map');
-var OrderedMap = require('./OrderedMap');
-var ImmutableSet = require('./Set');
-var Vector = require('./Vector');
-var Range = require('./Range');
-var Repeat = require('./Repeat');
-var Record = require('./Record');
+function createClass(ctor, methods, staticMethods, superClass) {
+  var proto;
+  if (superClass) {
+    var superProto = superClass.prototype;
+    proto = $Object.create(superProto);
+  } else {
+    proto = ctor.prototype;
+  }
+  $Object.keys(methods).forEach(function (key) {
+    proto[key] = methods[key];
+  });
+  $Object.keys(staticMethods).forEach(function (key) {
+    ctor[key] = staticMethods[key];
+  });
+  proto.constructor = ctor;
+  ctor.prototype = proto;
+  return ctor;
+}
 
+function superCall(self, proto, name, args) {
+  return $Object.getPrototypeOf(proto)[name].apply(self, args);
+}
 
-/**
- * The same semantics as Object.is(), but treats immutable sequences as
- * data, equal when the structure contains equivalent data.
- */
+function defaultSuperCall(self, proto, args) {
+  superCall(self, proto, 'constructor', args);
+}
+
+var $traceurRuntime = {};
+$traceurRuntime.createClass = createClass;
+$traceurRuntime.superCall = superCall;
+$traceurRuntime.defaultSuperCall = defaultSuperCall;
+"use strict";
 function is(first, second) {
   if (first === second) {
     return first !== 0 || second !== 0 || 1 / first === 1 / second;
@@ -21884,1207 +21318,393 @@ function is(first, second) {
   if (first !== first) {
     return second !== second;
   }
-  if (first instanceof Sequence) {
+  if (first && typeof first.equals === 'function') {
     return first.equals(second);
   }
   return false;
 }
-
-function fromJS(json, converter) {
-  if (converter) {
-    return fromJSWith(converter, json, '', {'': json});
-  }
-  return fromJSDefault(json);
+var DELETE = 'delete';
+var SHIFT = 5;
+var SIZE = 1 << SHIFT;
+var MASK = SIZE - 1;
+var NOT_SET = {};
+var CHANGE_LENGTH = {value: false};
+var DID_ALTER = {value: false};
+function MakeRef(ref) {
+  ref.value = false;
+  return ref;
 }
-
-function fromJSDefault(json) {
-  if (json) {
-    if (Array.isArray(json)) {
-      return Sequence(json).map(fromJSDefault).toVector();
-    }
-    if (json.constructor === Object) {
-      return Sequence(json).map(fromJSDefault).toMap();
-    }
-  }
-  return json;
+function SetRef(ref) {
+  ref && (ref.value = true);
 }
-
-function fromJSWith(converter, json, key, parentJSON) {
-  if (json && (Array.isArray(json) || json.constructor === Object)) {
-    return converter.call(parentJSON, key, Sequence(json).map(function(v, k)  {return fromJSWith(converter, v, k, json);}));
+function OwnerID() {}
+function arrCopy(arr, offset) {
+  offset = offset || 0;
+  var len = Math.max(0, arr.length - offset);
+  var newArr = new Array(len);
+  for (var ii = 0; ii < len; ii++) {
+    newArr[ii] = arr[ii + offset];
   }
-  return json;
+  return newArr;
 }
-
-exports.is = is;
-exports.fromJS = fromJS;
-exports.Sequence = Sequence;
-exports.Range = Range;
-exports.Repeat = Repeat;
-exports.Vector = Vector;
-exports.Map = ImmutableMap;
-exports.OrderedMap = OrderedMap;
-exports.Set = ImmutableSet;
-exports.Record = Record;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Immutable.js","/../../../node_modules/immutable/dist")
-},{"./Map":174,"./OrderedMap":175,"./Range":176,"./Record":177,"./Repeat":178,"./Sequence":179,"./Set":180,"./Vector":181,"1YiZ5S":11,"buffer":7}],174:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var Sequence = require('./Sequence').Sequence;
-
-
-for(var Sequence____Key in Sequence){if(Sequence.hasOwnProperty(Sequence____Key)){Map[Sequence____Key]=Sequence[Sequence____Key];}}var ____SuperProtoOfSequence=Sequence===null?null:Sequence.prototype;Map.prototype=Object.create(____SuperProtoOfSequence);Map.prototype.constructor=Map;Map.__superConstructor__=Sequence;
-
-  // @pragma Construction
-
-  function Map(sequence) {"use strict";
-    if (sequence && sequence.constructor === Map) {
-      return sequence;
-    }
-    if (!sequence || sequence.length === 0) {
-      return Map.empty();
-    }
-    return Map.empty().merge(sequence);
-  }
-
-  Map.empty=function() {"use strict";
-    return __EMPTY_MAP || (__EMPTY_MAP = Map.$Map_make(0));
-  };
-
-  Map.prototype.toString=function() {"use strict";
-    return this.__toString('Map {', '}');
-  };
-
-  // @pragma Access
-
-  Map.prototype.get=function(k, undefinedValue) {"use strict";
-    if (k == null || this.$Map_root == null) {
-      return undefinedValue;
-    }
-    return this.$Map_root.get(0, hashValue(k), k, undefinedValue);
-  };
-
-  // @pragma Modification
-
-  Map.prototype.set=function(k, v) {"use strict";
-    if (k == null) {
-      return this;
-    }
-    var newLength = this.length;
-    var newRoot;
-    if (this.$Map_root) {
-      var didAddLeaf = BoolRef();
-      newRoot = this.$Map_root.set(this.__ownerID, 0, hashValue(k), k, v, didAddLeaf);
-      didAddLeaf.value && newLength++;
-    } else {
-      newLength++;
-      newRoot = makeNode(this.__ownerID, 0, hashValue(k), k, v);
-    }
-    if (this.__ownerID) {
-      this.length = newLength;
-      this.$Map_root = newRoot;
-      return this;
-    }
-    return newRoot === this.$Map_root ? this : Map.$Map_make(newLength, newRoot);
-  };
-
-  Map.prototype.delete=function(k) {"use strict";
-    if (k == null || this.$Map_root == null) {
-      return this;
-    }
-    if (this.__ownerID) {
-      var didRemoveLeaf = BoolRef();
-      this.$Map_root = this.$Map_root.delete(this.__ownerID, 0, hashValue(k), k, didRemoveLeaf);
-      didRemoveLeaf.value && this.length--;
-      return this;
-    }
-    var newRoot = this.$Map_root.delete(this.__ownerID, 0, hashValue(k), k);
-    return !newRoot ? Map.empty() : newRoot === this.$Map_root ? this : Map.$Map_make(this.length - 1, newRoot);
-  };
-
-  Map.prototype.clear=function() {"use strict";
-    if (this.__ownerID) {
-      this.length = 0;
-      this.$Map_root = null;
-      return this;
-    }
-    return Map.empty();
-  };
-
-  // @pragma Composition
-
-  Map.prototype.merge=function() {"use strict";
-    return mergeIntoMapWith(this, null, arguments);
-  };
-
-  Map.prototype.mergeWith=function(merger)  {"use strict";var seqs=Array.prototype.slice.call(arguments,1);
-    return mergeIntoMapWith(this, merger, seqs);
-  };
-
-  Map.prototype.mergeDeep=function() {"use strict";
-    return mergeIntoMapWith(this, deepMerger(null), arguments);
-  };
-
-  Map.prototype.mergeDeepWith=function(merger)  {"use strict";var seqs=Array.prototype.slice.call(arguments,1);
-    return mergeIntoMapWith(this, deepMerger(merger), seqs);
-  };
-
-  Map.prototype.updateIn=function(keyPath, updater) {"use strict";
-    return updateInDeepMap(this, keyPath, updater, 0);
-  };
-
-  // @pragma Mutability
-
-  Map.prototype.withMutations=function(fn) {"use strict";
-    var mutable = this.asMutable();
-    fn(mutable);
-    return mutable.__ensureOwner(this.__ownerID);
-  };
-
-  Map.prototype.asMutable=function() {"use strict";
-    return this.__ownerID ? this : this.__ensureOwner(new OwnerID());
-  };
-
-  Map.prototype.asImmutable=function() {"use strict";
-    return this.__ensureOwner();
-  };
-
-  Map.prototype.__ensureOwner=function(ownerID) {"use strict";
-    if (ownerID === this.__ownerID) {
-      return this;
-    }
-    if (!ownerID) {
-      this.__ownerID = ownerID;
-      return this;
-    }
-    return Map.$Map_make(this.length, this.$Map_root, ownerID);
-  };
-
-  // @pragma Iteration
-
-  Map.prototype.__deepEqual=function(other) {"use strict";
-    var is = require('./Immutable').is;
-    // Using Sentinel here ensures that a missing key is not interpretted as an
-    // existing key set to be null.
-    var self = this;
-    return other.every(function(v, k)  {return is(self.get(k, __SENTINEL), v);});
-  };
-
-  Map.prototype.__iterate=function(fn, reverse) {"use strict";
-    return this.$Map_root ? this.$Map_root.iterate(this, fn, reverse) : 0;
-  };
-
-  // @pragma Private
-
-  Map.$Map_make=function(length, root, ownerID) {"use strict";
-    var map = Object.create(Map.prototype);
-    map.length = length;
-    map.$Map_root = root;
-    map.__ownerID = ownerID;
-    return map;
-  };
-
-
-Map.from = Map;
-
-
-
-  function OwnerID() {"use strict";}
-
-
-
-
-
-  function BitmapIndexedNode(ownerID, bitmap, keys, values) {"use strict";
-    this.ownerID = ownerID;
-    this.bitmap = bitmap;
-    this.keys = keys;
-    this.values = values;
-  }
-
-  BitmapIndexedNode.prototype.get=function(shift, hash, key, notFound) {"use strict";
-    var idx = (hash >>> shift) & MASK;
-    if ((this.bitmap & (1 << idx)) === 0) {
-      return notFound;
-    }
-    var keyOrNull = this.keys[idx];
-    var valueOrNode = this.values[idx];
-    if (keyOrNull == null) {
-      return valueOrNode.get(shift + SHIFT, hash, key, notFound);
-    }
-    return key === keyOrNull ? valueOrNode : notFound;
-  };
-
-  BitmapIndexedNode.prototype.set=function(ownerID, shift, hash, key, value, didAddLeaf) {"use strict";
-    var editable;
-    var idx = (hash >>> shift) & MASK;
-    var bit = 1 << idx;
-    if ((this.bitmap & bit) === 0) {
-      didAddLeaf && (didAddLeaf.value = true);
-      editable = this.ensureOwner(ownerID);
-      editable.keys[idx] = key;
-      editable.values[idx] = value;
-      editable.bitmap |= bit;
-      return editable;
-    }
-    var keyOrNull = this.keys[idx];
-    var valueOrNode = this.values[idx];
-    var newNode;
-    if (keyOrNull == null) {
-      newNode = valueOrNode.set(ownerID, shift + SHIFT, hash, key, value, didAddLeaf);
-      if (newNode === valueOrNode) {
-        return this;
-      }
-      editable = this.ensureOwner(ownerID);
-      editable.values[idx] = newNode;
-      return editable;
-    }
-    if (key === keyOrNull) {
-      if (value === valueOrNode) {
-        return this;
-      }
-      editable = this.ensureOwner(ownerID);
-      editable.values[idx] = value;
-      return editable;
-    }
-    var originalHash = hashValue(keyOrNull);
-    if (hash === originalHash) {
-      newNode = new HashCollisionNode(ownerID, hash, [keyOrNull, key], [valueOrNode, value]);
-    } else {
-      newNode = makeNode(ownerID, shift + SHIFT, originalHash, keyOrNull, valueOrNode)
-        .set(ownerID, shift + SHIFT, hash, key, value);
-    }
-    didAddLeaf && (didAddLeaf.value = true);
-    editable = this.ensureOwner(ownerID);
-    delete editable.keys[idx];
-    editable.values[idx] = newNode;
-    return editable;
-  };
-
-  BitmapIndexedNode.prototype.delete=function(ownerID, shift, hash, key, didRemoveLeaf) {"use strict";
-    var editable;
-    var idx = (hash >>> shift) & MASK;
-    var bit = 1 << idx;
-    var keyOrNull = this.keys[idx];
-    if ((this.bitmap & bit) === 0 || (keyOrNull != null && key !== keyOrNull)) {
-      return this;
-    }
-    if (keyOrNull == null) {
-      var node = this.values[idx];
-      var newNode = node.delete(ownerID, shift + SHIFT, hash, key, didRemoveLeaf);
-      if (newNode === node) {
-        return this;
-      }
-      if (newNode) {
-        editable = this.ensureOwner(ownerID);
-        editable.values[idx] = newNode;
-        return editable;
-      }
-    } else {
-      didRemoveLeaf && (didRemoveLeaf.value = true);
-    }
-    if (this.bitmap === bit) {
-      return null;
-    }
-    editable = this.ensureOwner(ownerID);
-    delete editable.keys[idx];
-    delete editable.values[idx];
-    editable.bitmap ^= bit;
-    return editable;
-  };
-
-  BitmapIndexedNode.prototype.ensureOwner=function(ownerID) {"use strict";
-    if (ownerID && ownerID === this.ownerID) {
-      return this;
-    }
-    return new BitmapIndexedNode(ownerID, this.bitmap, this.keys.slice(), this.values.slice());
-  };
-
-  BitmapIndexedNode.prototype.iterate=function(map, fn, reverse) {"use strict";
-    var values = this.values;
-    var keys = this.keys;
-    var maxIndex = values.length;
-    for (var ii = 0; ii <= maxIndex; ii++) {
-      var index = reverse ? maxIndex - ii : ii;
-      var key = keys[index];
-      var valueOrNode = values[index];
-      if (key != null) {
-        if (fn(valueOrNode, key, map) === false) {
-          return false;
-        }
-      } else if (valueOrNode && !valueOrNode.iterate(map, fn, reverse)) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-
-
-
-
-  function HashCollisionNode(ownerID, collisionHash, keys, values) {"use strict";
-    this.ownerID = ownerID;
-    this.collisionHash = collisionHash;
-    this.keys = keys;
-    this.values = values;
-  }
-
-  HashCollisionNode.prototype.get=function(shift, hash, key, notFound) {"use strict";
-    var idx = Sequence(this.keys).indexOf(key);
-    return idx === -1 ? notFound : this.values[idx];
-  };
-
-  HashCollisionNode.prototype.set=function(ownerID, shift, hash, key, value, didAddLeaf) {"use strict";
-    if (hash !== this.collisionHash) {
-      didAddLeaf && (didAddLeaf.value = true);
-      return makeNode(ownerID, shift, hash, null, this)
-        .set(ownerID, shift, hash, key, value);
-    }
-    var idx = Sequence(this.keys).indexOf(key);
-    if (idx >= 0 && this.values[idx] === value) {
-      return this;
-    }
-    var editable = this.ensureOwner(ownerID);
-    if (idx === -1) {
-      editable.keys.push(key);
-      editable.values.push(value);
-      didAddLeaf && (didAddLeaf.value = true);
-    } else {
-      editable.values[idx] = value;
-    }
-    return editable;
-  };
-
-  HashCollisionNode.prototype.delete=function(ownerID, shift, hash, key, didRemoveLeaf) {"use strict";
-    var idx = this.keys.indexOf(key);
-    if (idx === -1) {
-      return this;
-    }
-    didRemoveLeaf && (didRemoveLeaf.value = true);
-    if (this.values.length > 1) {
-      var editable = this.ensureOwner(ownerID);
-      editable.keys[idx] = editable.keys.pop();
-      editable.values[idx] = editable.values.pop();
-      return editable;
-    }
-  };
-
-  HashCollisionNode.prototype.ensureOwner=function(ownerID) {"use strict";
-    if (ownerID && ownerID === this.ownerID) {
-      return this;
-    }
-    return new HashCollisionNode(ownerID, this.collisionHash, this.keys.slice(), this.values.slice());
-  };
-
-  HashCollisionNode.prototype.iterate=function(map, fn, reverse) {"use strict";
-    var values = this.values;
-    var keys = this.keys;
-    var maxIndex = values.length - 1;
-    for (var ii = 0; ii <= maxIndex; ii++) {
-      var index = reverse ? maxIndex - ii : ii;
-      if (fn(values[index], keys[index], map) === false) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-
-
-function makeNode(ownerID, shift, hash, key, valOrNode) {
-  var idx = (hash >>> shift) & MASK;
-  var keys = [];
-  var values = [];
-  values[idx] = valOrNode;
-  key != null && (keys[idx] = key);
-  return new BitmapIndexedNode(ownerID, 1 << idx, keys, values);
+function invariant(condition, error) {
+  if (!condition)
+    throw new Error(error);
 }
-
-function deepMerger(merger) {
-  return function(existing, value) 
-    {return existing && existing.mergeDeepWith ?
-      existing.mergeDeepWith(merger, value) :
-      merger ? merger(existing, value) : value;};
-}
-
-function mergeIntoMapWith(map, merger, seqs) {
-  if (seqs.length === 0) {
-    return map;
-  }
-  return map.withMutations(function(map)  {
-    for (var ii = 0; ii < seqs.length; ii++) {
-      var seq = seqs[ii];
-      if (seq) {
-        seq = seq.forEach ? seq : Sequence(seq);
-        seq.forEach(
-          merger ?
-          function(value, key)  {
-            var existing = map.get(key, __SENTINEL);
-            map.set(key, existing === __SENTINEL ? value : merger(existing, value));
-          } :
-          function(value, key)  {
-            map.set(key, value);
-          }
-        );
-      }
-    }
-  });
-}
-
-function updateInDeepMap(collection, keyPath, updater, pathOffset) {
-  var key = keyPath[pathOffset];
-  var nested = collection.get ? collection.get(key, __SENTINEL) : __SENTINEL;
-  if (nested === __SENTINEL) {
-    return collection;
-  }
-  return collection.set ? collection.set(
-    key,
-    pathOffset === keyPath.length - 1 ?
-      updater(nested) :
-      updateInDeepMap(nested, keyPath, updater, pathOffset + 1)
-  ) : collection;
-}
-
-var __BOOL_REF = {value: false};
-function BoolRef(value) {
-  __BOOL_REF.value = value;
-  return __BOOL_REF;
-}
-
-function hashValue(o) {
-  if (!o) { // false, 0, and null
+function hash(o) {
+  if (!o) {
     return 0;
   }
   if (o === true) {
     return 1;
   }
-  if (typeof o.hashCode === 'function') {
-    return o.hashCode();
-  }
   var type = typeof o;
   if (type === 'number') {
-    return Math.floor(o) % 2147483647; // 2^31-1
+    if ((o | 0) === o) {
+      return o & HASH_MAX_VAL;
+    }
+    o = '' + o;
+    type = 'string';
   }
   if (type === 'string') {
-    return hashString(o);
+    return o.length > STRING_HASH_CACHE_MIN_STRLEN ? cachedHashString(o) : hashString(o);
   }
-  throw new Error('Unable to hash');
+  if (o.hashCode) {
+    return hash(typeof o.hashCode === 'function' ? o.hashCode() : o.hashCode);
+  }
+  return hashJSObj(o);
 }
-
-// http://jsperf.com/string-hash-to-int
-function hashString(string) {
-  var hash = STRING_HASH_CACHE[string];
+function cachedHashString(string) {
+  var hash = stringHashCache[string];
   if (hash == null) {
-    // This is the hash from JVM
-    // The hash code for a string is computed as
-    // s[0] * 31 ^ (n - 1) + s[1] * 31 ^ (n - 2) + ... + s[n - 1],
-    // where s[i] is the ith character of the string and n is the length of
-    // the string. We mod the result to make it between 0 (inclusive) and 2^32
-    // (exclusive).
-    hash = 0;
-    for (var ii = 0; ii < string.length; ii++) {
-      hash = (31 * hash + string.charCodeAt(ii)) % STRING_HASH_MAX_VAL;
-    }
+    hash = hashString(string);
     if (STRING_HASH_CACHE_SIZE === STRING_HASH_CACHE_MAX_SIZE) {
       STRING_HASH_CACHE_SIZE = 0;
-      STRING_HASH_CACHE = {};
+      stringHashCache = {};
     }
     STRING_HASH_CACHE_SIZE++;
-    STRING_HASH_CACHE[string] = hash;
+    stringHashCache[string] = hash;
   }
   return hash;
 }
-
-
-var STRING_HASH_MAX_VAL = 0x100000000; // 2^32
+function hashString(string) {
+  var hash = 0;
+  for (var ii = 0; ii < string.length; ii++) {
+    hash = (31 * hash + string.charCodeAt(ii)) & HASH_MAX_VAL;
+  }
+  return hash;
+}
+function hashJSObj(obj) {
+  var hash = weakMap && weakMap.get(obj);
+  if (hash)
+    return hash;
+  hash = obj[UID_HASH_KEY];
+  if (hash)
+    return hash;
+  if (!canDefineProperty) {
+    hash = obj.propertyIsEnumerable && obj.propertyIsEnumerable[UID_HASH_KEY];
+    if (hash)
+      return hash;
+    hash = getIENodeHash(obj);
+    if (hash)
+      return hash;
+  }
+  if (Object.isExtensible && !Object.isExtensible(obj)) {
+    throw new Error('Non-extensible objects are not allowed as keys.');
+  }
+  hash = ++objHashUID & HASH_MAX_VAL;
+  if (weakMap) {
+    weakMap.set(obj, hash);
+  } else if (canDefineProperty) {
+    Object.defineProperty(obj, UID_HASH_KEY, {
+      'enumerable': false,
+      'configurable': false,
+      'writable': false,
+      'value': hash
+    });
+  } else if (obj.propertyIsEnumerable && obj.propertyIsEnumerable === obj.constructor.prototype.propertyIsEnumerable) {
+    obj.propertyIsEnumerable = function() {
+      return this.constructor.prototype.propertyIsEnumerable.apply(this, arguments);
+    };
+    obj.propertyIsEnumerable[UID_HASH_KEY] = hash;
+  } else if (obj.nodeType) {
+    obj[UID_HASH_KEY] = hash;
+  } else {
+    throw new Error('Unable to set a non-enumerable property on object.');
+  }
+  return hash;
+}
+var canDefineProperty = (function() {
+  try {
+    Object.defineProperty({}, 'x', {});
+    return true;
+  } catch (e) {
+    return false;
+  }
+}());
+function getIENodeHash(node) {
+  if (node && node.nodeType > 0) {
+    switch (node.nodeType) {
+      case 1:
+        return node.uniqueID;
+      case 9:
+        return node.documentElement && node.documentElement.uniqueID;
+    }
+  }
+}
+var weakMap = typeof WeakMap === 'function' && new WeakMap();
+var HASH_MAX_VAL = 0x7FFFFFFF;
+var objHashUID = 0;
+var UID_HASH_KEY = '__immutablehash__';
+if (typeof Symbol === 'function') {
+  UID_HASH_KEY = Symbol(UID_HASH_KEY);
+}
+var STRING_HASH_CACHE_MIN_STRLEN = 16;
 var STRING_HASH_CACHE_MAX_SIZE = 255;
 var STRING_HASH_CACHE_SIZE = 0;
-var STRING_HASH_CACHE = {};
-
-
-var SHIFT = 5; // Resulted in best performance after ______?
-var SIZE = 1 << SHIFT;
-var MASK = SIZE - 1;
-var __SENTINEL = {};
-var __EMPTY_MAP;
-
-module.exports = Map;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Map.js","/../../../node_modules/immutable/dist")
-},{"./Immutable":173,"./Sequence":179,"1YiZ5S":11,"buffer":7}],175:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var ImmutableMap = require('./Map');
-
-
-for(var ImmutableMap____Key in ImmutableMap){if(ImmutableMap.hasOwnProperty(ImmutableMap____Key)){OrderedMap[ImmutableMap____Key]=ImmutableMap[ImmutableMap____Key];}}var ____SuperProtoOfImmutableMap=ImmutableMap===null?null:ImmutableMap.prototype;OrderedMap.prototype=Object.create(____SuperProtoOfImmutableMap);OrderedMap.prototype.constructor=OrderedMap;OrderedMap.__superConstructor__=ImmutableMap;
-
-  // @pragma Construction
-
-  function OrderedMap(sequence) {"use strict";
-    if (sequence && sequence.constructor === OrderedMap) {
-      return sequence;
-    }
-    if (!sequence || sequence.length === 0) {
-      return OrderedMap.empty();
-    }
-    return OrderedMap.empty().merge(sequence);
-  }
-
-  OrderedMap.empty=function() {"use strict";
-    return __EMPTY_ORDERED_MAP || (__EMPTY_ORDERED_MAP = OrderedMap.$OrderedMap_make());
-  };
-
-  OrderedMap.prototype.toString=function() {"use strict";
-    return this.__toString('OrderedMap {', '}');
-  };
-
-  // @pragma Access
-
-  OrderedMap.prototype.get=function(k, undefinedValue) {"use strict";
-    if (k != null && this.$OrderedMap_map) {
-      var index = this.$OrderedMap_map.get(k);
-      if (index != null) {
-        return this.$OrderedMap_vector.get(index)[1];
-      }
-    }
-    return undefinedValue;
-  };
-
-  // @pragma Modification
-
-  OrderedMap.prototype.clear=function() {"use strict";
-    if (this.__ownerID) {
-      this.length = 0;
-      this.$OrderedMap_map = this.$OrderedMap_vector = null;
-      return this;
-    }
-    return OrderedMap.empty();
-  };
-
-  OrderedMap.prototype.set=function(k, v) {"use strict";
-    if (k == null) {
-      return this;
-    }
-    var newMap = this.$OrderedMap_map;
-    var newVector = this.$OrderedMap_vector;
-    if (newMap) {
-      var index = newMap.get(k);
-      if (index == null) {
-        newMap = newMap.set(k, newVector.length);
-        newVector = newVector.push([k, v]);
-      } else if (newVector.get(index)[1] !== v) {
-        newVector = newVector.set(index, [k, v]);
-      }
-    } else {
-      newVector = require('./Vector').empty().__ensureOwner(this.__ownerID).set(0, [k, v]);
-      newMap = ImmutableMap.empty().__ensureOwner(this.__ownerID).set(k, 0);
-    }
-    if (this.__ownerID) {
-      this.length = newMap.length;
-      this.$OrderedMap_map = newMap;
-      this.$OrderedMap_vector = newVector;
-      return this;
-    }
-    return newVector === this.$OrderedMap_vector ? this : OrderedMap.$OrderedMap_make(newMap, newVector);
-  };
-
-  OrderedMap.prototype.delete=function(k) {"use strict";
-    if (k == null || this.$OrderedMap_map == null) {
-      return this;
-    }
-    var index = this.$OrderedMap_map.get(k);
-    if (index == null) {
-      return this;
-    }
-    var newMap = this.$OrderedMap_map.delete(k);
-    var newVector = this.$OrderedMap_vector.delete(index);
-
-    if (newMap.length === 0) {
-      return this.clear();
-    }
-    if (this.__ownerID) {
-      this.length = newMap.length;
-      this.$OrderedMap_map = newMap;
-      this.$OrderedMap_vector = newVector;
-      return this;
-    }
-    return newMap === this.$OrderedMap_map ? this : OrderedMap.$OrderedMap_make(newMap, newVector);
-  };
-
-  // @pragma Mutability
-
-  OrderedMap.prototype.__ensureOwner=function(ownerID) {"use strict";
-    if (ownerID === this.__ownerID) {
-      return this;
-    }
-    var newMap = this.$OrderedMap_map && this.$OrderedMap_map.__ensureOwner(ownerID);
-    var newVector = this.$OrderedMap_vector && this.$OrderedMap_vector.__ensureOwner(ownerID);
-    if (!ownerID) {
-      this.__ownerID = ownerID;
-      this.$OrderedMap_map = newMap;
-      this.$OrderedMap_vector = newVector;
-      return this;
-    }
-    return OrderedMap.$OrderedMap_make(newMap, newVector, ownerID);
-  };
-
-
-  // @pragma Iteration
-
-  OrderedMap.prototype.__deepEqual=function(other) {"use strict";
-    var is = require('./Immutable').is;
-    var iterator = this.$OrderedMap_vector.__iterator__();
-    return other.every(function(v, k)  {
-      var entry = iterator.next();
-      entry && (entry = entry[1]);
-      return entry && is(k, entry[0]) && is(v, entry[1]);
-    });
-  };
-
-  OrderedMap.prototype.__iterate=function(fn, reverse) {"use strict";
-    return this.$OrderedMap_vector ? this.$OrderedMap_vector.fromEntries().__iterate(fn, reverse) : 0;
-  };
-
-  // @pragma Private
-
-  OrderedMap.$OrderedMap_make=function(map, vector, ownerID) {"use strict";
-    var omap = Object.create(OrderedMap.prototype);
-    omap.length = map ? map.length : 0;
-    omap.$OrderedMap_map = map;
-    omap.$OrderedMap_vector = vector;
-    omap.__ownerID = ownerID;
-    return omap;
-  };
-
-
-OrderedMap.from = OrderedMap;
-
-
-var __EMPTY_ORDERED_MAP;
-
-module.exports = OrderedMap;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/OrderedMap.js","/../../../node_modules/immutable/dist")
-},{"./Immutable":173,"./Map":174,"./Vector":181,"1YiZ5S":11,"buffer":7}],176:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var IndexedSequence = require('./Sequence').IndexedSequence;
-var Vector = require('./Vector');
-
-
-/**
- * Returns a lazy seq of nums from start (inclusive) to end
- * (exclusive), by step, where start defaults to 0, step to 1, and end to
- * infinity. When start is equal to end, returns empty list.
- */
-for(var IndexedSequence____Key in IndexedSequence){if(IndexedSequence.hasOwnProperty(IndexedSequence____Key)){Range[IndexedSequence____Key]=IndexedSequence[IndexedSequence____Key];}}var ____SuperProtoOfIndexedSequence=IndexedSequence===null?null:IndexedSequence.prototype;Range.prototype=Object.create(____SuperProtoOfIndexedSequence);Range.prototype.constructor=Range;Range.__superConstructor__=IndexedSequence;
-
-  function Range(start, end, step) {"use strict";
-    if (!(this instanceof Range)) {
-      return new Range(start, end, step);
-    }
-    invariant(step !== 0, 'Cannot step a Range by 0');
-    start = start || 0;
-    if (end == null) {
-      end = Infinity;
-    }
-    step = step == null ? 1 : Math.abs(step);
-    if (end < start) {
-      step = -step;
-    }
-    this.$Range_start = start;
-    this.$Range_end = end;
-    this.$Range_step = step;
-    this.length = Math.max(0, Math.ceil((end - start) / step - 1) + 1);
-  }
-
-  Range.prototype.toString=function() {"use strict";
-    if (this.length === 0) {
-      return 'Range []';
-    }
-    return 'Range [ ' +
-      this.$Range_start + '...' + this.$Range_end +
-      (this.$Range_step > 1 ? ' by ' + this.$Range_step : '') +
-    ' ]';
-  };
-
-  Range.prototype.has=function(index) {"use strict";
-    invariant(index >= 0, 'Index out of bounds');
-    return index < this.length;
-  };
-
-  Range.prototype.get=function(index, undefinedValue) {"use strict";
-    invariant(index >= 0, 'Index out of bounds');
-    return this.length === Infinity || index < this.length ?
-      this.$Range_start + index * this.$Range_step : undefinedValue;
-  };
-
-  Range.prototype.contains=function(searchValue) {"use strict";
-    var possibleIndex = (searchValue - this.$Range_start) / this.$Range_step;
-    return possibleIndex >= 0 &&
-      possibleIndex < this.length &&
-      possibleIndex === Math.floor(possibleIndex);
-  };
-
-  Range.prototype.slice=function(begin, end, maintainIndices) {"use strict";
-    if (maintainIndices) {
-      return ____SuperProtoOfIndexedSequence.slice.call(this,begin, end, maintainIndices);
-    }
-    begin = begin < 0 ? Math.max(0, this.length + begin) : Math.min(this.length, begin);
-    end = end == null ? this.length : end > 0 ? Math.min(this.length, end) : Math.max(0, this.length + end);
-    return new Range(this.get(begin), end === this.length ? this.$Range_end : this.get(end), this.$Range_step);
-  };
-
-  Range.prototype.__deepEquals=function(other) {"use strict";
-    return this.$Range_start === other.$Range_start && this.$Range_end === other.$Range_end && this.$Range_step === other.$Range_step;
-  };
-
-  Range.prototype.indexOf=function(searchValue) {"use strict";
-    var offsetValue = searchValue - this.$Range_start;
-    if (offsetValue % this.$Range_step === 0) {
-      var index = offsetValue / this.$Range_step;
-      if (index >= 0 && index < this.length) {
-        return index
-      }
-    }
-    return -1;
-  };
-
-  Range.prototype.lastIndexOf=function(searchValue) {"use strict";
-    return this.indexOf(searchValue);
-  };
-
-  Range.prototype.take=function(amount) {"use strict";
-    return this.slice(0, amount);
-  };
-
-  Range.prototype.skip=function(amount, maintainIndices) {"use strict";
-    return maintainIndices ? ____SuperProtoOfIndexedSequence.skip.call(this,amount) : this.slice(amount);
-  };
-
-  Range.prototype.__iterate=function(fn, reverse, flipIndices) {"use strict";
-    var reversedIndices = reverse ^ flipIndices;
-    var maxIndex = this.length - 1;
-    var step = this.$Range_step;
-    var value = reverse ? this.$Range_start + maxIndex * step : this.$Range_start;
-    for (var ii = 0; ii <= maxIndex; ii++) {
-      if (fn(value, reversedIndices ? maxIndex - ii : ii, this) === false) {
-        break;
-      }
-      value += reverse ? -step : step;
-    }
-    return reversedIndices ? this.length : ii;
-  };
-
-
-Range.prototype.__toJS = Range.prototype.toArray;
-Range.prototype.first = Vector.prototype.first;
-Range.prototype.last = Vector.prototype.last;
-
-
-function invariant(condition, error) {
-  if (!condition) throw new Error(error);
+var stringHashCache = {};
+var ITERATE_KEYS = 0;
+var ITERATE_VALUES = 1;
+var ITERATE_ENTRIES = 2;
+var FAUX_ITERATOR_SYMBOL = '@@iterator';
+var REAL_ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+var ITERATOR_SYMBOL = REAL_ITERATOR_SYMBOL || FAUX_ITERATOR_SYMBOL;
+var Iterator = function Iterator(next) {
+  this.next = next;
+};
+($traceurRuntime.createClass)(Iterator, {toString: function() {
+    return '[Iterator]';
+  }}, {});
+var IteratorPrototype = Iterator.prototype;
+IteratorPrototype.inspect = IteratorPrototype.toSource = function() {
+  return this.toString();
+};
+IteratorPrototype[ITERATOR_SYMBOL] = function() {
+  return this;
+};
+function iteratorValue(type, k, v, iteratorResult) {
+  var value = type === 0 ? k : type === 1 ? v : [k, v];
+  iteratorResult ? (iteratorResult.value = value) : (iteratorResult = {
+    value: value,
+    done: false
+  });
+  return iteratorResult;
 }
-
-
-module.exports = Range;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Range.js","/../../../node_modules/immutable/dist")
-},{"./Sequence":179,"./Vector":181,"1YiZ5S":11,"buffer":7}],177:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var Sequence = require('./Sequence').Sequence;
-var ImmutableMap = require('./Map');
-
-
-for(var Sequence____Key in Sequence){if(Sequence.hasOwnProperty(Sequence____Key)){Record[Sequence____Key]=Sequence[Sequence____Key];}}var ____SuperProtoOfSequence=Sequence===null?null:Sequence.prototype;Record.prototype=Object.create(____SuperProtoOfSequence);Record.prototype.constructor=Record;Record.__superConstructor__=Sequence;
-
-  function Record(defaultValues, name) {"use strict";
-    var RecordType = function(values) {
-      this.$Record_map = ImmutableMap(values);
-    };
-    defaultValues = Sequence(defaultValues);
-    RecordType.prototype = Object.create(Record.prototype);
-    RecordType.prototype.constructor = RecordType;
-    RecordType.prototype.$Record_name = name;
-    RecordType.prototype.$Record_defaultValues = defaultValues;
-
-    var keys = Object.keys(defaultValues);
-    RecordType.prototype.length = keys.length;
-    if (Object.defineProperty) {
-      defaultValues.forEach(function(_, key)  {
-        Object.defineProperty(RecordType.prototype, key, {
-          get: function() {
-            return this.get(key);
-          },
-          set: function(value) {
-            if (!this.__ownerID) {
-              throw new Error('Cannot set on an immutable record.');
-            }
-            this.set(key, value);
-          }
-        });
-      }.bind(this));
-    }
-
-    return RecordType;
-  }
-
-  Record.prototype.toString=function() {"use strict";
-    return this.__toString((this.$Record_name || 'Record') + ' {', '}');
+function iteratorDone() {
+  return {
+    value: undefined,
+    done: true
   };
-
-  // @pragma Access
-
-  Record.prototype.has=function(k) {"use strict";
-    return this.$Record_defaultValues.has(k);
-  };
-
-  Record.prototype.get=function(k, undefinedValue) {"use strict";
-    if (undefinedValue !== undefined && !this.has(k)) {
-      return undefinedValue;
-    }
-    return this.$Record_map.get(k, this.$Record_defaultValues.get(k));
-  };
-
-  // @pragma Modification
-
-  Record.prototype.clear=function() {"use strict";
-    if (this.__ownerID) {
-      this.$Record_map.clear();
-      return this;
-    }
-    return this.$Record_empty();
-  };
-
-  Record.prototype.set=function(k, v) {"use strict";
-    if (k == null || !this.has(k)) {
-      return this;
-    }
-    var newMap = this.$Record_map.set(k, v);
-    if (this.__ownerID || newMap === this.$Record_map) {
-      return this;
-    }
-    return this.$Record_make(newMap);
-  };
-
-  Record.prototype.delete=function(k) {"use strict";
-    if (k == null || !this.has(k)) {
-      return this;
-    }
-    var newMap = this.$Record_map.delete(k);
-    if (this.__ownerID || newMap === this.$Record_map) {
-      return this;
-    }
-    return this.$Record_make(newMap);
-  };
-
-  // @pragma Mutability
-
-  Record.prototype.__ensureOwner=function(ownerID) {"use strict";
-    if (ownerID === this.__ownerID) {
-      return this;
-    }
-    var newMap = this.$Record_map && this.$Record_map.__ensureOwner(ownerID);
-    if (!ownerID) {
-      this.__ownerID = ownerID;
-      this.$Record_map = newMap;
-      return this;
-    }
-    return this.$Record_make(newMap, ownerID);
-  };
-
-  // @pragma Iteration
-
-  Record.prototype.__iterate=function(fn, reverse) {"use strict";
-    var record = this;
-    return this.$Record_defaultValues.map(function(_, k)  {return record.get(k);}).__iterate(fn, reverse);
-  };
-
-  Record.prototype.$Record_empty=function() {"use strict";
-    var Record = Object.getPrototypeOf(this).constructor;
-    return Record.$Record_empty || (Record.$Record_empty = this.$Record_make(ImmutableMap.empty()));
-  };
-
-  Record.prototype.$Record_make=function(map, ownerID) {"use strict";
-    var record = Object.create(Object.getPrototypeOf(this));
-    record.$Record_map = map;
-    record.__ownerID = ownerID;
-    return record;
-  };
-
-
-Record.prototype.__deepEqual = ImmutableMap.prototype.__deepEqual;
-Record.prototype.merge = ImmutableMap.prototype.merge;
-Record.prototype.mergeWith = ImmutableMap.prototype.mergeWith;
-Record.prototype.mergeDeep = ImmutableMap.prototype.mergeDeep;
-Record.prototype.mergeDeepWith = ImmutableMap.prototype.mergeDeepWith;
-Record.prototype.updateIn = ImmutableMap.prototype.updateIn;
-Record.prototype.withMutations = ImmutableMap.prototype.withMutations;
-Record.prototype.asMutable = ImmutableMap.prototype.asMutable;
-Record.prototype.asImmutable = ImmutableMap.prototype.asImmutable;
-
-
-module.exports = Record;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Record.js","/../../../node_modules/immutable/dist")
-},{"./Map":174,"./Sequence":179,"1YiZ5S":11,"buffer":7}],178:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var IndexedSequence = require('./Sequence').IndexedSequence;
-var Range = require('./Range');
-
-
-/**
- * Returns a lazy seq of `value` repeated `times` times. When `times` is
- * undefined, returns an infinite sequence of `value`.
- */
-for(var IndexedSequence____Key in IndexedSequence){if(IndexedSequence.hasOwnProperty(IndexedSequence____Key)){Repeat[IndexedSequence____Key]=IndexedSequence[IndexedSequence____Key];}}var ____SuperProtoOfIndexedSequence=IndexedSequence===null?null:IndexedSequence.prototype;Repeat.prototype=Object.create(____SuperProtoOfIndexedSequence);Repeat.prototype.constructor=Repeat;Repeat.__superConstructor__=IndexedSequence;
-
-  function Repeat(value, times) {"use strict";
-    if (times === 0 && __EMPTY_REPEAT) {
-      return __EMPTY_REPEAT;
-    }
-    if (!(this instanceof Repeat)) {
-      return new Repeat(value, times);
-    }
-    this.$Repeat_value = value;
-    this.length = times == null ? Infinity : Math.max(0, times);
-  }
-
-  Repeat.prototype.toString=function() {"use strict";
-    if (this.length === 0) {
-      return 'Repeat []';
-    }
-    return 'Repeat [ ' + this.$Repeat_value + ' ' + this.length + ' times ]';
-  };
-
-  Repeat.prototype.get=function(index, undefinedValue) {"use strict";
-    invariant(index >= 0, 'Index out of bounds');
-    return this.length === Infinity || index < this.length ?
-      this.$Repeat_value :
-      undefinedValue;
-  };
-
-  Repeat.prototype.first=function() {"use strict";
-    return this.$Repeat_value;
-  };
-
-  Repeat.prototype.contains=function(searchValue) {"use strict";
-    var is = require('./Immutable').is;
-    return is(this.$Repeat_value, searchValue);
-  };
-
-  Repeat.prototype.__deepEquals=function(other) {"use strict";
-    var is = require('./Immutable').is;
-    return is(this.$Repeat_value, other.$Repeat_value);
-  };
-
-  Repeat.prototype.slice=function(begin, end, maintainIndices) {"use strict";
-    if (maintainIndices) {
-      return ____SuperProtoOfIndexedSequence.slice.call(this,begin, end, maintainIndices);
-    }
-    var length = this.length;
-    begin = begin < 0 ? Math.max(0, length + begin) : Math.min(length, begin);
-    end = end == null ? length : end > 0 ? Math.min(length, end) : Math.max(0, length + end);
-    return end > begin ? new Repeat(this.$Repeat_value, end - begin) : __EMPTY_REPEAT;
-  };
-
-  Repeat.prototype.reverse=function(maintainIndices) {"use strict";
-    return maintainIndices ? ____SuperProtoOfIndexedSequence.reverse.call(this,maintainIndices) : this;
-  };
-
-  Repeat.prototype.indexOf=function(searchValue) {"use strict";
-    var is = require('./Immutable').is;
-    if (is(this.$Repeat_value, searchValue)) {
-      return 0;
-    }
-    return -1;
-  };
-
-  Repeat.prototype.lastIndexOf=function(searchValue) {"use strict";
-    var is = require('./Immutable').is;
-    if (is(this.$Repeat_value, searchValue)) {
-      return this.length;
-    }
-    return -1;
-  };
-
-  Repeat.prototype.__iterate=function(fn, reverse, flipIndices) {"use strict";
-    var reversedIndices = reverse ^ flipIndices;
-    invariant(!reversedIndices || this.length < Infinity, 'Cannot access end of infinite range.');
-    var maxIndex = this.length - 1;
-    for (var ii = 0; ii <= maxIndex; ii++) {
-      if (fn(this.$Repeat_value, reversedIndices ? maxIndex - ii : ii, this) === false) {
-        break;
-      }
-    }
-    return reversedIndices ? this.length : ii;
-  };
-
-
-Repeat.prototype.has = Range.prototype.has;
-Repeat.prototype.toArray = Range.prototype.toArray;
-Repeat.prototype.toObject = Range.prototype.toObject;
-Repeat.prototype.toVector = Range.prototype.toVector;
-Repeat.prototype.toMap = Range.prototype.toMap;
-Repeat.prototype.toOrderedMap = Range.prototype.toOrderedMap;
-Repeat.prototype.toSet = Range.prototype.toSet;
-Repeat.prototype.take = Range.prototype.take;
-Repeat.prototype.skip = Range.prototype.skip;
-Repeat.prototype.last = Repeat.prototype.first;
-Repeat.prototype.__toJS = Range.prototype.__toJS;
-
-
-function invariant(condition, error) {
-  if (!condition) throw new Error(error);
 }
-
-
-var __EMPTY_REPEAT = new Repeat(undefined, 0);
-
-module.exports = Repeat;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Repeat.js","/../../../node_modules/immutable/dist")
-},{"./Immutable":173,"./Range":176,"./Sequence":179,"1YiZ5S":11,"buffer":7}],179:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var Immutable = require('./Immutable');
-
-
-
-  function Sequence(value) {"use strict";
-    return Sequence.from(
-      arguments.length === 1 ? value : Array.prototype.slice.call(arguments)
-    );
+function isIterable(maybeIterable) {
+  return !!_iteratorFn(maybeIterable);
+}
+function isIterator(maybeIterator) {
+  return maybeIterator && typeof maybeIterator.next === 'function';
+}
+function getIterator(iterable) {
+  var iteratorFn = _iteratorFn(iterable);
+  return iteratorFn && iteratorFn.call(iterable);
+}
+function _iteratorFn(iterable) {
+  var iteratorFn = iterable && ((REAL_ITERATOR_SYMBOL && iterable[REAL_ITERATOR_SYMBOL]) || iterable[FAUX_ITERATOR_SYMBOL]);
+  if (typeof iteratorFn === 'function') {
+    return iteratorFn;
   }
-
-  Sequence.from=function(value) {"use strict";
-    if (value instanceof Sequence) {
-      return value;
-    }
-    if (!Array.isArray(value)) {
-      if (value && value.constructor === Object) {
-        return new ObjectSequence(value);
-      }
-      value = [value];
-    }
-    return new ArraySequence(value);
-  };
-
-  Sequence.prototype.toString=function() {"use strict";
+}
+var Sequence = function Sequence(value) {
+  return $Sequence.from(arguments.length === 1 ? value : Array.prototype.slice.call(arguments));
+};
+var $Sequence = Sequence;
+($traceurRuntime.createClass)(Sequence, {
+  toArray: function() {
+    assertNotInfinite(this.length);
+    var array = new Array(this.length || 0);
+    this.valueSeq().__iterate((function(v, i) {
+      array[i] = v;
+    }));
+    return array;
+  },
+  toJS: function() {
+    return this.map((function(value) {
+      return value && typeof value.toJS === 'function' ? value.toJS() : value;
+    })).__toJS();
+  },
+  toMap: function() {
+    assertNotInfinite(this.length);
+    return Map.from(this);
+  },
+  toObject: function() {
+    assertNotInfinite(this.length);
+    var object = {};
+    this.__iterate((function(v, k) {
+      object[k] = v;
+    }));
+    return object;
+  },
+  toOrderedMap: function() {
+    assertNotInfinite(this.length);
+    return OrderedMap.from(this);
+  },
+  toSet: function() {
+    assertNotInfinite(this.length);
+    return Set.from(this);
+  },
+  toStack: function() {
+    assertNotInfinite(this.length);
+    return Stack.from(this);
+  },
+  toVector: function() {
+    assertNotInfinite(this.length);
+    return Vector.from(this);
+  },
+  toString: function() {
     return this.__toString('Seq {', '}');
-  };
-
-  Sequence.prototype.__toString=function(head, tail) {"use strict";
+  },
+  __toString: function(head, tail) {
     if (this.length === 0) {
       return head + tail;
     }
     return head + ' ' + this.map(this.__toStringMapper).join(', ') + ' ' + tail;
-  };
-
-  Sequence.prototype.__toStringMapper=function(v, k) {"use strict";
+  },
+  __toStringMapper: function(v, k) {
     return k + ': ' + quoteString(v);
-  };
-
-  Sequence.prototype.toJS=function() {"use strict";
-    return this.map(function(value)  {return value instanceof Sequence ? value.toJS() : value;}).__toJS();
-  };
-
-  Sequence.prototype.toArray=function() {"use strict";
-    assertNotInfinite(this.length);
-    var array = new Array(this.length || 0);
-    this.values().forEach(function(v, i)  { array[i] = v; });
-    return array;
-  };
-
-  Sequence.prototype.toObject=function() {"use strict";
-    assertNotInfinite(this.length);
-    var object = {};
-    this.forEach(function(v, k)  { object[k] = v; });
-    return object;
-  };
-
-  Sequence.prototype.toVector=function() {"use strict";
-    // Use Late Binding here to solve the circular dependency.
-    assertNotInfinite(this.length);
-    return require('./Vector').from(this);
-  };
-
-  Sequence.prototype.toMap=function() {"use strict";
-    // Use Late Binding here to solve the circular dependency.
-    assertNotInfinite(this.length);
-    return require('./Map').from(this);
-  };
-
-  Sequence.prototype.toOrderedMap=function() {"use strict";
-    // Use Late Binding here to solve the circular dependency.
-    assertNotInfinite(this.length);
-    return require('./OrderedMap').from(this);
-  };
-
-  Sequence.prototype.toSet=function() {"use strict";
-    // Use Late Binding here to solve the circular dependency.
-    assertNotInfinite(this.length);
-    return require('./Set').from(this);
-  };
-
-  Sequence.prototype.equals=function(other) {"use strict";
+  },
+  concat: function() {
+    for (var values = [],
+        $__2 = 0; $__2 < arguments.length; $__2++)
+      values[$__2] = arguments[$__2];
+    return concatFactory(this, values, true);
+  },
+  contains: function(searchValue) {
+    return this.find((function(value) {
+      return is(value, searchValue);
+    }), null, NOT_SET) !== NOT_SET;
+  },
+  entries: function() {
+    return this.__iterator(ITERATE_ENTRIES);
+  },
+  every: function(predicate, context) {
+    var returnValue = true;
+    this.__iterate((function(v, k, c) {
+      if (!predicate.call(context, v, k, c)) {
+        returnValue = false;
+        return false;
+      }
+    }));
+    return returnValue;
+  },
+  filter: function(predicate, context) {
+    return filterFactory(this, predicate, context, true);
+  },
+  find: function(predicate, context, notSetValue) {
+    var foundValue = notSetValue;
+    this.__iterate((function(v, k, c) {
+      if (predicate.call(context, v, k, c)) {
+        foundValue = v;
+        return false;
+      }
+    }));
+    return foundValue;
+  },
+  forEach: function(sideEffect, context) {
+    return this.__iterate(context ? sideEffect.bind(context) : sideEffect);
+  },
+  join: function(separator) {
+    separator = separator !== undefined ? '' + separator : ',';
+    var joined = '';
+    var isFirst = true;
+    this.__iterate((function(v) {
+      isFirst ? (isFirst = false) : (joined += separator);
+      joined += v != null ? v : '';
+    }));
+    return joined;
+  },
+  keys: function() {
+    return this.__iterator(ITERATE_KEYS);
+  },
+  map: function(mapper, context) {
+    return mapFactory(this, mapper, context);
+  },
+  reduce: function(reducer, initialReduction, context) {
+    var reduction;
+    var useFirst;
+    if (arguments.length < 2) {
+      useFirst = true;
+    } else {
+      reduction = initialReduction;
+    }
+    this.__iterate((function(v, k, c) {
+      if (useFirst) {
+        useFirst = false;
+        reduction = v;
+      } else {
+        reduction = reducer.call(context, reduction, v, k, c);
+      }
+    }));
+    return reduction;
+  },
+  reduceRight: function(reducer, initialReduction, context) {
+    var reversed = this.toKeyedSeq().reverse();
+    return reversed.reduce.apply(reversed, arguments);
+  },
+  reverse: function() {
+    return reverseFactory(this, true);
+  },
+  slice: function(begin, end) {
+    if (wholeSlice(begin, end, this.length)) {
+      return this;
+    }
+    var resolvedBegin = resolveBegin(begin, this.length);
+    var resolvedEnd = resolveEnd(end, this.length);
+    if (resolvedBegin !== resolvedBegin || resolvedEnd !== resolvedEnd) {
+      return this.cacheResult().slice(begin, end);
+    }
+    var skipped = resolvedBegin === 0 ? this : this.skip(resolvedBegin);
+    return resolvedEnd == null || resolvedEnd === this.length ? skipped : skipped.take(resolvedEnd - resolvedBegin);
+  },
+  some: function(predicate, context) {
+    return !this.every(not(predicate), context);
+  },
+  sort: function(comparator) {
+    return this.sortBy(valueMapper, comparator);
+  },
+  values: function() {
+    return this.__iterator(ITERATE_VALUES);
+  },
+  butLast: function() {
+    return this.slice(0, -1);
+  },
+  count: function(predicate, context) {
+    if (!predicate) {
+      if (this.length == null) {
+        this.length = this.__iterate(returnTrue);
+      }
+      return this.length;
+    }
+    return this.filter(predicate, context).count();
+  },
+  countBy: function(grouper, context) {
+    var $__0 = this;
+    var groupMap = {};
+    var groups = [];
+    this.__iterate((function(v, k) {
+      var g = grouper.call(context, v, k, $__0);
+      var h = hash(g);
+      if (!groupMap.hasOwnProperty(h)) {
+        groupMap[h] = groups.length;
+        groups.push([g, 1]);
+      } else {
+        groups[groupMap[h]][1]++;
+      }
+    }));
+    return $Sequence(groups).fromEntrySeq();
+  },
+  equals: function(other) {
     if (this === other) {
       return true;
     }
-    if (!(other instanceof Sequence)) {
+    if (!other || typeof other.equals !== 'function') {
       return false;
     }
     if (this.length != null && other.length != null) {
@@ -23095,1355 +21715,1789 @@ var Immutable = require('./Immutable');
         return true;
       }
     }
+    if (this.__hash != null && other.__hash != null && this.__hash !== other.__hash) {
+      return false;
+    }
     return this.__deepEquals(other);
-  };
-
-  Sequence.prototype.__deepEquals=function(other) {"use strict";
-    var entries = this.cacheResult().entries().toArray();
-    var iterations = 0;
-    return other.every(function(v, k)  {
-      var entry = entries[iterations++];
-      return Immutable.is(k, entry[0]) && Immutable.is(v, entry[1]);
-    });
-  };
-
-  Sequence.prototype.join=function(separator) {"use strict";
-    separator = separator || ',';
-    var string = '';
-    var isFirst = true;
-    this.forEach(function(v, k)  {
-      if (isFirst) {
-        isFirst = false;
-        string += v;
-      } else {
-        string += separator + v;
-      }
-    });
-    return string;
-  };
-
-  Sequence.prototype.concat=function() {"use strict";var values=Array.prototype.slice.call(arguments,0);
-    var sequences = [this].concat(values.map(function(value)  {return Sequence(value);}));
-    var concatSequence = this.__makeSequence();
-    concatSequence.length = sequences.reduce(
-      function(sum, seq)  {return sum != null && seq.length != null ? sum + seq.length : undefined;}, 0
-    );
-    concatSequence.__iterateUncached = function(fn, reverse)  {
-      var iterations = 0;
-      var stoppedIteration;
-      var lastIndex = sequences.length - 1;
-      for (var ii = 0; ii <= lastIndex && !stoppedIteration; ii++) {
-        var seq = sequences[reverse ? lastIndex - ii : ii];
-        iterations += seq.__iterate(function(v, k, c)  {
-          if (fn(v, k, c) === false) {
-            stoppedIteration = true;
-            return false;
-          }
-        }, reverse);
-      }
-      return iterations;
-    };
-    return concatSequence;
-  };
-
-  Sequence.prototype.reverse=function(maintainIndices) {"use strict";
+  },
+  __deepEquals: function(other) {
+    var entries = this.entries();
+    return typeof other.every === 'function' && other.every((function(v, k) {
+      var entry = entries.next().value;
+      return entry && is(entry[0], k) && is(entry[1], v);
+    })) && entries.next().done;
+  },
+  entrySeq: function() {
     var sequence = this;
-    var reversedSequence = sequence.__makeSequence();
-    reversedSequence.length = sequence.length;
-    reversedSequence.__iterateUncached = function(fn, reverse)  {return sequence.__iterate(fn, !reverse);};
-    reversedSequence.reverse = function()  {return sequence;};
-    return reversedSequence;
-  };
-
-  Sequence.prototype.keys=function() {"use strict";
-    return this.flip().values();
-  };
-
-  Sequence.prototype.values=function() {"use strict";
-    // values() always returns an IndexedSequence.
-    var sequence = this;
-    var valuesSequence = makeIndexedSequence(sequence);
-    valuesSequence.length = sequence.length;
-    valuesSequence.values = returnThis;
-    valuesSequence.__iterateUncached = function (fn, reverse, flipIndices) {
-      if (flipIndices && this.length == null) {
-        return this.cacheResult().__iterate(fn, reverse, flipIndices);
-      }
-      var iterations = 0;
-      var predicate;
-      if (flipIndices) {
-        iterations = this.length - 1;
-        predicate = function(v, k, c)  {return fn(v, iterations--, c) !== false;};
-      } else {
-        predicate = function(v, k, c)  {return fn(v, iterations++, c) !== false;};
-      }
-      sequence.__iterate(predicate, reverse); // intentionally do not pass flipIndices
-      return flipIndices ? this.length : iterations;
+    if (sequence._cache) {
+      return $Sequence(sequence._cache);
     }
-    return valuesSequence;
-  };
-
-  Sequence.prototype.entries=function() {"use strict";
-    var sequence = this;
-    if (sequence.$Sequence_cache) {
-      // We cache as an entries array, so we can just return the cache!
-      return Sequence(sequence.$Sequence_cache);
-    }
-    var entriesSequence = sequence.map(entryMapper).values();
-    entriesSequence.fromEntries = function()  {return sequence;};
+    var entriesSequence = sequence.toKeyedSeq().map(entryMapper).valueSeq();
+    entriesSequence.fromEntrySeq = (function() {
+      return sequence;
+    });
     return entriesSequence;
-  };
-
-  Sequence.prototype.forEach=function(sideEffect, thisArg) {"use strict";
-    return this.__iterate(thisArg ? sideEffect.bind(thisArg) : sideEffect);
-  };
-
-  Sequence.prototype.reduce=function(reducer, initialReduction, thisArg) {"use strict";
-    var reduction = initialReduction;
-    this.forEach(function(v, k, c)  {
-      reduction = reducer.call(thisArg, reduction, v, k, c);
-    });
-    return reduction;
-  };
-
-  Sequence.prototype.reduceRight=function(reducer, initialReduction, thisArg) {"use strict";
-    return this.reverse(true).reduce(reducer, initialReduction, thisArg);
-  };
-
-  Sequence.prototype.every=function(predicate, thisArg) {"use strict";
-    var returnValue = true;
-    this.forEach(function(v, k, c)  {
-      if (!predicate.call(thisArg, v, k, c)) {
-        returnValue = false;
-        return false;
-      }
-    });
-    return returnValue;
-  };
-
-  Sequence.prototype.some=function(predicate, thisArg) {"use strict";
-    return !this.every(not(predicate), thisArg);
-  };
-
-  Sequence.prototype.first=function() {"use strict";
-    return this.find(returnTrue);
-  };
-
-  Sequence.prototype.last=function() {"use strict";
-    return this.findLast(returnTrue);
-  };
-
-  Sequence.prototype.has=function(searchKey) {"use strict";
-    return this.get(searchKey, __SENTINEL) !== __SENTINEL;
-  };
-
-  Sequence.prototype.get=function(searchKey, notFoundValue) {"use strict";
-    return this.find(function(_, key)  {return Immutable.is(key, searchKey);}, null, notFoundValue);
-  };
-
-  Sequence.prototype.getIn=function(searchKeyPath, notFoundValue) {"use strict";
-    return getInDeepSequence(this, searchKeyPath, notFoundValue, 0);
-  };
-
-  Sequence.prototype.contains=function(searchValue) {"use strict";
-    return this.find(function(value)  {return Immutable.is(value, searchValue);}, null, __SENTINEL) !== __SENTINEL;
-  };
-
-  Sequence.prototype.find=function(predicate, thisArg, notFoundValue) {"use strict";
-    var foundValue = notFoundValue;
-    this.forEach(function(v, k, c)  {
-      if (predicate.call(thisArg, v, k, c)) {
-        foundValue = v;
-        return false;
-      }
-    });
-    return foundValue;
-  };
-
-  Sequence.prototype.findKey=function(predicate, thisArg) {"use strict";
+  },
+  filterNot: function(predicate, context) {
+    return this.filter(not(predicate), context);
+  },
+  findKey: function(predicate, context) {
     var foundKey;
-    this.forEach(function(v, k, c)  {
-      if (predicate.call(thisArg, v, k, c)) {
+    this.__iterate((function(v, k, c) {
+      if (predicate.call(context, v, k, c)) {
         foundKey = k;
         return false;
       }
-    });
+    }));
     return foundKey;
-  };
-
-  Sequence.prototype.findLast=function(predicate, thisArg, notFoundValue) {"use strict";
-    return this.reverse(true).find(predicate, thisArg, notFoundValue);
-  };
-
-  Sequence.prototype.findLastKey=function(predicate, thisArg) {"use strict";
-    return this.reverse(true).findKey(predicate, thisArg);
-  };
-
-  Sequence.prototype.flip=function() {"use strict";
-    // flip() always returns a non-indexed Sequence.
-    var sequence = this;
-    var flipSequence = makeSequence();
-    flipSequence.length = sequence.length;
-    flipSequence.flip = function()  {return sequence;};
-    flipSequence.__iterateUncached = function(fn, reverse) 
-      {return sequence.__iterate(function(v, k, c)  {return fn(k, v, c) !== false;}, reverse);};
-    return flipSequence;
-  };
-
-  Sequence.prototype.map=function(mapper, thisArg) {"use strict";
-    var sequence = this;
-    var mappedSequence = sequence.__makeSequence();
-    mappedSequence.length = sequence.length;
-    mappedSequence.__iterateUncached = function(fn, reverse) 
-      {return sequence.__iterate(function(v, k, c)  {return fn(mapper.call(thisArg, v, k, c), k, c) !== false;}, reverse);};
-    return mappedSequence;
-  };
-
-  Sequence.prototype.filter=function(predicate, thisArg) {"use strict";
-    return filterFactory(this, predicate, thisArg, true, false);
-  };
-
-  Sequence.prototype.slice=function(begin, end) {"use strict";
-    if (wholeSlice(begin, end, this.length)) {
-      return this;
-    }
-    var resolvedBegin = resolveBegin(begin, this.length);
-    var resolvedEnd = resolveEnd(end, this.length);
-    // begin or end will be NaN if they were provided as negative numbers and
-    // this sequence's length is unknown. In that case, convert it to an
-    // IndexedSequence by getting entries() and convert back to a sequence with
-    // fromEntries(). IndexedSequence.prototype.slice will appropriately handle
-    // this case.
-    if (resolvedBegin !== resolvedBegin || resolvedEnd !== resolvedEnd) {
-      return this.entries().slice(begin, end).fromEntries();
-    }
-    var skipped = resolvedBegin === 0 ? this : this.skip(resolvedBegin);
-    return resolvedEnd == null || resolvedEnd === this.length ?
-      skipped : skipped.take(resolvedEnd - resolvedBegin);
-  };
-
-  Sequence.prototype.take=function(amount) {"use strict";
-    var iterations = 0;
-    var sequence = this.takeWhile(function()  {return iterations++ < amount;});
-    sequence.length = this.length && Math.min(this.length, amount);
-    return sequence;
-  };
-
-  Sequence.prototype.takeLast=function(amount, maintainIndices) {"use strict";
-    return this.reverse(maintainIndices).take(amount).reverse(maintainIndices);
-  };
-
-  Sequence.prototype.takeWhile=function(predicate, thisArg, maintainIndices) {"use strict";
-    var sequence = this;
-    var takeSequence = sequence.__makeSequence();
-    takeSequence.__iterateUncached = function(fn, reverse, flipIndices) {
-      if (reverse) {
-        // TODO: can we do a better job of this?
-        return this.cacheResult().__iterate(fn, reverse, flipIndices);
-      }
-      var iterations = 0;
-      sequence.__iterate(function(v, k, c)  {
-        if (predicate.call(thisArg, v, k, c) && fn(v, k, c) !== false) {
-          iterations++;
-        } else {
-          return false;
+  },
+  findLast: function(predicate, context, notSetValue) {
+    return this.toKeyedSeq().reverse().find(predicate, context, notSetValue);
+  },
+  findLastKey: function(predicate, context) {
+    return this.toKeyedSeq().reverse().findKey(predicate, context);
+  },
+  first: function() {
+    return this.find(returnTrue);
+  },
+  flatMap: function(mapper, context) {
+    return this.map((function(v, k, c) {
+      return $Sequence(mapper.call(context, v, k, c));
+    })).flatten(true);
+  },
+  flatten: function(depth) {
+    return flattenFactory(this, depth, true);
+  },
+  flip: function() {
+    return flipFactory(this);
+  },
+  get: function(searchKey, notSetValue) {
+    return this.find((function(_, key) {
+      return is(key, searchKey);
+    }), null, notSetValue);
+  },
+  getIn: function(searchKeyPath, notSetValue) {
+    var nested = this;
+    if (searchKeyPath) {
+      for (var ii = 0; ii < searchKeyPath.length; ii++) {
+        nested = nested && nested.get ? nested.get(searchKeyPath[ii], NOT_SET) : NOT_SET;
+        if (nested === NOT_SET) {
+          return notSetValue;
         }
-      }, reverse, flipIndices);
-      return iterations;
-    };
-    return takeSequence;
-  };
-
-  Sequence.prototype.takeUntil=function(predicate, thisArg, maintainIndices) {"use strict";
-    return this.takeWhile(not(predicate), thisArg, maintainIndices);
-  };
-
-  Sequence.prototype.skip=function(amount, maintainIndices) {"use strict";
-    if (amount === 0) {
-      return this;
-    }
-    var iterations = 0;
-    var sequence = this.skipWhile(function()  {return iterations++ < amount;}, null, maintainIndices);
-    sequence.length = this.length && Math.max(0, this.length - amount);
-    return sequence;
-  };
-
-  Sequence.prototype.skipLast=function(amount, maintainIndices) {"use strict";
-    return this.reverse(maintainIndices).skip(amount).reverse(maintainIndices);
-  };
-
-  Sequence.prototype.skipWhile=function(predicate, thisArg, maintainIndices) {"use strict";
-    var sequence = this;
-    var skipSequence = sequence.__makeSequence();
-    skipSequence.__iterateUncached = function (fn, reverse, flipIndices) {
-      if (reverse) {
-        // TODO: can we do a better job of this?
-        return this.cacheResult().__iterate(fn, reverse, flipIndices);
       }
-      var isSkipping = true;
-      var iterations = 0;
-      sequence.__iterate(function(v, k, c)  {
-        if (!(isSkipping && (isSkipping = predicate.call(thisArg, v, k, c)))) {
-          if (fn(v, k, c) !== false) {
-            iterations++;
-          } else {
-            return false;
-          }
-        }
-      }, reverse, flipIndices);
-      return iterations;
-    };
-    return skipSequence;
-  };
-
-  Sequence.prototype.skipUntil=function(predicate, thisArg, maintainIndices) {"use strict";
-    return this.skipWhile(not(predicate), thisArg, maintainIndices);
-  };
-
-  Sequence.prototype.groupBy=function(mapper, context) {"use strict";
+    }
+    return nested;
+  },
+  groupBy: function(grouper, context) {
+    return groupByFactory(this, grouper, context, true);
+  },
+  has: function(searchKey) {
+    return this.get(searchKey, NOT_SET) !== NOT_SET;
+  },
+  keySeq: function() {
+    return this.flip().valueSeq();
+  },
+  last: function() {
+    return this.reverse().first();
+  },
+  mapEntries: function(mapper, context) {
+    var $__0 = this;
+    return this.entrySeq().map((function(entry, index) {
+      return mapper.call(context, entry, index, $__0);
+    })).fromEntrySeq();
+  },
+  mapKeys: function(mapper, context) {
+    var $__0 = this;
+    return this.flip().map((function(k, v) {
+      return mapper.call(context, k, v, $__0);
+    })).flip();
+  },
+  max: function(comparator) {
+    return this.maxBy(valueMapper, comparator);
+  },
+  maxBy: function(mapper, comparator) {
+    comparator = comparator || defaultComparator;
     var seq = this;
-    var groups = require('./OrderedMap').empty().withMutations(function(map)  {
-      seq.forEach(function(value, key, collection)  {
-        var groupKey = mapper(value, key, collection);
-        var group = map.get(groupKey, __SENTINEL);
-        if (group === __SENTINEL) {
-          group = [];
-          map.set(groupKey, group);
-        }
-        group.push([key, value]);
-      });
-    })
-    return groups.map(function(group)  {return Sequence(group).fromEntries();});
-  };
-
-  Sequence.prototype.cacheResult=function() {"use strict";
-    if (!this.$Sequence_cache && this.__iterateUncached) {
+    var maxEntry = seq.entrySeq().reduce((function(max, next) {
+      return comparator(mapper(next[1], next[0], seq), mapper(max[1], max[0], seq)) > 0 ? next : max;
+    }));
+    return maxEntry && maxEntry[1];
+  },
+  min: function(comparator) {
+    return this.minBy(valueMapper, comparator);
+  },
+  minBy: function(mapper, comparator) {
+    comparator = comparator || defaultComparator;
+    var seq = this;
+    var minEntry = seq.entrySeq().reduce((function(min, next) {
+      return comparator(mapper(next[1], next[0], seq), mapper(min[1], min[0], seq)) < 0 ? next : min;
+    }));
+    return minEntry && minEntry[1];
+  },
+  rest: function() {
+    return this.slice(1);
+  },
+  skip: function(amount) {
+    return skipFactory(this, amount, true);
+  },
+  skipLast: function(amount) {
+    return this.reverse().skip(amount).reverse();
+  },
+  skipWhile: function(predicate, context) {
+    return skipWhileFactory(this, predicate, context, true);
+  },
+  skipUntil: function(predicate, context) {
+    return this.skipWhile(not(predicate), context);
+  },
+  sortBy: function(mapper, comparator) {
+    comparator = comparator || defaultComparator;
+    var seq = this;
+    return $Sequence(seq.entrySeq().entrySeq().toArray().sort((function(a, b) {
+      return comparator(mapper(a[1][1], a[1][0], seq), mapper(b[1][1], b[1][0], seq)) || a[0] - b[0];
+    }))).fromEntrySeq().valueSeq().fromEntrySeq();
+  },
+  take: function(amount) {
+    return takeFactory(this, amount);
+  },
+  takeLast: function(amount) {
+    return this.reverse().take(amount).reverse();
+  },
+  takeWhile: function(predicate, context) {
+    return takeWhileFactory(this, predicate, context);
+  },
+  takeUntil: function(predicate, context) {
+    return this.takeWhile(not(predicate), context);
+  },
+  toKeyedSeq: function() {
+    return this;
+  },
+  valueSeq: function() {
+    return new ValuesSequence(this);
+  },
+  cacheResult: function() {
+    if (!this._cache && this.__iterateUncached) {
       assertNotInfinite(this.length);
-      this.$Sequence_cache = this.entries().toArray();
+      this._cache = this.entrySeq().toArray();
       if (this.length == null) {
-        this.length = this.$Sequence_cache.length;
+        this.length = this._cache.length;
       }
     }
     return this;
-  };
-
-  // abstract __iterateUncached(fn, reverse)
-
-  Sequence.prototype.__iterate=function(fn, reverse, flipIndices) {"use strict";
-    if (!this.$Sequence_cache) {
-      return this.__iterateUncached(fn, reverse, flipIndices);
+  },
+  hashCode: function() {
+    return this.__hash || (this.__hash = this.length === Infinity ? 0 : this.reduce((function(h, v, k) {
+      return (h + (hash(v) ^ (v === k ? 0 : hash(k)))) & HASH_MAX_VAL;
+    }), 0));
+  },
+  __makeSequence: function() {
+    return Object.create(SequencePrototype);
+  },
+  __iterate: function(fn, reverse) {
+    return iterate(this, fn, reverse, true);
+  },
+  __iterator: function(type, reverse) {
+    return iterator(this, type, reverse, true);
+  }
+}, {from: function(value) {
+    if (value instanceof $Sequence) {
+      return value;
     }
-    var maxIndex = this.length - 1;
-    var cache = this.$Sequence_cache;
-    var c = this;
-    if (reverse) {
-      for (var ii = cache.length - 1; ii >= 0; ii--) {
-        var revEntry = cache[ii];
-        if (fn(revEntry[1], flipIndices ? revEntry[0] : maxIndex - revEntry[0], c) === false) {
-          break;
-        }
+    if (!Array.isArray(value)) {
+      if (isIterator(value)) {
+        return new IteratorSequence(value);
       }
-    } else {
-      cache.every(flipIndices ?
-        function(entry)  {return fn(entry[1], maxIndex - entry[0], c) !== false;} :
-        function(entry)  {return fn(entry[1], entry[0], c) !== false;}
-      );
+      if (isIterable(value)) {
+        return new IterableSequence(value);
+      }
+      if (value && value.constructor === Object) {
+        return new ObjectSequence(value);
+      }
+      value = [value];
     }
-    return this.length;
-  };
-
-  Sequence.prototype.__makeSequence=function() {"use strict";
-    return makeSequence();
-  };
-
-
-Sequence.prototype.toJSON = Sequence.prototype.toJS;
-Sequence.prototype.inspect = Sequence.prototype.toSource = function() { return this.toString(); };
-Sequence.prototype.__toJS = Sequence.prototype.toObject;
-
-
-for(var Sequence____Key in Sequence){if(Sequence.hasOwnProperty(Sequence____Key)){IndexedSequence[Sequence____Key]=Sequence[Sequence____Key];}}var ____SuperProtoOfSequence=Sequence===null?null:Sequence.prototype;IndexedSequence.prototype=Object.create(____SuperProtoOfSequence);IndexedSequence.prototype.constructor=IndexedSequence;IndexedSequence.__superConstructor__=Sequence;function IndexedSequence(){"use strict";if(Sequence!==null){Sequence.apply(this,arguments);}}
-
-  IndexedSequence.prototype.toString=function() {"use strict";
+    return new ArraySequence(value);
+  }});
+var SequencePrototype = Sequence.prototype;
+SequencePrototype[ITERATOR_SYMBOL] = SequencePrototype.entries;
+SequencePrototype.toJSON = SequencePrototype.toJS;
+SequencePrototype.__toJS = SequencePrototype.toObject;
+SequencePrototype.inspect = SequencePrototype.toSource = function() {
+  return this.toString();
+};
+SequencePrototype.chain = SequencePrototype.flatMap;
+var IndexedSequence = function IndexedSequence() {
+  $traceurRuntime.defaultSuperCall(this, $IndexedSequence.prototype, arguments);
+};
+var $IndexedSequence = IndexedSequence;
+($traceurRuntime.createClass)(IndexedSequence, {
+  toString: function() {
     return this.__toString('Seq [', ']');
-  };
-
-  IndexedSequence.prototype.toArray=function() {"use strict";
-    assertNotInfinite(this.length);
-    var array = new Array(this.length || 0);
-    array.length = this.forEach(function(v, i)  { array[i] = v; });
-    return array;
-  };
-
-  IndexedSequence.prototype.fromEntries=function() {"use strict";
-    var sequence = this;
-    var fromEntriesSequence = sequence.__makeSequence();
-    fromEntriesSequence.length = sequence.length;
-    fromEntriesSequence.entries = function()  {return sequence;};
-    fromEntriesSequence.__iterateUncached = function(fn, reverse, flipIndices) 
-      {return sequence.__iterate(function(entry, _, c)  {return fn(entry[1], entry[0], c);}, reverse, flipIndices);};
-    return fromEntriesSequence;
-  };
-
-  IndexedSequence.prototype.join=function(separator) {"use strict";
-    separator = separator || ',';
-    var string = '';
-    var prevIndex = 0;
-    this.forEach(function(v, i)  {
-      var numSeparators = i - prevIndex;
-      prevIndex = i;
-      string += (numSeparators === 1 ? separator : repeatString(separator, numSeparators)) + v;
-    });
-    if (this.length && prevIndex < this.length - 1) {
-      string += repeatString(separator, this.length - 1 - prevIndex);
-    }
-    return string;
-  };
-
-  IndexedSequence.prototype.concat=function() {"use strict";var values=Array.prototype.slice.call(arguments,0);
-    var sequences = [this].concat(values).map(function(value)  {return Sequence(value);});
-    var concatSequence = this.__makeSequence();
-    concatSequence.length = sequences.reduce(
-      function(sum, seq)  {return sum != null && seq.length != null ? sum + seq.length : undefined;}, 0
-    );
-    concatSequence.__iterateUncached = function(fn, reverse, flipIndices) {
-      if (flipIndices && !this.length) {
-        // In order to reverse indices, first we must create a cached
-        // representation. This ensures we will have the correct total length
-        // so index reversal works as expected.
-        return this.cacheResult().__iterate(fn, reverse, flipIndices);
-      }
-      var iterations = 0;
-      var stoppedIteration;
-      var maxIndex = flipIndices && this.length - 1;
-      var maxSequencesIndex = sequences.length - 1;
-      for (var ii = 0; ii <= maxSequencesIndex && !stoppedIteration; ii++) {
-        var sequence = sequences[reverse ? maxSequencesIndex - ii : ii];
-        if (!(sequence instanceof IndexedSequence)) {
-          sequence = sequence.values();
-        }
-        iterations += sequence.__iterate(function(v, index, c)  {
-          index += iterations;
-          if (fn(v, flipIndices ? maxIndex - index : index, c) === false) {
-            stoppedIteration = true;
-            return false;
-          }
-        }, reverse); // intentionally do not pass flipIndices
-      }
-      return iterations;
-    }
-    return concatSequence;
-  };
-
-  IndexedSequence.prototype.reverse=function(maintainIndices) {"use strict";
-    var sequence = this;
-    var reversedSequence = sequence.__makeSequence();
-    reversedSequence.length = sequence.length;
-    reversedSequence.__reversedIndices = !!(maintainIndices ^ sequence.__reversedIndices);
-    reversedSequence.__iterateUncached = function(fn, reverse, flipIndices) 
-      {return sequence.__iterate(fn, !reverse, flipIndices ^ maintainIndices);};
-    reversedSequence.reverse = function ($IndexedSequence_maintainIndices) {
-      return maintainIndices === $IndexedSequence_maintainIndices ? sequence :
-        IndexedSequence.prototype.reverse.call(this, $IndexedSequence_maintainIndices);
-    }
-    return reversedSequence;
-  };
-
-  // Overridden to supply undefined length because it's entirely
-  // possible this is sparse.
-  IndexedSequence.prototype.values=function() {"use strict";
-    var valuesSequence = ____SuperProtoOfSequence.values.call(this);
-    valuesSequence.length = undefined;
-    return valuesSequence;
-  };
-
-  IndexedSequence.prototype.filter=function(predicate, thisArg, maintainIndices) {"use strict";
-    var filterSequence = filterFactory(this, predicate, thisArg, maintainIndices, maintainIndices);
-    if (maintainIndices) {
-      filterSequence.length = this.length;
-    }
-    return filterSequence;
-  };
-
-  IndexedSequence.prototype.indexOf=function(searchValue) {"use strict";
-    return this.findIndex(function(value)  {return Immutable.is(value, searchValue);});
-  };
-
-  IndexedSequence.prototype.lastIndexOf=function(searchValue) {"use strict";
-    return this.reverse(true).indexOf(searchValue);
-  };
-
-  IndexedSequence.prototype.findIndex=function(predicate, thisArg) {"use strict";
-    var key = this.findKey(predicate, thisArg);
+  },
+  concat: function() {
+    for (var values = [],
+        $__3 = 0; $__3 < arguments.length; $__3++)
+      values[$__3] = arguments[$__3];
+    return concatFactory(this, values, false);
+  },
+  filter: function(predicate, context) {
+    return filterFactory(this, predicate, context, false);
+  },
+  findIndex: function(predicate, context) {
+    var key = this.findKey(predicate, context);
     return key == null ? -1 : key;
-  };
-
-  IndexedSequence.prototype.findLastIndex=function(predicate, thisArg) {"use strict";
-    return this.reverse(true).findIndex(predicate, thisArg);
-  };
-
-  IndexedSequence.prototype.slice=function(begin, end, maintainIndices) {"use strict";
-    var sequence = this;
-    if (wholeSlice(begin, end, sequence.length)) {
-      return sequence;
-    }
-    var sliceSequence = sequence.__makeSequence();
-    var resolvedBegin = resolveBegin(begin, sequence.length);
-    var resolvedEnd = resolveEnd(end, sequence.length);
-    sliceSequence.length = sequence.length && (maintainIndices ? sequence.length : resolvedEnd - resolvedBegin);
-    sliceSequence.__reversedIndices = sequence.__reversedIndices;
-    sliceSequence.__iterateUncached = function(fn, reverse, flipIndices) {
-      if (reverse) {
-        // TODO: reverse should be possible here.
-        return this.cacheResult().__iterate(fn, reverse, flipIndices);
-      }
-      var reversedIndices = this.__reversedIndices ^ flipIndices;
-      if (resolvedBegin !== resolvedBegin ||
-          resolvedEnd !== resolvedEnd ||
-          (reversedIndices && sequence.length == null)) {
-        sequence.cacheResult();
-        resolvedBegin = resolveBegin(begin, sequence.length);
-        resolvedEnd = resolveEnd(end, sequence.length);
-      }
-      var iiBegin = reversedIndices ? sequence.length - resolvedEnd : resolvedBegin;
-      var iiEnd = reversedIndices ? sequence.length - resolvedBegin : resolvedEnd;
-      var length = sequence.__iterate(function(v, ii, c) 
-        {return !(ii >= iiBegin && (iiEnd == null || ii < iiEnd)) || fn(v, maintainIndices ? ii : ii - iiBegin, c) !== false;},
-        reverse, flipIndices
-      );
-      return this.length || (maintainIndices ? length : Math.max(0, length - iiBegin));
-    };
-    return sliceSequence;
-  };
-
-  IndexedSequence.prototype.splice=function(index, removeNum)  {"use strict";var values=Array.prototype.slice.call(arguments,2);
-    if (removeNum === 0 && values.length === 0) {
+  },
+  indexOf: function(searchValue) {
+    return this.findIndex((function(value) {
+      return is(value, searchValue);
+    }));
+  },
+  lastIndexOf: function(searchValue) {
+    return this.toKeyedSeq().reverse().indexOf(searchValue);
+  },
+  reverse: function() {
+    return reverseFactory(this, false);
+  },
+  splice: function(index, removeNum) {
+    var numArgs = arguments.length;
+    removeNum = Math.max(removeNum | 0, 0);
+    if (numArgs === 0 || (numArgs === 2 && !removeNum)) {
       return this;
     }
-    return this.slice(0, index).concat(values, this.slice(index + removeNum));
-  };
-
-  // Overrides to get length correct.
-  IndexedSequence.prototype.takeWhile=function(predicate, thisArg, maintainIndices) {"use strict";
-    var sequence = this;
-    var takeSequence = sequence.__makeSequence();
-    takeSequence.__iterateUncached = function (fn, reverse, flipIndices) {
-      if (reverse) {
-        // TODO: can we do a better job of this?
-        return this.cacheResult().__iterate(fn, reverse, flipIndices);
-      }
-      var iterations = 0;
-      // TODO: ensure didFinish is necessary here
-      var didFinish = true;
-      var length = sequence.__iterate(function(v, ii, c)  {
-        if (predicate.call(thisArg, v, ii, c) && fn(v, ii, c) !== false) {
-          iterations = ii;
-        } else {
-          didFinish = false;
-          return false;
-        }
-      }, reverse, flipIndices);
-      return maintainIndices ? takeSequence.length : didFinish ? length : iterations + 1;
-    };
-    if (maintainIndices) {
-      takeSequence.length = this.length;
-    }
-    return takeSequence;
-  };
-
-  IndexedSequence.prototype.skipWhile=function(predicate, thisArg, maintainIndices) {"use strict";
-    var sequence = this;
-    var skipWhileSequence = sequence.__makeSequence();
-    if (maintainIndices) {
-      skipWhileSequence.length = this.length;
-    }
-    skipWhileSequence.__iterateUncached = function (fn, reverse, flipIndices) {
-      if (reverse) {
-        // TODO: can we do a better job of this?
-        return this.cacheResult().__iterate(fn, reverse, flipIndices)
-      }
-      var reversedIndices = sequence.__reversedIndices ^ flipIndices;
-      var isSkipping = true;
-      var indexOffset = 0;
-      var length = sequence.__iterate(function(v, ii, c)  {
-        if (isSkipping) {
-          isSkipping = predicate.call(thisArg, v, ii, c);
-          if (!isSkipping) {
-            indexOffset = ii;
-          }
-        }
-        return isSkipping || fn(v, flipIndices || maintainIndices ? ii : ii - indexOffset, c) !== false;
-      }, reverse, flipIndices);
-      return maintainIndices ? length : reversedIndices ? indexOffset + 1 : length - indexOffset;
-    };
-    return skipWhileSequence;
-  };
-
-  IndexedSequence.prototype.groupBy=function(mapper, context, maintainIndices) {"use strict";
+    index = resolveBegin(index, this.length);
+    var spliced = this.slice(0, index);
+    return numArgs === 1 ? spliced : spliced.concat(arrCopy(arguments, 2), this.slice(index + removeNum));
+  },
+  findLastIndex: function(predicate, context) {
+    return this.toKeyedSeq().reverse().findIndex(predicate, context);
+  },
+  first: function() {
+    return this.get(0);
+  },
+  flatten: function(depth) {
+    return flattenFactory(this, depth, false);
+  },
+  flip: function() {
+    return flipFactory(this.toKeyedSeq());
+  },
+  fromEntrySeq: function() {
+    return new FromEntriesSequence(this);
+  },
+  get: function(index, notSetValue) {
+    index = wrapIndex(this, index);
+    return (index < 0 || (this.length === Infinity || (this.length != null && index > this.length))) ? notSetValue : this.find((function(_, key) {
+      return key === index;
+    }), null, notSetValue);
+  },
+  groupBy: function(grouper, context) {
+    return groupByFactory(this, grouper, context, false);
+  },
+  has: function(index) {
+    index = wrapIndex(this, index);
+    return index >= 0 && (this.length != null ? this.length === Infinity || index < this.length : this.indexOf(index) !== -1);
+  },
+  interpose: function(separator) {
+    return interposeFactory(this, separator);
+  },
+  last: function() {
+    return this.get(-1);
+  },
+  skip: function(amount) {
     var seq = this;
-    var groups = require('./OrderedMap').empty().withMutations(function(map)  {
-      seq.forEach(function(value, index, collection)  {
-        var groupKey = mapper(value, index, collection);
-        var group = map.get(groupKey, __SENTINEL);
-        if (group === __SENTINEL) {
-          group = new Array(maintainIndices ? seq.length : 0);
-          map.set(groupKey, group);
-        }
-        maintainIndices ? (group[index] = value) : group.push(value);
-      });
-    });
-    return groups.map(function(group)  {return Sequence(group);});
-  };
-
-  // abstract __iterateUncached(fn, reverse, flipIndices)
-
-  IndexedSequence.prototype.__makeSequence=function() {"use strict";
-    return makeIndexedSequence(this);
-  };
-
-
-IndexedSequence.prototype.__toJS = IndexedSequence.prototype.toArray;
-IndexedSequence.prototype.__toStringMapper = quoteString;
-
-
-for(Sequence____Key in Sequence){if(Sequence.hasOwnProperty(Sequence____Key)){ObjectSequence[Sequence____Key]=Sequence[Sequence____Key];}}ObjectSequence.prototype=Object.create(____SuperProtoOfSequence);ObjectSequence.prototype.constructor=ObjectSequence;ObjectSequence.__superConstructor__=Sequence;
-  function ObjectSequence(object) {"use strict";
-    var keys = Object.keys(object);
-    this.$ObjectSequence_object = object;
-    this.$ObjectSequence_keys = keys;
-    this.length = keys.length;
-  }
-
-  ObjectSequence.prototype.toObject=function() {"use strict";
-    return this.$ObjectSequence_object;
-  };
-
-  ObjectSequence.prototype.get=function(key, undefinedValue) {"use strict";
-    if (undefinedValue !== undefined && !this.has(key)) {
-      return undefinedValue;
+    var skipSeq = skipFactory(seq, amount, false);
+    if (skipSeq !== seq) {
+      skipSeq.get = function(index, notSetValue) {
+        index = wrapIndex(this, index);
+        return index >= 0 ? seq.get(index + amount, notSetValue) : notSetValue;
+      };
     }
-    return this.$ObjectSequence_object[key];
-  };
-
-  ObjectSequence.prototype.has=function(key) {"use strict";
-    return this.$ObjectSequence_object.hasOwnProperty(key);
-  };
-
-  ObjectSequence.prototype.__iterate=function(fn, reverse) {"use strict";
-    var object = this.$ObjectSequence_object;
-    var keys = this.$ObjectSequence_keys;
-    var maxIndex = keys.length - 1;
-    for (var ii = 0; ii <= maxIndex; ii++) {
-      var iteration = reverse ? maxIndex - ii : ii;
-      if (fn(object[keys[iteration]], keys[iteration], object) === false) {
+    return skipSeq;
+  },
+  skipWhile: function(predicate, context) {
+    return skipWhileFactory(this, predicate, context, false);
+  },
+  sortBy: function(mapper, comparator) {
+    comparator = comparator || defaultComparator;
+    var seq = this;
+    return Sequence(this.entrySeq().toArray().sort((function(a, b) {
+      return comparator(mapper(a[1], a[0], seq), mapper(b[1], b[0], seq)) || a[0] - b[0];
+    }))).fromEntrySeq().valueSeq();
+  },
+  take: function(amount) {
+    var seq = this;
+    var takeSeq = takeFactory(seq, amount);
+    if (takeSeq !== seq) {
+      takeSeq.get = function(index, notSetValue) {
+        index = wrapIndex(this, index);
+        return index >= 0 && index < amount ? seq.get(index, notSetValue) : notSetValue;
+      };
+    }
+    return takeSeq;
+  },
+  toKeyedSeq: function() {
+    return new KeyedIndexedSequence(this);
+  },
+  valueSeq: function() {
+    return this;
+  },
+  __makeSequence: function() {
+    return Object.create(IndexedSequencePrototype);
+  },
+  __iterate: function(fn, reverse) {
+    return iterate(this, fn, reverse, false);
+  },
+  __iterator: function(type, reverse) {
+    return iterator(this, type, reverse, false);
+  }
+}, {}, Sequence);
+var IndexedSequencePrototype = IndexedSequence.prototype;
+IndexedSequencePrototype[ITERATOR_SYMBOL] = IndexedSequencePrototype.values;
+IndexedSequencePrototype.__toJS = IndexedSequencePrototype.toArray;
+IndexedSequencePrototype.__toStringMapper = quoteString;
+var IteratorSequence = function IteratorSequence(iterator) {
+  this._iterator = iterator;
+  this._iteratorCache = [];
+};
+($traceurRuntime.createClass)(IteratorSequence, {
+  __iterateUncached: function(fn, reverse) {
+    if (reverse) {
+      return this.cacheResult().__iterate(fn, reverse);
+    }
+    var iterator = this._iterator;
+    var cache = this._iteratorCache;
+    var iterations = 0;
+    while (iterations < cache.length) {
+      if (fn(cache[iterations], iterations++, this) === false) {
+        return iterations;
+      }
+    }
+    var step;
+    while (!(step = iterator.next()).done) {
+      var val = step.value;
+      cache[iterations] = val;
+      if (fn(val, iterations++, this) === false) {
         break;
       }
     }
-    return ii;
-  };
-
-
-
-for(var IndexedSequence____Key in IndexedSequence){if(IndexedSequence.hasOwnProperty(IndexedSequence____Key)){ArraySequence[IndexedSequence____Key]=IndexedSequence[IndexedSequence____Key];}}var ____SuperProtoOfIndexedSequence=IndexedSequence===null?null:IndexedSequence.prototype;ArraySequence.prototype=Object.create(____SuperProtoOfIndexedSequence);ArraySequence.prototype.constructor=ArraySequence;ArraySequence.__superConstructor__=IndexedSequence;
-  function ArraySequence(array) {"use strict";
-    this.$ArraySequence_array = array;
-    this.length = array.length;
-  }
-
-  ArraySequence.prototype.toArray=function() {"use strict";
-    return this.$ArraySequence_array;
-  };
-
-  ArraySequence.prototype.__iterate=function(fn, reverse, flipIndices) {"use strict";
-    var array = this.$ArraySequence_array;
-    var maxIndex = array.length - 1;
-    var lastIndex = -1;
+    return iterations;
+  },
+  __iteratorUncached: function(type, reverse) {
     if (reverse) {
-      for (var ii = maxIndex; ii >= 0; ii--) {
-        if (array.hasOwnProperty(ii) &&
-            fn(array[ii], flipIndices ? ii : maxIndex - ii, array) === false) {
-          return lastIndex + 1;
-        }
-        lastIndex = ii;
-      }
-      return array.length;
-    } else {
-      var didFinish = array.every(function(value, index)  {
-        if (fn(value, flipIndices ? maxIndex - index : index, array) === false) {
-          return false;
-        } else {
-          lastIndex = index;
-          return true;
-        }
-      });
-      return didFinish ? array.length : lastIndex + 1;
+      return this.cacheResult().__iterator(type, reverse);
     }
-  };
-
-
-ArraySequence.prototype.get = ObjectSequence.prototype.get;
-ArraySequence.prototype.has = ObjectSequence.prototype.has;
-
-
-function makeSequence() {
-  return Object.create(Sequence.prototype);
-}
-
-function makeIndexedSequence(parent) {
-  var newSequence = Object.create(IndexedSequence.prototype);
-  newSequence.__reversedIndices = parent ? parent.__reversedIndices : false;
-  return newSequence;
-}
-
-function getInDeepSequence(seq, keyPath, notFoundValue, pathOffset) {
-  var nested = seq.get ? seq.get(keyPath[pathOffset], __SENTINEL) : __SENTINEL;
-  if (nested === __SENTINEL) {
-    return notFoundValue;
+    var iterator = this._iterator;
+    var cache = this._iteratorCache;
+    var iterations = 0;
+    return new Iterator((function() {
+      if (iterations >= cache.length) {
+        var step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+        cache[iterations] = step.value;
+      }
+      return iteratorValue(type, iterations, cache[iterations++]);
+    }));
   }
-  if (pathOffset === keyPath.length - 1) {
-    return nested;
+}, {}, IndexedSequence);
+var IterableSequence = function IterableSequence(iterable) {
+  this._iterable = iterable;
+  this.length = iterable.length || iterable.size;
+};
+($traceurRuntime.createClass)(IterableSequence, {
+  __iterateUncached: function(fn, reverse) {
+    if (reverse) {
+      return this.cacheResult().__iterate(fn, reverse);
+    }
+    var iterable = this._iterable;
+    var iterator = getIterator(iterable);
+    var iterations = 0;
+    if (isIterator(iterator)) {
+      var step;
+      while (!(step = iterator.next()).done) {
+        if (fn(step.value, iterations++, this) === false) {
+          break;
+        }
+      }
+    }
+    return iterations;
+  },
+  __iteratorUncached: function(type, reverse) {
+    if (reverse) {
+      return this.cacheResult().__iterator(type, reverse);
+    }
+    var iterable = this._iterable;
+    var iterator = getIterator(iterable);
+    if (!isIterator(iterator)) {
+      return new Iterator((function() {
+        return iteratorDone();
+      }));
+    }
+    var iterations = 0;
+    return new Iterator((function() {
+      var step = iterator.next();
+      return step.done ? step : iteratorValue(type, iterations++, step.value);
+    }));
   }
-  return getInDeepSequence(nested, keyPath, notFoundValue, pathOffset + 1);
+}, {}, IndexedSequence);
+var ObjectSequence = function ObjectSequence(object) {
+  var keys = Object.keys(object);
+  this._object = object;
+  this._keys = keys;
+  this.length = keys.length;
+};
+($traceurRuntime.createClass)(ObjectSequence, {
+  get: function(key, notSetValue) {
+    if (notSetValue !== undefined && !this.has(key)) {
+      return notSetValue;
+    }
+    return this._object[key];
+  },
+  has: function(key) {
+    return this._object.hasOwnProperty(key);
+  },
+  __iterate: function(fn, reverse) {
+    var object = this._object;
+    var keys = this._keys;
+    var maxIndex = keys.length - 1;
+    for (var ii = 0; ii <= maxIndex; ii++) {
+      var key = keys[reverse ? maxIndex - ii : ii];
+      if (fn(object[key], key, this) === false) {
+        return ii + 1;
+      }
+    }
+    return ii;
+  },
+  __iterator: function(type, reverse) {
+    var object = this._object;
+    var keys = this._keys;
+    var maxIndex = keys.length - 1;
+    var ii = 0;
+    return new Iterator((function() {
+      var key = keys[reverse ? maxIndex - ii : ii];
+      return ii++ > maxIndex ? iteratorDone() : iteratorValue(type, key, object[key]);
+    }));
+  }
+}, {}, Sequence);
+var ArraySequence = function ArraySequence(array) {
+  this._array = array;
+  this.length = array.length;
+};
+($traceurRuntime.createClass)(ArraySequence, {
+  get: function(index, notSetValue) {
+    return this.has(index) ? this._array[wrapIndex(this, index)] : notSetValue;
+  },
+  __iterate: function(fn, reverse) {
+    var array = this._array;
+    var maxIndex = array.length - 1;
+    for (var ii = 0; ii <= maxIndex; ii++) {
+      if (fn(array[reverse ? maxIndex - ii : ii], ii, this) === false) {
+        return ii + 1;
+      }
+    }
+    return ii;
+  },
+  __iterator: function(type, reverse) {
+    var array = this._array;
+    var maxIndex = array.length - 1;
+    var ii = 0;
+    return new Iterator((function() {
+      return ii > maxIndex ? iteratorDone() : iteratorValue(type, ii, array[reverse ? maxIndex - ii++ : ii++]);
+    }));
+  }
+}, {}, IndexedSequence);
+function ensureLength(indexedSeq) {
+  if (indexedSeq.length == null) {
+    indexedSeq.cacheResult();
+  }
+  invariant(indexedSeq.length < Infinity, 'Cannot reverse infinite range.');
+  return indexedSeq.length;
 }
-
 function wholeSlice(begin, end, length) {
-  return (begin === 0 || (length != null && begin <= -length)) &&
-    (end == null || (length != null && end >= length));
+  return (begin === 0 || (length != null && begin <= -length)) && (end == null || (length != null && end >= length));
 }
-
 function resolveBegin(begin, length) {
-  return begin < 0 ? Math.max(0, length + begin) : length ? Math.min(length, begin) : begin;
+  return resolveIndex(begin, length, 0);
 }
-
 function resolveEnd(end, length) {
-  return end == null ? length : end < 0 ? Math.max(0, length + end) : length ? Math.min(length, end) : end;
+  return resolveIndex(end, length, length);
 }
-
+function resolveIndex(index, length, defaultIndex) {
+  return index == null ? defaultIndex : index < 0 ? Math.max(0, length + index) : length == null ? index : Math.min(length, index);
+}
+function valueMapper(v) {
+  return v;
+}
 function entryMapper(v, k) {
   return [k, v];
 }
-
 function returnTrue() {
   return true;
 }
-
-function returnThis() {
-  return this;
-}
-
-/**
- * Sequence.prototype.filter and IndexedSequence.prototype.filter are so close
- * in behavior that it makes sense to build a factory with the few differences
- * encoded as booleans.
- */
-function filterFactory(sequence, predicate, thisArg, useKeys, maintainIndices) {
-  var filterSequence = sequence.__makeSequence();
-  filterSequence.__iterateUncached = function(fn, reverse, flipIndices)  {
-    var iterations = 0;
-    var length = sequence.__iterate(function(v, k, c)  {
-      if (predicate.call(thisArg, v, k, c)) {
-        if (fn(v, useKeys ? k : iterations, c) !== false) {
-          iterations++;
-        } else {
-          return false;
-        }
-      }
-    }, reverse, flipIndices);
-    return maintainIndices ? length : iterations;
-  };
-  return filterSequence;
-}
-
 function not(predicate) {
   return function() {
     return !predicate.apply(this, arguments);
-  }
+  };
 }
-
 function quoteString(value) {
   return typeof value === 'string' ? JSON.stringify(value) : value;
 }
-
-function repeatString(string, times) {
-  var repeated = '';
-  while (times) {
-    if (times & 1) {
-      repeated += string;
-    }
-    if ((times >>= 1)) {
-      string += string;
-    }
-  }
-  return repeated;
+function defaultComparator(a, b) {
+  return a > b ? 1 : a < b ? -1 : 0;
 }
-
+function wrapIndex(seq, index) {
+  if (index < 0) {
+    if (seq.length == null) {
+      seq.cacheResult();
+    }
+    return seq.length + index;
+  }
+  return index;
+}
 function assertNotInfinite(length) {
-  if (length === Infinity) {
-    throw new Error('Cannot perform this action with an infinite sequence.');
-  }
+  invariant(length !== Infinity, 'Cannot perform this action with an infinite sequence.');
 }
-
-var __SENTINEL = {};
-
-exports.Sequence = Sequence;
-exports.IndexedSequence = IndexedSequence;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Sequence.js","/../../../node_modules/immutable/dist")
-},{"./Immutable":173,"./Map":174,"./OrderedMap":175,"./Set":180,"./Vector":181,"1YiZ5S":11,"buffer":7}],180:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var SequenceModule = require('./Sequence');
-var ImmutableMap = require('./Map');
-var Sequence = SequenceModule.Sequence;
-var IndexedSequence = SequenceModule.IndexedSequence;
-
-
-for(var Sequence____Key in Sequence){if(Sequence.hasOwnProperty(Sequence____Key)){Set[Sequence____Key]=Sequence[Sequence____Key];}}var ____SuperProtoOfSequence=Sequence===null?null:Sequence.prototype;Set.prototype=Object.create(____SuperProtoOfSequence);Set.prototype.constructor=Set;Set.__superConstructor__=Sequence;
-
-  // @pragma Construction
-
-  function Set() {"use strict";var values=Array.prototype.slice.call(arguments,0);
-    return Set.from(values);
+function iterate(sequence, fn, reverse, useKeys) {
+  var cache = sequence._cache;
+  if (cache) {
+    var maxIndex = cache.length - 1;
+    for (var ii = 0; ii <= maxIndex; ii++) {
+      var entry = cache[reverse ? maxIndex - ii : ii];
+      if (fn(entry[1], useKeys ? entry[0] : ii, sequence) === false) {
+        return ii + 1;
+      }
+    }
+    return ii;
   }
-
-  Set.empty=function() {"use strict";
-    return __EMPTY_SET || (__EMPTY_SET = Set.$Set_make());
+  return sequence.__iterateUncached(fn, reverse);
+}
+function iterator(sequence, type, reverse, useKeys) {
+  var cache = sequence._cache;
+  if (cache) {
+    var maxIndex = cache.length - 1;
+    var ii = 0;
+    return new Iterator((function() {
+      var entry = cache[reverse ? maxIndex - ii : ii];
+      return ii++ > maxIndex ? iteratorDone() : iteratorValue(type, useKeys ? entry[0] : ii - 1, entry[1]);
+    }));
+  }
+  return sequence.__iteratorUncached(type, reverse);
+}
+var ValuesSequence = function ValuesSequence(seq) {
+  this._seq = seq;
+  this.length = seq.length;
+};
+($traceurRuntime.createClass)(ValuesSequence, {
+  contains: function(value) {
+    return this._seq.contains(value);
+  },
+  cacheResult: function() {
+    this._seq.cacheResult();
+    this.length = this._seq.length;
+    return this;
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    var iterations = 0;
+    return this._seq.__iterate((function(v) {
+      return fn(v, iterations++, $__0);
+    }), reverse);
+  },
+  __iterator: function(type, reverse) {
+    var iterator = this._seq.__iterator(ITERATE_VALUES, reverse);
+    var iterations = 0;
+    return new Iterator((function() {
+      var step = iterator.next();
+      return step.done ? step : iteratorValue(type, iterations++, step.value, step);
+    }));
+  }
+}, {}, IndexedSequence);
+var KeyedIndexedSequence = function KeyedIndexedSequence(indexedSeq) {
+  this._seq = indexedSeq;
+  this.length = indexedSeq.length;
+};
+($traceurRuntime.createClass)(KeyedIndexedSequence, {
+  get: function(key, notSetValue) {
+    return this._seq.get(key, notSetValue);
+  },
+  has: function(key) {
+    return this._seq.has(key);
+  },
+  valueSeq: function() {
+    return this._seq;
+  },
+  reverse: function() {
+    var $__0 = this;
+    var reversedSequence = reverseFactory(this, true);
+    reversedSequence.valueSeq = (function() {
+      return $__0._seq.reverse();
+    });
+    return reversedSequence;
+  },
+  map: function(mapper, context) {
+    var $__0 = this;
+    var mappedSequence = mapFactory(this, mapper, context);
+    mappedSequence.valueSeq = (function() {
+      return $__0._seq.map(mapper, context);
+    });
+    return mappedSequence;
+  },
+  cacheResult: function() {
+    this._seq.cacheResult();
+    this.length = this._seq.length;
+    return this;
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    var ii = reverse ? ensureLength(this) : 0;
+    return this._seq.__iterate((function(v) {
+      return fn(v, reverse ? --ii : ii++, $__0);
+    }), reverse);
+  },
+  __iterator: function(type, reverse) {
+    var iterator = this._seq.__iterator(ITERATE_VALUES, reverse);
+    var ii = reverse ? ensureLength(this) : 0;
+    return new Iterator((function() {
+      var step = iterator.next();
+      return step.done ? step : iteratorValue(type, reverse ? --ii : ii++, step.value, step);
+    }));
+  }
+}, {}, Sequence);
+var FromEntriesSequence = function FromEntriesSequence(entriesSeq) {
+  this._seq = entriesSeq;
+  this.length = entriesSeq.length;
+};
+($traceurRuntime.createClass)(FromEntriesSequence, {
+  entrySeq: function() {
+    return this._seq;
+  },
+  cacheResult: function() {
+    this._seq.cacheResult();
+    this.length = this._seq.length;
+    return this;
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    return this._seq.__iterate((function(entry) {
+      return entry && fn(entry[1], entry[0], $__0);
+    }), reverse);
+  },
+  __iterator: function(type, reverse) {
+    var iterator = this._seq.__iterator(ITERATE_VALUES, reverse);
+    return new Iterator((function() {
+      while (true) {
+        var step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+        var entry = step.value;
+        if (entry) {
+          return type === ITERATE_ENTRIES ? step : iteratorValue(type, entry[0], entry[1], step);
+        }
+      }
+    }));
+  }
+}, {}, Sequence);
+function flipFactory(sequence) {
+  var flipSequence = sequence.__makeSequence();
+  flipSequence.length = sequence.length;
+  flipSequence.flip = (function() {
+    return sequence;
+  });
+  flipSequence.reverse = function() {
+    var reversedSequence = sequence.reverse.apply(this);
+    reversedSequence.flip = (function() {
+      return sequence.reverse();
+    });
+    return reversedSequence;
   };
-
-  Set.from=function(sequence) {"use strict";
-    if (sequence && sequence.constructor === Set) {
-      return sequence;
+  flipSequence.has = (function(key) {
+    return sequence.contains(key);
+  });
+  flipSequence.contains = (function(key) {
+    return sequence.has(key);
+  });
+  flipSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    return sequence.__iterate((function(v, k) {
+      return fn(k, v, $__0) !== false;
+    }), reverse);
+  };
+  flipSequence.__iteratorUncached = function(type, reverse) {
+    if (type === ITERATE_ENTRIES) {
+      var iterator = sequence.__iterator(type, reverse);
+      return new Iterator((function() {
+        var step = iterator.next();
+        if (!step.done) {
+          var k = step.value[0];
+          step.value[0] = step.value[1];
+          step.value[1] = k;
+        }
+        return step;
+      }));
     }
-    if (!sequence || sequence.length === 0) {
-      return Set.empty();
+    return sequence.__iterator(type === ITERATE_VALUES ? ITERATE_KEYS : ITERATE_VALUES, reverse);
+  };
+  return flipSequence;
+}
+function mapFactory(sequence, mapper, context) {
+  var mappedSequence = sequence.__makeSequence();
+  mappedSequence.length = sequence.length;
+  mappedSequence.has = (function(key) {
+    return sequence.has(key);
+  });
+  mappedSequence.get = (function(key, notSetValue) {
+    var v = sequence.get(key, NOT_SET);
+    return v === NOT_SET ? notSetValue : mapper.call(context, v, key, sequence);
+  });
+  mappedSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    return sequence.__iterate((function(v, k, c) {
+      return fn(mapper.call(context, v, k, c), k, $__0) !== false;
+    }), reverse);
+  };
+  mappedSequence.__iteratorUncached = function(type, reverse) {
+    var iterator = sequence.__iterator(ITERATE_ENTRIES, reverse);
+    return new Iterator((function() {
+      var step = iterator.next();
+      if (step.done) {
+        return step;
+      }
+      var entry = step.value;
+      var key = entry[0];
+      return iteratorValue(type, key, mapper.call(context, entry[1], key, sequence), step);
+    }));
+  };
+  return mappedSequence;
+}
+function reverseFactory(sequence, useKeys) {
+  var reversedSequence = sequence.__makeSequence();
+  reversedSequence.length = sequence.length;
+  reversedSequence.reverse = (function() {
+    return sequence;
+  });
+  reversedSequence.flip = function() {
+    var flipSequence = sequence.flip.apply(this);
+    flipSequence.reverse = (function() {
+      return sequence.flip();
+    });
+    return flipSequence;
+  };
+  reversedSequence.get = (function(key, notSetValue) {
+    return sequence.get(useKeys ? key : -1 - key, notSetValue);
+  });
+  reversedSequence.has = (function(key) {
+    return sequence.has(useKeys ? key : -1 - key);
+  });
+  reversedSequence.contains = (function(value) {
+    return sequence.contains(value);
+  });
+  reversedSequence.cacheResult = function() {
+    sequence.cacheResult();
+    this.length = sequence.length;
+    return this;
+  };
+  reversedSequence.__iterate = function(fn, reverse) {
+    var $__0 = this;
+    return sequence.__iterate((function(v, k) {
+      return fn(v, k, $__0);
+    }), !reverse);
+  };
+  reversedSequence.__iterator = (function(type, reverse) {
+    return sequence.__iterator(type, !reverse);
+  });
+  return reversedSequence;
+}
+function filterFactory(sequence, predicate, context, useKeys) {
+  var filterSequence = sequence.__makeSequence();
+  if (useKeys) {
+    filterSequence.has = (function(key) {
+      var v = sequence.get(key, NOT_SET);
+      return v !== NOT_SET && !!predicate.call(context, v, key, sequence);
+    });
+    filterSequence.get = (function(key, notSetValue) {
+      var v = sequence.get(key, NOT_SET);
+      return v !== NOT_SET && predicate.call(context, v, key, sequence) ? v : notSetValue;
+    });
+  }
+  filterSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    var iterations = 0;
+    sequence.__iterate((function(v, k, c) {
+      if (predicate.call(context, v, k, c)) {
+        iterations++;
+        return fn(v, useKeys ? k : iterations - 1, $__0);
+      }
+    }), reverse);
+    return iterations;
+  };
+  filterSequence.__iteratorUncached = function(type, reverse) {
+    var iterator = sequence.__iterator(ITERATE_ENTRIES, reverse);
+    var iterations = 0;
+    return new Iterator((function() {
+      while (true) {
+        var step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+        var entry = step.value;
+        var key = entry[0];
+        var value = entry[1];
+        if (predicate.call(context, value, key, sequence)) {
+          return iteratorValue(type, useKeys ? key : iterations++, value, step);
+        }
+      }
+    }));
+  };
+  return filterSequence;
+}
+function groupByFactory(seq, grouper, context, useKeys) {
+  var groupMap = {};
+  var groups = [];
+  seq.__iterate((function(v, k) {
+    var g = grouper.call(context, v, k, seq);
+    var h = hash(g);
+    var e = useKeys ? [k, v] : v;
+    if (!groupMap.hasOwnProperty(h)) {
+      groupMap[h] = groups.length;
+      groups.push([g, [e]]);
+    } else {
+      groups[groupMap[h]][1].push(e);
     }
-    return Set.empty().union(sequence);
+  }));
+  return Sequence(groups).fromEntrySeq().map(useKeys ? (function(group) {
+    return Sequence(group).fromEntrySeq();
+  }) : (function(group) {
+    return Sequence(group);
+  }));
+}
+function takeFactory(sequence, amount) {
+  if (amount > sequence.length) {
+    return sequence;
+  }
+  if (amount < 0) {
+    amount = 0;
+  }
+  var takeSequence = sequence.__makeSequence();
+  takeSequence.length = sequence.length && Math.min(sequence.length, amount);
+  takeSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    if (amount === 0) {
+      return 0;
+    }
+    if (reverse) {
+      return this.cacheResult().__iterate(fn, reverse);
+    }
+    var iterations = 0;
+    sequence.__iterate((function(v, k) {
+      return ++iterations && fn(v, k, $__0) !== false && iterations < amount;
+    }));
+    return iterations;
   };
-
-  Set.fromKeys=function(sequence) {"use strict";
-    return Set.from(Sequence(sequence).flip());
+  takeSequence.__iteratorUncached = function(type, reverse) {
+    if (reverse) {
+      return this.cacheResult().__iterator(type, reverse);
+    }
+    var iterator = amount && sequence.__iterator(type, reverse);
+    var iterations = 0;
+    return new Iterator((function() {
+      if (iterations++ > amount) {
+        return iteratorDone();
+      }
+      return iterator.next();
+    }));
   };
-
-  Set.prototype.toString=function() {"use strict";
-    return this.__toString('Set {', '}');
+  return takeSequence;
+}
+function takeWhileFactory(sequence, predicate, context) {
+  var takeSequence = sequence.__makeSequence();
+  takeSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    if (reverse) {
+      return this.cacheResult().__iterate(fn, reverse);
+    }
+    var iterations = 0;
+    sequence.__iterate((function(v, k, c) {
+      return predicate.call(context, v, k, c) && ++iterations && fn(v, k, $__0);
+    }));
+    return iterations;
   };
-
-  // @pragma Access
-
-  Set.prototype.has=function(value) {"use strict";
-    return this.$Set_map ? this.$Set_map.has(value) : false;
+  takeSequence.__iteratorUncached = function(type, reverse) {
+    var $__0 = this;
+    if (reverse) {
+      return this.cacheResult().__iterator(type, reverse);
+    }
+    var iterator = sequence.__iterator(ITERATE_ENTRIES, reverse);
+    var iterating = true;
+    return new Iterator((function() {
+      if (!iterating) {
+        return iteratorDone();
+      }
+      var step = iterator.next();
+      if (step.done) {
+        return step;
+      }
+      var entry = step.value;
+      var k = entry[0];
+      var v = entry[1];
+      if (!predicate.call(context, v, k, $__0)) {
+        iterating = false;
+        return iteratorDone();
+      }
+      return type === ITERATE_ENTRIES ? step : iteratorValue(type, k, v, step);
+    }));
   };
-
-  Set.prototype.get=function(value, notFoundValue) {"use strict";
-    return this.has(value) ? value : notFoundValue;
+  return takeSequence;
+}
+function skipFactory(sequence, amount, useKeys) {
+  if (amount <= 0) {
+    return sequence;
+  }
+  var skipSequence = sequence.__makeSequence();
+  skipSequence.length = sequence.length && Math.max(0, sequence.length - amount);
+  skipSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    if (reverse) {
+      return this.cacheResult().__iterate(fn, reverse);
+    }
+    var skipped = 0;
+    var isSkipping = true;
+    var iterations = 0;
+    sequence.__iterate((function(v, k) {
+      if (!(isSkipping && (isSkipping = skipped++ < amount))) {
+        iterations++;
+        return fn(v, useKeys ? k : iterations - 1, $__0);
+      }
+    }));
+    return iterations;
   };
-
-  // @pragma Modification
-
-  Set.prototype.add=function(value) {"use strict";
-    if (value == null) {
+  skipSequence.__iteratorUncached = function(type, reverse) {
+    if (reverse) {
+      return this.cacheResult().__iterator(type, reverse);
+    }
+    var iterator = amount && sequence.__iterator(type, reverse);
+    var skipped = 0;
+    var iterations = 0;
+    return new Iterator((function() {
+      while (skipped < amount) {
+        skipped++;
+        iterator.next();
+      }
+      var step = iterator.next();
+      if (useKeys || type === ITERATE_VALUES) {
+        return step;
+      } else if (type === ITERATE_KEYS) {
+        return iteratorValue(type, iterations++, null, step);
+      } else {
+        return iteratorValue(type, iterations++, step.value[1], step);
+      }
+    }));
+  };
+  return skipSequence;
+}
+function skipWhileFactory(sequence, predicate, context, useKeys) {
+  var skipSequence = sequence.__makeSequence();
+  skipSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    if (reverse) {
+      return this.cacheResult().__iterate(fn, reverse);
+    }
+    var isSkipping = true;
+    var iterations = 0;
+    sequence.__iterate((function(v, k, c) {
+      if (!(isSkipping && (isSkipping = predicate.call(context, v, k, c)))) {
+        iterations++;
+        return fn(v, useKeys ? k : iterations - 1, $__0);
+      }
+    }));
+    return iterations;
+  };
+  skipSequence.__iteratorUncached = function(type, reverse) {
+    var $__0 = this;
+    if (reverse) {
+      return this.cacheResult().__iterator(type, reverse);
+    }
+    var iterator = sequence.__iterator(ITERATE_ENTRIES, reverse);
+    var skipping = true;
+    var iterations = 0;
+    return new Iterator((function() {
+      var step,
+          k,
+          v;
+      do {
+        step = iterator.next();
+        if (step.done) {
+          if (useKeys || type === ITERATE_VALUES) {
+            return step;
+          } else if (type === ITERATE_KEYS) {
+            return iteratorValue(type, iterations++, null, step);
+          } else {
+            return iteratorValue(type, iterations++, step.value[1], step);
+          }
+        }
+        var entry = step.value;
+        k = entry[0];
+        v = entry[1];
+        skipping && (skipping = predicate.call(context, v, k, $__0));
+      } while (skipping);
+      return type === ITERATE_ENTRIES ? step : iteratorValue(type, k, v, step);
+    }));
+  };
+  return skipSequence;
+}
+function concatFactory(sequence, values, useKeys) {
+  var sequences = [sequence].concat(values);
+  var concatSequence = Sequence(sequences);
+  if (useKeys) {
+    concatSequence = concatSequence.toKeyedSeq();
+  }
+  concatSequence = concatSequence.flatMap(valueMapper);
+  concatSequence.length = sequences.reduce((function(sum, seq) {
+    if (sum !== undefined) {
+      var len = Sequence(seq).length;
+      if (len != null) {
+        return sum + len;
+      }
+    }
+  }), 0);
+  return concatSequence;
+}
+function flattenFactory(sequence, depth, useKeys) {
+  var flatSequence = sequence.__makeSequence();
+  flatSequence.__iterateUncached = function(fn, reverse) {
+    var iterations = 0;
+    var stopped = false;
+    function flatDeep(seq, currentDepth) {
+      var $__0 = this;
+      seq.__iterate((function(v, k) {
+        if ((!depth || currentDepth < depth) && isFlattenable(v)) {
+          flatDeep(v, currentDepth + 1);
+        } else if (fn(v, useKeys ? k : iterations++, $__0) === false) {
+          stopped = true;
+        }
+        return !stopped;
+      }), reverse);
+    }
+    flatDeep(sequence, 0);
+    return iterations;
+  };
+  flatSequence.__iteratorUncached = function(type, reverse) {
+    var iterator = sequence.__iterator(type, reverse);
+    var stack = [];
+    var iterations = 0;
+    return new Iterator((function() {
+      while (iterator) {
+        var step = iterator.next();
+        if (step.done !== false) {
+          iterator = stack.pop();
+          continue;
+        }
+        var v = step.value;
+        if (type === ITERATE_ENTRIES) {
+          v = v[1];
+        }
+        if ((!depth || stack.length < depth) && isFlattenable(v)) {
+          stack.push(iterator);
+          iterator = v.__iterator(type, reverse);
+        } else {
+          return useKeys ? step : iteratorValue(type, iterations++, v, step);
+        }
+      }
+      return iteratorDone();
+    }));
+  };
+  return flatSequence;
+}
+function isFlattenable(maybeFlattenable) {
+  return maybeFlattenable && typeof maybeFlattenable.flatten === 'function' && typeof maybeFlattenable.__iterate === 'function' && typeof maybeFlattenable.__iterator === 'function';
+}
+function interposeFactory(sequence, separator) {
+  var interposedSequence = sequence.__makeSequence();
+  interposedSequence.length = sequence.length && sequence.length * 2 - 1;
+  interposedSequence.__iterateUncached = function(fn, reverse) {
+    var $__0 = this;
+    var iterations = 0;
+    sequence.__iterate((function(v, k) {
+      return (!iterations || fn(separator, iterations++, $__0) !== false) && fn(v, iterations++, $__0) !== false;
+    }), reverse);
+    return iterations;
+  };
+  interposedSequence.__iteratorUncached = function(type, reverse) {
+    var iterator = sequence.__iterator(ITERATE_VALUES, reverse);
+    var iterations = 0;
+    var step;
+    return new Iterator((function() {
+      if (!step || iterations % 2) {
+        step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+      }
+      return iterations % 2 ? iteratorValue(type, iterations++, separator) : iteratorValue(type, iterations++, step.value, step);
+    }));
+  };
+  return interposedSequence;
+}
+var Map = function Map(sequence) {
+  var map = $Map.empty();
+  return sequence ? sequence.constructor === $Map ? sequence : map.merge(sequence) : map;
+};
+var $Map = Map;
+($traceurRuntime.createClass)(Map, {
+  toString: function() {
+    return this.__toString('Map {', '}');
+  },
+  get: function(k, notSetValue) {
+    return this._root ? this._root.get(0, hash(k), k, notSetValue) : notSetValue;
+  },
+  set: function(k, v) {
+    return updateMap(this, k, v);
+  },
+  setIn: function(keyPath, v) {
+    invariant(keyPath.length > 0, 'Requires non-empty key path.');
+    return this.updateIn(keyPath, (function() {
+      return v;
+    }));
+  },
+  remove: function(k) {
+    return updateMap(this, k, NOT_SET);
+  },
+  removeIn: function(keyPath) {
+    invariant(keyPath.length > 0, 'Requires non-empty key path.');
+    return this.updateIn(keyPath, (function() {
+      return NOT_SET;
+    }));
+  },
+  update: function(k, notSetValue, updater) {
+    return arguments.length === 1 ? k(this) : this.updateIn([k], notSetValue, updater);
+  },
+  updateIn: function(keyPath, notSetValue, updater) {
+    if (!updater) {
+      updater = notSetValue;
+      notSetValue = undefined;
+    }
+    return keyPath.length === 0 ? updater(this) : updateInDeepMap(this, keyPath, notSetValue, updater, 0);
+  },
+  clear: function() {
+    if (this.length === 0) {
       return this;
     }
-    var newMap = this.$Set_map;
-    if (!newMap) {
-      newMap = ImmutableMap.empty().__ensureOwner(this.__ownerID);
-    }
-    newMap = newMap.set(value, null);
-    if (this.__ownerID) {
-      this.length = newMap.length;
-      this.$Set_map = newMap;
-      return this;
-    }
-    return newMap === this.$Set_map ? this : Set.$Set_make(newMap);
-  };
-
-  Set.prototype.delete=function(value) {"use strict";
-    if (value == null || this.$Set_map == null) {
-      return this;
-    }
-    var newMap = this.$Set_map.delete(value);
-    if (newMap.length === 0) {
-      return this.clear();
-    }
-    if (this.__ownerID) {
-      this.length = newMap.length;
-      this.$Set_map = newMap;
-      return this;
-    }
-    return newMap === this.$Set_map ? this : Set.$Set_make(newMap);
-  };
-
-  Set.prototype.clear=function() {"use strict";
     if (this.__ownerID) {
       this.length = 0;
-      this.$Set_map = null;
+      this._root = null;
+      this.__hash = undefined;
+      this.__altered = true;
       return this;
     }
-    return Set.empty();
-  };
-
-  // @pragma Composition
-
-  Set.prototype.union=function() {"use strict";
-    var seqs = arguments;
-    if (seqs.length === 0) {
-      return this;
-    }
-    return this.withMutations(function(set)  {
-      for (var ii = 0; ii < seqs.length; ii++) {
-        var seq = seqs[ii];
-        seq = seq.forEach ? seq : Sequence(seq);
-        seq.forEach(function(value)  {return set.add(value);});
-      }
-    });
-  };
-
-  Set.prototype.intersect=function() {"use strict";var seqs=Array.prototype.slice.call(arguments,0);
-    if (seqs.length === 0) {
-      return this;
-    }
-    seqs = seqs.map(function(seq)  {return Sequence(seq);});
-    var originalSet = this;
-    return this.withMutations(function(set)  {
-      originalSet.forEach(function(value)  {
-        if (!seqs.every(function(seq)  {return seq.contains(value);})) {
-          set.delete(value);
-        }
-      });
-    });
-  };
-
-  Set.prototype.subtract=function() {"use strict";var seqs=Array.prototype.slice.call(arguments,0);
-    if (seqs.length === 0) {
-      return this;
-    }
-    seqs = seqs.map(function(seq)  {return Sequence(seq);});
-    var originalSet = this;
-    return this.withMutations(function(set)  {
-      originalSet.forEach(function(value)  {
-        if (seqs.some(function(seq)  {return seq.contains(value);})) {
-          set.delete(value);
-        }
-      });
-    });
-  };
-
-  Set.prototype.isSubset=function(seq) {"use strict";
-    seq = Sequence(seq);
-    return this.every(function(value)  {return seq.contains(value);});
-  };
-
-  Set.prototype.isSuperset=function(seq) {"use strict";
-    var set = this;
-    seq = Sequence(seq);
-    return seq.every(function(value)  {return set.contains(value);});
-  };
-
-  // @pragma Mutability
-
-  Set.prototype.__ensureOwner=function(ownerID) {"use strict";
+    return $Map.empty();
+  },
+  merge: function() {
+    return mergeIntoMapWith(this, null, arguments);
+  },
+  mergeWith: function(merger) {
+    for (var seqs = [],
+        $__4 = 1; $__4 < arguments.length; $__4++)
+      seqs[$__4 - 1] = arguments[$__4];
+    return mergeIntoMapWith(this, merger, seqs);
+  },
+  mergeDeep: function() {
+    return mergeIntoMapWith(this, deepMerger(null), arguments);
+  },
+  mergeDeepWith: function(merger) {
+    for (var seqs = [],
+        $__5 = 1; $__5 < arguments.length; $__5++)
+      seqs[$__5 - 1] = arguments[$__5];
+    return mergeIntoMapWith(this, deepMerger(merger), seqs);
+  },
+  cursor: function(maybeKeyPath, onChange) {
+    var keyPath = arguments.length === 0 || typeof maybeKeyPath === 'function' && (onChange = maybeKeyPath) ? [] : Array.isArray(maybeKeyPath) ? maybeKeyPath : [maybeKeyPath];
+    return makeCursor(this, keyPath, onChange);
+  },
+  withMutations: function(fn) {
+    var mutable = this.asMutable();
+    fn(mutable);
+    return mutable.wasAltered() ? mutable.__ensureOwner(this.__ownerID) : this;
+  },
+  asMutable: function() {
+    return this.__ownerID ? this : this.__ensureOwner(new OwnerID());
+  },
+  asImmutable: function() {
+    return this.__ensureOwner();
+  },
+  wasAltered: function() {
+    return this.__altered;
+  },
+  __iterator: function(type, reverse) {
+    return new MapIterator(this, type, reverse);
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    var iterations = 0;
+    this._root && this._root.iterate((function(entry) {
+      iterations++;
+      return fn(entry[1], entry[0], $__0);
+    }), reverse);
+    return iterations;
+  },
+  __ensureOwner: function(ownerID) {
     if (ownerID === this.__ownerID) {
       return this;
     }
-    var newMap = this.$Set_map && this.$Set_map.__ensureOwner(ownerID);
     if (!ownerID) {
       this.__ownerID = ownerID;
-      this.$Set_map = newMap;
+      this.__altered = false;
       return this;
     }
-    return Set.$Set_make(newMap, ownerID);
-  };
-
-  // @pragma Iteration
-
-  Set.prototype.__deepEquals=function(other) {"use strict";
-    return !(this.$Set_map || other.$Set_map) || this.$Set_map.equals(other.$Set_map);
-  };
-
-  Set.prototype.__iterate=function(fn, reverse) {"use strict";
-    var collection = this;
-    return this.$Set_map ? this.$Set_map.__iterate(function(_, k)  {return fn(k, k, collection);}, reverse) : 0;
-  };
-
-  // @pragma Private
-
-  Set.$Set_make=function(map, ownerID) {"use strict";
-    var set = Object.create(Set.prototype);
-    set.length = map ? map.length : 0;
-    set.$Set_map = map;
-    set.__ownerID = ownerID;
-    return set;
-  };
-
-
-Set.prototype.contains = Set.prototype.has;
-Set.prototype.withMutations = ImmutableMap.prototype.withMutations;
-Set.prototype.asMutable = ImmutableMap.prototype.asMutable;
-Set.prototype.asImmutable = ImmutableMap.prototype.asImmutable;
-Set.prototype.__toJS = IndexedSequence.prototype.__toJS;
-Set.prototype.__toStringMapper = IndexedSequence.prototype.__toStringMapper;
-
-
-var __EMPTY_SET;
-
-module.exports = Set;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Set.js","/../../../node_modules/immutable/dist")
-},{"./Map":174,"./Sequence":179,"1YiZ5S":11,"buffer":7}],181:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- *  Copyright (c) 2014, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var SequenceModule = require('./Sequence');
-var Sequence = SequenceModule.Sequence;
-var IndexedSequence = SequenceModule.IndexedSequence;
-var ImmutableMap = require('./Map');
-
-
-for(var IndexedSequence____Key in IndexedSequence){if(IndexedSequence.hasOwnProperty(IndexedSequence____Key)){Vector[IndexedSequence____Key]=IndexedSequence[IndexedSequence____Key];}}var ____SuperProtoOfIndexedSequence=IndexedSequence===null?null:IndexedSequence.prototype;Vector.prototype=Object.create(____SuperProtoOfIndexedSequence);Vector.prototype.constructor=Vector;Vector.__superConstructor__=IndexedSequence;
-
-  // @pragma Construction
-
-  function Vector() {"use strict";var values=Array.prototype.slice.call(arguments,0);
-    return Vector.from(values);
+    return makeMap(this.length, this._root, ownerID, this.__hash);
   }
-
-  Vector.empty=function() {"use strict";
-    return __EMPTY_VECT || (__EMPTY_VECT =
-      Vector.$Vector_make(0, 0, SHIFT, __EMPTY_VNODE, __EMPTY_VNODE)
-    );
-  };
-
-  Vector.from=function(sequence) {"use strict";
-    if (sequence && sequence.constructor === Vector) {
-      return sequence;
+}, {empty: function() {
+    return EMPTY_MAP || (EMPTY_MAP = makeMap(0));
+  }}, Sequence);
+var MapPrototype = Map.prototype;
+MapPrototype[DELETE] = MapPrototype.remove;
+Map.from = Map;
+var BitmapIndexedNode = function BitmapIndexedNode(ownerID, bitmap, nodes) {
+  this.ownerID = ownerID;
+  this.bitmap = bitmap;
+  this.nodes = nodes;
+};
+var $BitmapIndexedNode = BitmapIndexedNode;
+($traceurRuntime.createClass)(BitmapIndexedNode, {
+  get: function(shift, hash, key, notSetValue) {
+    var bit = (1 << ((shift === 0 ? hash : hash >>> shift) & MASK));
+    var bitmap = this.bitmap;
+    return (bitmap & bit) === 0 ? notSetValue : this.nodes[popCount(bitmap & (bit - 1))].get(shift + SHIFT, hash, key, notSetValue);
+  },
+  update: function(ownerID, shift, hash, key, value, didChangeLength, didAlter) {
+    var hashFrag = (shift === 0 ? hash : hash >>> shift) & MASK;
+    var bit = 1 << hashFrag;
+    var bitmap = this.bitmap;
+    var exists = (bitmap & bit) !== 0;
+    if (!exists && value === NOT_SET) {
+      return this;
     }
-    if (!sequence || sequence.length === 0) {
-      return Vector.empty();
+    var idx = popCount(bitmap & (bit - 1));
+    var nodes = this.nodes;
+    var node = exists ? nodes[idx] : null;
+    var newNode = updateNode(node, ownerID, shift + SHIFT, hash, key, value, didChangeLength, didAlter);
+    if (newNode === node) {
+      return this;
     }
-    var isArray = Array.isArray(sequence);
-    if (sequence.length > 0 && sequence.length < SIZE) {
-      return Vector.$Vector_make(0, sequence.length, SHIFT, __EMPTY_VNODE, new VNode(
-        isArray ? sequence.slice() : Sequence(sequence).toArray()
-      ));
+    if (!exists && newNode && nodes.length >= MAX_BITMAP_SIZE) {
+      return expandNodes(ownerID, nodes, bitmap, hashFrag, newNode);
     }
-    if (!isArray) {
-      sequence = Sequence(sequence);
-      if (!(sequence instanceof IndexedSequence)) {
-        sequence = sequence.values();
+    if (exists && !newNode && nodes.length === 2 && isLeafNode(nodes[idx ^ 1])) {
+      return nodes[idx ^ 1];
+    }
+    if (exists && newNode && nodes.length === 1 && isLeafNode(newNode)) {
+      return newNode;
+    }
+    var isEditable = ownerID && ownerID === this.ownerID;
+    var newBitmap = exists ? newNode ? bitmap : bitmap ^ bit : bitmap | bit;
+    var newNodes = exists ? newNode ? setIn(nodes, idx, newNode, isEditable) : spliceOut(nodes, idx, isEditable) : spliceIn(nodes, idx, newNode, isEditable);
+    if (isEditable) {
+      this.bitmap = newBitmap;
+      this.nodes = newNodes;
+      return this;
+    }
+    return new $BitmapIndexedNode(ownerID, newBitmap, newNodes);
+  },
+  iterate: function(fn, reverse) {
+    var nodes = this.nodes;
+    for (var ii = 0,
+        maxIndex = nodes.length - 1; ii <= maxIndex; ii++) {
+      if (nodes[reverse ? maxIndex - ii : ii].iterate(fn, reverse) === false) {
+        return false;
       }
     }
-    return Vector.empty().merge(sequence);
+  }
+}, {});
+var ArrayNode = function ArrayNode(ownerID, count, nodes) {
+  this.ownerID = ownerID;
+  this.count = count;
+  this.nodes = nodes;
+};
+var $ArrayNode = ArrayNode;
+($traceurRuntime.createClass)(ArrayNode, {
+  get: function(shift, hash, key, notSetValue) {
+    var idx = (shift === 0 ? hash : hash >>> shift) & MASK;
+    var node = this.nodes[idx];
+    return node ? node.get(shift + SHIFT, hash, key, notSetValue) : notSetValue;
+  },
+  update: function(ownerID, shift, hash, key, value, didChangeLength, didAlter) {
+    var idx = (shift === 0 ? hash : hash >>> shift) & MASK;
+    var removed = value === NOT_SET;
+    var nodes = this.nodes;
+    var node = nodes[idx];
+    if (removed && !node) {
+      return this;
+    }
+    var newNode = updateNode(node, ownerID, shift + SHIFT, hash, key, value, didChangeLength, didAlter);
+    if (newNode === node) {
+      return this;
+    }
+    var newCount = this.count;
+    if (!node) {
+      newCount++;
+    } else if (!newNode) {
+      newCount--;
+      if (newCount < MIN_ARRAY_SIZE) {
+        return packNodes(ownerID, nodes, newCount, idx);
+      }
+    }
+    var isEditable = ownerID && ownerID === this.ownerID;
+    var newNodes = setIn(nodes, idx, newNode, isEditable);
+    if (isEditable) {
+      this.count = newCount;
+      this.nodes = newNodes;
+      return this;
+    }
+    return new $ArrayNode(ownerID, newCount, newNodes);
+  },
+  iterate: function(fn, reverse) {
+    var nodes = this.nodes;
+    for (var ii = 0,
+        maxIndex = nodes.length - 1; ii <= maxIndex; ii++) {
+      var node = nodes[reverse ? maxIndex - ii : ii];
+      if (node && node.iterate(fn, reverse) === false) {
+        return false;
+      }
+    }
+  }
+}, {});
+var HashCollisionNode = function HashCollisionNode(ownerID, hash, entries) {
+  this.ownerID = ownerID;
+  this.hash = hash;
+  this.entries = entries;
+};
+var $HashCollisionNode = HashCollisionNode;
+($traceurRuntime.createClass)(HashCollisionNode, {
+  get: function(shift, hash, key, notSetValue) {
+    var entries = this.entries;
+    for (var ii = 0,
+        len = entries.length; ii < len; ii++) {
+      if (is(key, entries[ii][0])) {
+        return entries[ii][1];
+      }
+    }
+    return notSetValue;
+  },
+  update: function(ownerID, shift, hash, key, value, didChangeLength, didAlter) {
+    var removed = value === NOT_SET;
+    if (hash !== this.hash) {
+      if (removed) {
+        return this;
+      }
+      SetRef(didAlter);
+      SetRef(didChangeLength);
+      return mergeIntoNode(this, ownerID, shift, hash, [key, value]);
+    }
+    var entries = this.entries;
+    var idx = 0;
+    for (var len = entries.length; idx < len; idx++) {
+      if (is(key, entries[idx][0])) {
+        break;
+      }
+    }
+    var exists = idx < len;
+    if (removed && !exists) {
+      return this;
+    }
+    SetRef(didAlter);
+    (removed || !exists) && SetRef(didChangeLength);
+    if (removed && len === 2) {
+      return new ValueNode(ownerID, this.hash, entries[idx ^ 1]);
+    }
+    var isEditable = ownerID && ownerID === this.ownerID;
+    var newEntries = isEditable ? entries : arrCopy(entries);
+    if (exists) {
+      if (removed) {
+        idx === len - 1 ? newEntries.pop() : (newEntries[idx] = newEntries.pop());
+      } else {
+        newEntries[idx] = [key, value];
+      }
+    } else {
+      newEntries.push([key, value]);
+    }
+    if (isEditable) {
+      this.entries = newEntries;
+      return this;
+    }
+    return new $HashCollisionNode(ownerID, this.hash, newEntries);
+  },
+  iterate: function(fn, reverse) {
+    var entries = this.entries;
+    for (var ii = 0,
+        maxIndex = entries.length - 1; ii <= maxIndex; ii++) {
+      if (fn(entries[reverse ? maxIndex - ii : ii]) === false) {
+        return false;
+      }
+    }
+  }
+}, {});
+var ValueNode = function ValueNode(ownerID, hash, entry) {
+  this.ownerID = ownerID;
+  this.hash = hash;
+  this.entry = entry;
+};
+var $ValueNode = ValueNode;
+($traceurRuntime.createClass)(ValueNode, {
+  get: function(shift, hash, key, notSetValue) {
+    return is(key, this.entry[0]) ? this.entry[1] : notSetValue;
+  },
+  update: function(ownerID, shift, hash, key, value, didChangeLength, didAlter) {
+    var removed = value === NOT_SET;
+    var keyMatch = is(key, this.entry[0]);
+    if (keyMatch ? value === this.entry[1] : removed) {
+      return this;
+    }
+    SetRef(didAlter);
+    if (removed) {
+      SetRef(didChangeLength);
+      return null;
+    }
+    if (keyMatch) {
+      if (ownerID && ownerID === this.ownerID) {
+        this.entry[1] = value;
+        return this;
+      }
+      return new $ValueNode(ownerID, hash, [key, value]);
+    }
+    SetRef(didChangeLength);
+    return mergeIntoNode(this, ownerID, shift, hash, [key, value]);
+  },
+  iterate: function(fn) {
+    return fn(this.entry);
+  }
+}, {});
+var MapIterator = function MapIterator(map, type, reverse) {
+  this._type = type;
+  this._reverse = reverse;
+  this._stack = map._root && mapIteratorFrame(map._root);
+};
+($traceurRuntime.createClass)(MapIterator, {next: function() {
+    var type = this._type;
+    var stack = this._stack;
+    while (stack) {
+      var node = stack.node;
+      var index = stack.index++;
+      var maxIndex;
+      if (node.entry) {
+        if (index === 0) {
+          return mapIteratorValue(type, node.entry);
+        }
+      } else if (node.entries) {
+        maxIndex = node.entries.length - 1;
+        if (index <= maxIndex) {
+          return mapIteratorValue(type, node.entries[this._reverse ? maxIndex - index : index]);
+        }
+      } else {
+        maxIndex = node.nodes.length - 1;
+        if (index <= maxIndex) {
+          var subNode = node.nodes[this._reverse ? maxIndex - index : index];
+          if (subNode) {
+            if (subNode.entry) {
+              return mapIteratorValue(type, subNode.entry);
+            }
+            stack = this._stack = mapIteratorFrame(subNode, stack);
+          }
+          continue;
+        }
+      }
+      stack = this._stack = this._stack.__prev;
+    }
+    return iteratorDone();
+  }}, {}, Iterator);
+function mapIteratorValue(type, entry) {
+  return iteratorValue(type, entry[0], entry[1]);
+}
+function mapIteratorFrame(node, prev) {
+  return {
+    node: node,
+    index: 0,
+    __prev: prev
   };
-
-  Vector.prototype.toString=function() {"use strict";
+}
+function makeMap(length, root, ownerID, hash) {
+  var map = Object.create(MapPrototype);
+  map.length = length;
+  map._root = root;
+  map.__ownerID = ownerID;
+  map.__hash = hash;
+  map.__altered = false;
+  return map;
+}
+function updateMap(map, k, v) {
+  var didChangeLength = MakeRef(CHANGE_LENGTH);
+  var didAlter = MakeRef(DID_ALTER);
+  var newRoot = updateNode(map._root, map.__ownerID, 0, hash(k), k, v, didChangeLength, didAlter);
+  if (!didAlter.value) {
+    return map;
+  }
+  var newLength = map.length + (didChangeLength.value ? v === NOT_SET ? -1 : 1 : 0);
+  if (map.__ownerID) {
+    map.length = newLength;
+    map._root = newRoot;
+    map.__hash = undefined;
+    map.__altered = true;
+    return map;
+  }
+  return newRoot ? makeMap(newLength, newRoot) : Map.empty();
+}
+function updateNode(node, ownerID, shift, hash, key, value, didChangeLength, didAlter) {
+  if (!node) {
+    if (value === NOT_SET) {
+      return node;
+    }
+    SetRef(didAlter);
+    SetRef(didChangeLength);
+    return new ValueNode(ownerID, hash, [key, value]);
+  }
+  return node.update(ownerID, shift, hash, key, value, didChangeLength, didAlter);
+}
+function isLeafNode(node) {
+  return node.constructor === ValueNode || node.constructor === HashCollisionNode;
+}
+function mergeIntoNode(node, ownerID, shift, hash, entry) {
+  if (node.hash === hash) {
+    return new HashCollisionNode(ownerID, hash, [node.entry, entry]);
+  }
+  var idx1 = (shift === 0 ? node.hash : node.hash >>> shift) & MASK;
+  var idx2 = (shift === 0 ? hash : hash >>> shift) & MASK;
+  var newNode;
+  var nodes = idx1 === idx2 ? [mergeIntoNode(node, ownerID, shift + SHIFT, hash, entry)] : ((newNode = new ValueNode(ownerID, hash, entry)), idx1 < idx2 ? [node, newNode] : [newNode, node]);
+  return new BitmapIndexedNode(ownerID, (1 << idx1) | (1 << idx2), nodes);
+}
+function packNodes(ownerID, nodes, count, excluding) {
+  var bitmap = 0;
+  var packedII = 0;
+  var packedNodes = new Array(count);
+  for (var ii = 0,
+      bit = 1,
+      len = nodes.length; ii < len; ii++, bit <<= 1) {
+    var node = nodes[ii];
+    if (node != null && ii !== excluding) {
+      bitmap |= bit;
+      packedNodes[packedII++] = node;
+    }
+  }
+  return new BitmapIndexedNode(ownerID, bitmap, packedNodes);
+}
+function expandNodes(ownerID, nodes, bitmap, including, node) {
+  var count = 0;
+  var expandedNodes = new Array(SIZE);
+  for (var ii = 0; bitmap !== 0; ii++, bitmap >>>= 1) {
+    expandedNodes[ii] = bitmap & 1 ? nodes[count++] : null;
+  }
+  expandedNodes[including] = node;
+  return new ArrayNode(ownerID, count + 1, expandedNodes);
+}
+function mergeIntoMapWith(map, merger, iterables) {
+  var seqs = [];
+  for (var ii = 0; ii < iterables.length; ii++) {
+    var seq = iterables[ii];
+    if (!(seq instanceof Sequence)) {
+      seq = Sequence(seq);
+      if (seq instanceof IndexedSequence) {
+        seq = seq.fromEntrySeq();
+      }
+    }
+    seq && seqs.push(seq);
+  }
+  return mergeIntoCollectionWith(map, merger, seqs);
+}
+function deepMerger(merger) {
+  return (function(existing, value) {
+    return existing && existing.mergeDeepWith ? existing.mergeDeepWith(merger, value) : merger ? merger(existing, value) : value;
+  });
+}
+function mergeIntoCollectionWith(collection, merger, seqs) {
+  if (seqs.length === 0) {
+    return collection;
+  }
+  return collection.withMutations((function(collection) {
+    var mergeIntoMap = merger ? (function(value, key) {
+      var existing = collection.get(key, NOT_SET);
+      collection.set(key, existing === NOT_SET ? value : merger(existing, value));
+    }) : (function(value, key) {
+      collection.set(key, value);
+    });
+    for (var ii = 0; ii < seqs.length; ii++) {
+      seqs[ii].forEach(mergeIntoMap);
+    }
+  }));
+}
+function updateInDeepMap(collection, keyPath, notSetValue, updater, offset) {
+  invariant(!collection || collection.set, 'updateIn with invalid keyPath');
+  var key = keyPath[offset];
+  var existing = collection ? collection.get(key, NOT_SET) : NOT_SET;
+  var existingValue = existing === NOT_SET ? undefined : existing;
+  var value = offset === keyPath.length - 1 ? updater(existing === NOT_SET ? notSetValue : existing) : updateInDeepMap(existingValue, keyPath, notSetValue, updater, offset + 1);
+  return value === existingValue ? collection : value === NOT_SET ? collection && collection.remove(key) : (collection || Map.empty()).set(key, value);
+}
+function popCount(x) {
+  x = x - ((x >> 1) & 0x55555555);
+  x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+  x = (x + (x >> 4)) & 0x0f0f0f0f;
+  x = x + (x >> 8);
+  x = x + (x >> 16);
+  return x & 0x7f;
+}
+function setIn(array, idx, val, canEdit) {
+  var newArray = canEdit ? array : arrCopy(array);
+  newArray[idx] = val;
+  return newArray;
+}
+function spliceIn(array, idx, val, canEdit) {
+  var newLen = array.length + 1;
+  if (canEdit && idx + 1 === newLen) {
+    array[idx] = val;
+    return array;
+  }
+  var newArray = new Array(newLen);
+  var after = 0;
+  for (var ii = 0; ii < newLen; ii++) {
+    if (ii === idx) {
+      newArray[ii] = val;
+      after = -1;
+    } else {
+      newArray[ii] = array[ii + after];
+    }
+  }
+  return newArray;
+}
+function spliceOut(array, idx, canEdit) {
+  var newLen = array.length - 1;
+  if (canEdit && idx === newLen) {
+    array.pop();
+    return array;
+  }
+  var newArray = new Array(newLen);
+  var after = 0;
+  for (var ii = 0; ii < newLen; ii++) {
+    if (ii === idx) {
+      after = 1;
+    }
+    newArray[ii] = array[ii + after];
+  }
+  return newArray;
+}
+var MAX_BITMAP_SIZE = SIZE / 2;
+var MIN_ARRAY_SIZE = SIZE / 4;
+var EMPTY_MAP;
+var Vector = function Vector() {
+  for (var values = [],
+      $__6 = 0; $__6 < arguments.length; $__6++)
+    values[$__6] = arguments[$__6];
+  return $Vector.from(values);
+};
+var $Vector = Vector;
+($traceurRuntime.createClass)(Vector, {
+  toString: function() {
     return this.__toString('Vector [', ']');
-  };
-
-  // @pragma Access
-
-  Vector.prototype.get=function(index, undefinedValue) {"use strict";
-    index = rawIndex(index, this.$Vector_origin);
-    if (index >= this.$Vector_size) {
-      return undefinedValue;
+  },
+  get: function(index, notSetValue) {
+    index = wrapIndex(this, index);
+    if (index < 0 || index >= this.length) {
+      return notSetValue;
     }
-    var node = this.$Vector_nodeFor(index);
-    var maskedIndex = index & MASK;
-    return node && (undefinedValue === undefined || node.array.hasOwnProperty(maskedIndex)) ?
-      node.array[maskedIndex] : undefinedValue;
-  };
-
-  Vector.prototype.first=function() {"use strict";
-    return this.get(0);
-  };
-
-  Vector.prototype.last=function() {"use strict";
-    return this.get(this.length ? this.length - 1 : 0);
-  };
-
-  // @pragma Modification
-
-  // TODO: set and delete seem very similar.
-
-  Vector.prototype.set=function(index, value) {"use strict";
-    var tailOffset = getTailOffset(this.$Vector_size);
-
-    if (index >= this.length) {
-      return this.withMutations(function(vect) 
-        {return vect.$Vector_setBounds(0, index + 1).set(index, value);}
-      );
-    }
-
-    if (this.get(index, __SENTINEL) === value) {
+    index += this._origin;
+    var node = vectorNodeFor(this, index);
+    return node && node.array[index & MASK];
+  },
+  set: function(index, value) {
+    return updateVector(this, index, value);
+  },
+  remove: function(index) {
+    return updateVector(this, index, NOT_SET);
+  },
+  clear: function() {
+    if (this.length === 0) {
       return this;
     }
-
-    index = rawIndex(index, this.$Vector_origin);
-
-    // Fits within tail.
-    if (index >= tailOffset) {
-      var newTail = this.$Vector_tail.ensureOwner(this.__ownerID);
-      newTail.array[index & MASK] = value;
-      var newSize = index >= this.$Vector_size ? index + 1 : this.$Vector_size;
-      if (this.__ownerID) {
-        this.length = newSize - this.$Vector_origin;
-        this.$Vector_size = newSize;
-        this.$Vector_tail = newTail;
-        return this;
-      }
-      return Vector.$Vector_make(this.$Vector_origin, newSize, this.$Vector_level, this.$Vector_root, newTail);
-    }
-
-    // Fits within existing tree.
-    var newRoot = this.$Vector_root.ensureOwner(this.__ownerID);
-    var node = newRoot;
-    for (var level = this.$Vector_level; level > 0; level -= SHIFT) {
-      var idx = (index >>> level) & MASK;
-      node = node.array[idx] = node.array[idx] ? node.array[idx].ensureOwner(this.__ownerID) : new VNode([], this.__ownerID);
-    }
-    node.array[index & MASK] = value;
     if (this.__ownerID) {
-      this.$Vector_root = newRoot;
+      this.length = this._origin = this._size = 0;
+      this._level = SHIFT;
+      this._root = this._tail = null;
+      this.__hash = undefined;
+      this.__altered = true;
       return this;
     }
-    return Vector.$Vector_make(this.$Vector_origin, this.$Vector_size, this.$Vector_level, newRoot, this.$Vector_tail);
-  };
-
-  Vector.prototype.delete=function(index) {"use strict";
-    // Out of bounds, no-op. Probably a more efficient way to do this...
-    if (!this.has(index)) {
-      return this;
-    }
-
-    var tailOffset = getTailOffset(this.$Vector_size);
-    index = rawIndex(index, this.$Vector_origin);
-
-    // Delete within tail.
-    if (index >= tailOffset) {
-      var newTail = this.$Vector_tail.ensureOwner(this.__ownerID);
-      delete newTail.array[index & MASK];
-      if (this.__ownerID) {
-        this.$Vector_tail = newTail;
-        return this;
-      }
-      return Vector.$Vector_make(this.$Vector_origin, this.$Vector_size, this.$Vector_level, this.$Vector_root, newTail);
-    }
-
-    // Fits within existing tree.
-    var newRoot = this.$Vector_root.ensureOwner(this.__ownerID);
-    var node = newRoot;
-    for (var level = this.$Vector_level; level > 0; level -= SHIFT) {
-      var idx = (index >>> level) & MASK;
-      // TODO: if we don't check "has" above, this could be null.
-      node = node.array[idx] = node.array[idx].ensureOwner(this.__ownerID);
-    }
-    delete node.array[index & MASK];
-    if (this.__ownerID) {
-      this.$Vector_root = newRoot;
-      return this;
-    }
-    return Vector.$Vector_make(this.$Vector_origin, this.$Vector_size, this.$Vector_level, newRoot, this.$Vector_tail);
-  };
-
-  Vector.prototype.clear=function() {"use strict";
-    if (this.__ownerID) {
-      this.length = this.$Vector_origin = this.$Vector_size = 0;
-      this.$Vector_level = SHIFT;
-      this.$Vector_root = this.$Vector_tail = __EMPTY_VNODE;
-      return this;
-    }
-    return Vector.empty();
-  };
-
-  Vector.prototype.push=function() {"use strict";
+    return $Vector.empty();
+  },
+  push: function() {
     var values = arguments;
     var oldLength = this.length;
-    return this.withMutations(function(vect)  {
-      vect.$Vector_setBounds(0, oldLength + values.length);
+    return this.withMutations((function(vect) {
+      setVectorBounds(vect, 0, oldLength + values.length);
       for (var ii = 0; ii < values.length; ii++) {
         vect.set(oldLength + ii, values[ii]);
       }
-    });
-  };
-
-  Vector.prototype.pop=function() {"use strict";
-    return this.$Vector_setBounds(0, -1);
-  };
-
-  Vector.prototype.unshift=function() {"use strict";
+    }));
+  },
+  pop: function() {
+    return setVectorBounds(this, 0, -1);
+  },
+  unshift: function() {
     var values = arguments;
-    return this.withMutations(function(vect)  {
-      vect.$Vector_setBounds(-values.length);
+    return this.withMutations((function(vect) {
+      setVectorBounds(vect, -values.length);
       for (var ii = 0; ii < values.length; ii++) {
         vect.set(ii, values[ii]);
       }
+    }));
+  },
+  shift: function() {
+    return setVectorBounds(this, 1);
+  },
+  merge: function() {
+    return mergeIntoVectorWith(this, null, arguments);
+  },
+  mergeWith: function(merger) {
+    for (var seqs = [],
+        $__7 = 1; $__7 < arguments.length; $__7++)
+      seqs[$__7 - 1] = arguments[$__7];
+    return mergeIntoVectorWith(this, merger, seqs);
+  },
+  mergeDeep: function() {
+    return mergeIntoVectorWith(this, deepMerger(null), arguments);
+  },
+  mergeDeepWith: function(merger) {
+    for (var seqs = [],
+        $__8 = 1; $__8 < arguments.length; $__8++)
+      seqs[$__8 - 1] = arguments[$__8];
+    return mergeIntoVectorWith(this, deepMerger(merger), seqs);
+  },
+  setLength: function(length) {
+    return setVectorBounds(this, 0, length);
+  },
+  slice: function(begin, end) {
+    var sliceSequence = $traceurRuntime.superCall(this, $Vector.prototype, "slice", [begin, end]);
+    if (sliceSequence !== this) {
+      var vector = this;
+      var length = vector.length;
+      sliceSequence.toVector = (function() {
+        return setVectorBounds(vector, begin < 0 ? Math.max(0, length + begin) : length ? Math.min(length, begin) : begin, end == null ? length : end < 0 ? Math.max(0, length + end) : length ? Math.min(length, end) : end);
+      });
+    }
+    return sliceSequence;
+  },
+  __iterator: function(type, reverse) {
+    return new VectorIterator(this, type, reverse);
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    var iterations = 0;
+    var eachFn = (function(v) {
+      return fn(v, iterations++, $__0);
     });
-  };
-
-  Vector.prototype.shift=function() {"use strict";
-    return this.$Vector_setBounds(1);
-  };
-
-  // @pragma Composition
-
-  Vector.prototype.merge=function() {"use strict";var seqs=Array.prototype.slice.call(arguments,0);
-    return ImmutableMap.prototype.merge.apply(
-      vectorWithLengthOfLongestSeq(this, seqs), arguments);
-  };
-
-  Vector.prototype.mergeWith=function(fn)  {"use strict";var seqs=Array.prototype.slice.call(arguments,1);
-    return ImmutableMap.prototype.mergeWith.apply(
-      vectorWithLengthOfLongestSeq(this, seqs), arguments);
-  };
-
-  Vector.prototype.mergeDeep=function() {"use strict";var seqs=Array.prototype.slice.call(arguments,0);
-    return ImmutableMap.prototype.mergeDeep.apply(
-      vectorWithLengthOfLongestSeq(this, seqs), arguments);
-  };
-
-  Vector.prototype.mergeDeepWith=function(fn)  {"use strict";var seqs=Array.prototype.slice.call(arguments,1);
-    return ImmutableMap.prototype.mergeDeepWith.apply(
-      vectorWithLengthOfLongestSeq(this, seqs), arguments);
-  };
-
-  Vector.prototype.setLength=function(length) {"use strict";
-    return this.$Vector_setBounds(0, length);
-  };
-
-  Vector.prototype.$Vector_setBounds=function(begin, end) {"use strict";
-    var owner = this.__ownerID || new OwnerID();
-    var oldOrigin = this.$Vector_origin;
-    var oldSize = this.$Vector_size;
-    var newOrigin = oldOrigin + begin;
-    var newSize = end == null ? oldSize : end < 0 ? oldSize + end : oldOrigin + end;
-    if (newOrigin === oldOrigin && newSize === oldSize) {
-      return this;
+    var tailOffset = getTailOffset(this._size);
+    if (reverse) {
+      iterateVNode(this._tail, 0, tailOffset - this._origin, this._size - this._origin, eachFn, reverse) && iterateVNode(this._root, this._level, -this._origin, tailOffset - this._origin, eachFn, reverse);
+    } else {
+      iterateVNode(this._root, this._level, -this._origin, tailOffset - this._origin, eachFn, reverse) && iterateVNode(this._tail, 0, tailOffset - this._origin, this._size - this._origin, eachFn, reverse);
     }
-
-    // If it's going to end after it starts, it's empty.
-    if (newOrigin >= newSize) {
-      return this.clear();
-    }
-
-    var newLevel = this.$Vector_level;
-    var newRoot = this.$Vector_root;
-
-    // New origin might require creating a higher root.
-    var offsetShift = 0;
-    while (newOrigin + offsetShift < 0) {
-      // TODO: why only ever shifting over by 1?
-      newRoot = new VNode(newRoot.array.length ? [,newRoot] : [], owner);
-      offsetShift += 1 << newLevel;
-      newLevel += SHIFT;
-    }
-    if (offsetShift) {
-      newOrigin += offsetShift;
-      oldOrigin += offsetShift;
-      newSize += offsetShift;
-      oldSize += offsetShift;
-    }
-
-    var oldTailOffset = getTailOffset(oldSize);
-    var newTailOffset = getTailOffset(newSize);
-
-    // New size might require creating a higher root.
-    while (newTailOffset >= 1 << (newLevel + SHIFT)) {
-      newRoot = new VNode(newRoot.array.length ? [newRoot] : [], owner);
-      newLevel += SHIFT;
-    }
-
-    // Locate or create the new tail.
-    var oldTail = this.$Vector_tail;
-    var newTail = newTailOffset < oldTailOffset ?
-      this.$Vector_nodeFor(newSize) :
-      newTailOffset > oldTailOffset ? new VNode([], owner) : oldTail;
-
-    // Merge Tail into tree.
-    if (newTailOffset > oldTailOffset && newOrigin < oldSize && oldTail.array.length) {
-      newRoot = newRoot.ensureOwner(owner);
-      var node = newRoot;
-      for (var level = newLevel; level > SHIFT; level -= SHIFT) {
-        var idx = (oldTailOffset >>> level) & MASK;
-        node = node.array[idx] = node.array[idx] ? node.array[idx].ensureOwner(owner) : new VNode([], owner);
-      }
-      node.array[(oldTailOffset >>> SHIFT) & MASK] = oldTail;
-    }
-
-    // If the size has been reduced, there's a chance the tail needs to be trimmed.
-    if (newSize < oldSize) {
-      newTail = newTail.removeAfter(owner, 0, newSize);
-    }
-
-    // If the new origin is within the tail, then we do not need a root.
-    if (newOrigin >= newTailOffset) {
-      newOrigin -= newTailOffset;
-      newSize -= newTailOffset;
-      newLevel = SHIFT;
-      newRoot = __EMPTY_VNODE;
-      newTail = newTail.removeBefore(owner, 0, newOrigin);
-
-    // Otherwise, if the root has been trimmed, garbage collect.
-    } else if (newOrigin > oldOrigin || newTailOffset < oldTailOffset) {
-      var beginIndex, endIndex;
-      offsetShift = 0;
-
-      // Identify the new top root node of the subtree of the old root.
-      do {
-        beginIndex = ((newOrigin) >>> newLevel) & MASK;
-        endIndex = ((newTailOffset - 1) >>> newLevel) & MASK;
-        if (beginIndex === endIndex) {
-          if (beginIndex) {
-            offsetShift += (1 << newLevel) * beginIndex;
-          }
-          newLevel -= SHIFT;
-          newRoot = newRoot && newRoot.array[beginIndex];
-        }
-      } while (newRoot && beginIndex === endIndex);
-
-      // Trim the new sides of the new root.
-      if (newRoot && newOrigin > oldOrigin) {
-        newRoot = newRoot.removeBefore(owner, newLevel, newOrigin - offsetShift);
-      }
-      if (newRoot && newTailOffset < oldTailOffset) {
-        newRoot = newRoot.removeAfter(owner, newLevel, newTailOffset - offsetShift);
-      }
-      if (offsetShift) {
-        newOrigin -= offsetShift;
-        newSize -= offsetShift;
-      }
-      // Ensure root is not null.
-      newRoot = newRoot || __EMPTY_VNODE;
-    }
-
-    if (this.__ownerID) {
-      this.length = newSize - newOrigin;
-      this.$Vector_origin = newOrigin;
-      this.$Vector_size = newSize;
-      this.$Vector_level = newLevel;
-      this.$Vector_root = newRoot;
-      this.$Vector_tail = newTail;
-      return this;
-    }
-    return Vector.$Vector_make(newOrigin, newSize, newLevel, newRoot, newTail);
-  };
-
-  // @pragma Mutability
-
-  Vector.prototype.__ensureOwner=function(ownerID) {"use strict";
+    return iterations;
+  },
+  __ensureOwner: function(ownerID) {
     if (ownerID === this.__ownerID) {
       return this;
     }
@@ -24451,130 +23505,53 @@ for(var IndexedSequence____Key in IndexedSequence){if(IndexedSequence.hasOwnProp
       this.__ownerID = ownerID;
       return this;
     }
-    return Vector.$Vector_make(this.$Vector_origin, this.$Vector_size, this.$Vector_level, this.$Vector_root, this.$Vector_tail, ownerID);
-  };
-
-  // @pragma Iteration
-
-  Vector.prototype.slice=function(begin, end, maintainIndices) {"use strict";
-    var sliceSequence = ____SuperProtoOfIndexedSequence.slice.call(this,begin, end, maintainIndices);
-    // Optimize the case of vector.slice(b, e).toVector()
-    if (!maintainIndices && sliceSequence !== this) {
-      var vector = this;
-      var length = vector.length;
-      sliceSequence.toVector = function()  {return vector.$Vector_setBounds(
-        begin < 0 ? Math.max(0, length + begin) : length ? Math.min(length, begin) : begin,
-        end == null ? length : end < 0 ? Math.max(0, length + end) : length ? Math.min(length, end) : end
-      );};
-    }
-    return sliceSequence;
-  };
-
-  Vector.prototype.__deepEquals=function(other) {"use strict";
-    var is = require('./Immutable').is;
-    var iterator = this.__iterator__();
-    return other.every(function(v, k)  {
-      var entry = iterator.next();
-      return k === entry[0] && is(v, entry[1]);
-    });
-  };
-
-  Vector.prototype.__iterator__=function() {"use strict";
-    return new VectorIterator(
-      this, this.$Vector_origin, this.$Vector_size, this.$Vector_level, this.$Vector_root, this.$Vector_tail
-    );
-  };
-
-  Vector.prototype.__iterate=function(fn, reverse, flipIndices) {"use strict";
-    var vector = this;
-    var lastIndex = 0;
-    var maxIndex = vector.length - 1;
-    flipIndices ^= reverse;
-    var eachFn = function(value, ii)  {
-      if (fn(value, flipIndices ? maxIndex - ii : ii, vector) === false) {
-        return false;
-      } else {
-        lastIndex = ii;
-        return true;
-      }
-    };
-    var didComplete;
-    var tailOffset = getTailOffset(this.$Vector_size);
-    if (reverse) {
-      didComplete =
-        this.$Vector_tail.iterate(0, tailOffset - this.$Vector_origin, this.$Vector_size - this.$Vector_origin, eachFn, reverse) &&
-        this.$Vector_root.iterate(this.$Vector_level, -this.$Vector_origin, tailOffset - this.$Vector_origin, eachFn, reverse);
-    } else {
-      didComplete =
-        this.$Vector_root.iterate(this.$Vector_level, -this.$Vector_origin, tailOffset - this.$Vector_origin, eachFn, reverse) &&
-        this.$Vector_tail.iterate(0, tailOffset - this.$Vector_origin, this.$Vector_size - this.$Vector_origin, eachFn, reverse);
-    }
-    return (didComplete ? maxIndex : reverse ? maxIndex - lastIndex : lastIndex) + 1;
-  };
-
-  // @pragma Private
-
-  Vector.$Vector_make=function(origin, size, level, root, tail, ownerID) {"use strict";
-    var vect = Object.create(Vector.prototype);
-    vect.length = size - origin;
-    vect.$Vector_origin = origin;
-    vect.$Vector_size = size;
-    vect.$Vector_level = level;
-    vect.$Vector_root = root;
-    vect.$Vector_tail = tail;
-    vect.__ownerID = ownerID;
-    return vect;
-  };
-
-  Vector.prototype.$Vector_nodeFor=function(rawIndex) {"use strict";
-    if (rawIndex >= getTailOffset(this.$Vector_size)) {
-      return this.$Vector_tail;
-    }
-    if (rawIndex < 1 << (this.$Vector_level + SHIFT)) {
-      var node = this.$Vector_root;
-      var level = this.$Vector_level;
-      while (node && level > 0) {
-        node = node.array[(rawIndex >>> level) & MASK];
-        level -= SHIFT;
-      }
-      return node;
-    }
-  };
-
-
-Vector.prototype.updateIn = ImmutableMap.prototype.updateIn;
-Vector.prototype.withMutations = ImmutableMap.prototype.withMutations;
-Vector.prototype.asMutable = ImmutableMap.prototype.asMutable;
-Vector.prototype.asImmutable = ImmutableMap.prototype.asImmutable;
-
-
-
-  function OwnerID() {"use strict";}
-
-
-
-
-  function VNode(array, ownerID) {"use strict";
-    this.array = array;
-    this.ownerID = ownerID;
+    return makeVector(this._origin, this._size, this._level, this._root, this._tail, ownerID, this.__hash);
   }
-
-  VNode.prototype.ensureOwner=function(ownerID) {"use strict";
-    if (ownerID && ownerID === this.ownerID) {
-      return this;
+}, {
+  empty: function() {
+    return EMPTY_VECT || (EMPTY_VECT = makeVector(0, 0, SHIFT));
+  },
+  from: function(sequence) {
+    if (!sequence || sequence.length === 0) {
+      return $Vector.empty();
     }
-    return new VNode(this.array.slice(), ownerID);
-  };
-
-  // TODO: seems like these methods are very similar
-
-  VNode.prototype.removeBefore=function(ownerID, level, index) {"use strict";
-    if (index === 1 << level || this.array.length === 0) {
+    if (sequence.constructor === $Vector) {
+      return sequence;
+    }
+    var isArray = Array.isArray(sequence);
+    if (sequence.length > 0 && sequence.length < SIZE) {
+      return makeVector(0, sequence.length, SHIFT, null, new VNode(isArray ? arrCopy(sequence) : Sequence(sequence).toArray()));
+    }
+    if (!isArray) {
+      sequence = Sequence(sequence).valueSeq();
+    }
+    return $Vector.empty().merge(sequence);
+  }
+}, IndexedSequence);
+var VectorPrototype = Vector.prototype;
+VectorPrototype[DELETE] = VectorPrototype.remove;
+VectorPrototype.setIn = MapPrototype.setIn;
+VectorPrototype.removeIn = MapPrototype.removeIn;
+VectorPrototype.update = MapPrototype.update;
+VectorPrototype.updateIn = MapPrototype.updateIn;
+VectorPrototype.cursor = MapPrototype.cursor;
+VectorPrototype.withMutations = MapPrototype.withMutations;
+VectorPrototype.asMutable = MapPrototype.asMutable;
+VectorPrototype.asImmutable = MapPrototype.asImmutable;
+VectorPrototype.wasAltered = MapPrototype.wasAltered;
+var VNode = function VNode(array, ownerID) {
+  this.array = array;
+  this.ownerID = ownerID;
+};
+var $VNode = VNode;
+($traceurRuntime.createClass)(VNode, {
+  removeBefore: function(ownerID, level, index) {
+    if (index === level ? 1 << level : 0 || this.array.length === 0) {
       return this;
     }
     var originIndex = (index >>> level) & MASK;
     if (originIndex >= this.array.length) {
-      return new VNode([], ownerID);
+      return new $VNode([], ownerID);
     }
     var removingFirst = originIndex === 0;
     var newChild;
@@ -24588,20 +23565,19 @@ Vector.prototype.asImmutable = ImmutableMap.prototype.asImmutable;
     if (removingFirst && !newChild) {
       return this;
     }
-    var editable = this.ensureOwner();
+    var editable = editableVNode(this, ownerID);
     if (!removingFirst) {
       for (var ii = 0; ii < originIndex; ii++) {
-        delete editable.array[ii];
+        editable.array[ii] = undefined;
       }
     }
     if (newChild) {
       editable.array[originIndex] = newChild;
     }
     return editable;
-  };
-
-  VNode.prototype.removeAfter=function(ownerID, level, index) {"use strict";
-    if (index === 1 << level || this.array.length === 0) {
+  },
+  removeAfter: function(ownerID, level, index) {
+    if (index === level ? 1 << level : 0 || this.array.length === 0) {
       return this;
     }
     var sizeIndex = ((index - 1) >>> level) & MASK;
@@ -24620,148 +23596,1205 @@ Vector.prototype.asImmutable = ImmutableMap.prototype.asImmutable;
     if (removingLast && !newChild) {
       return this;
     }
-    var editable = this.ensureOwner();
+    var editable = editableVNode(this, ownerID);
     if (!removingLast) {
-      editable.array.length = sizeIndex + 1;
+      editable.array.pop();
     }
     if (newChild) {
       editable.array[sizeIndex] = newChild;
     }
     return editable;
-  };
-
-  VNode.prototype.iterate=function(level, offset, max, fn, reverse) {"use strict";
-    // Note using every() gets us a speed-up of 2x on modern JS VMs, but means
-    // we cannot support IE8 without polyfill.
-    if (level === 0) {
-      if (reverse) {
-        for (var revRawIndex = this.array.length - 1; revRawIndex >= 0; revRawIndex--) {
-          if (this.array.hasOwnProperty(revRawIndex)) {
-            var index = revRawIndex + offset;
-            if (index >= 0 && index < max && fn(this.array[revRawIndex], index) === false) {
-              return false;
-            }
-          }
-        }
-        return true;
-      } else {
-        return this.array.every(function(value, rawIndex)  {
-          var index = rawIndex + offset;
-          return index < 0 || index >= max || fn(value, index) !== false;
-        });
+  }
+}, {});
+function iterateVNode(node, level, offset, max, fn, reverse) {
+  var ii;
+  var array = node && node.array;
+  if (level === 0) {
+    var from = offset < 0 ? -offset : 0;
+    var to = max - offset;
+    if (to > SIZE) {
+      to = SIZE;
+    }
+    for (ii = from; ii < to; ii++) {
+      if (fn(array && array[reverse ? from + to - 1 - ii : ii]) === false) {
+        return false;
       }
     }
+  } else {
     var step = 1 << level;
     var newLevel = level - SHIFT;
-    if (reverse) {
-      for (var revLevelIndex = this.array.length - 1; revLevelIndex >= 0; revLevelIndex--) {
-        var newOffset = offset + revLevelIndex * step;
-        if (newOffset < max && newOffset + step > 0 &&
-            this.array.hasOwnProperty(revLevelIndex) &&
-            !this.array[revLevelIndex].iterate(newLevel, newOffset, max, fn, reverse)) {
+    for (ii = 0; ii <= MASK; ii++) {
+      var levelIndex = reverse ? MASK - ii : ii;
+      var newOffset = offset + (levelIndex << level);
+      if (newOffset < max && newOffset + step > 0) {
+        var nextNode = array && array[levelIndex];
+        if (!iterateVNode(nextNode, newLevel, newOffset, max, fn, reverse)) {
           return false;
         }
       }
-      return true;
-    } else {
-      return this.array.every(function(newNode, levelIndex)  {
-        var newOffset = offset + levelIndex * step;
-        return newOffset >= max || newOffset + step <= 0 || newNode.iterate(newLevel, newOffset, max, fn, reverse);
-      });
     }
-  };
-
-
-
-
-
-  function VectorIterator(vector, origin, size, level, root, tail) {"use strict";
-    var tailOffset = getTailOffset(size);
-    this.$VectorIterator_stack = {
-      node: root.array,
-      level: level,
-      offset: -origin,
-      max: tailOffset - origin,
-      __prev: {
-        node: tail.array,
-        level: 0,
-        offset: tailOffset - origin,
-        max: size - origin
-      }
-    };
   }
-
-  VectorIterator.prototype.next=function()  {"use strict";
-    var stack = this.$VectorIterator_stack;
-    iteration: while (stack) {
-      if (stack.level === 0) {
-        stack.rawIndex || (stack.rawIndex = 0);
-        while (stack.rawIndex < stack.node.length) {
-          var index = stack.rawIndex + stack.offset;
-          if (index >= 0 && index < stack.max && stack.node.hasOwnProperty(stack.rawIndex)) {
-            var value = stack.node[stack.rawIndex];
-            stack.rawIndex++;
-            return [index, value];
-          } else {
-            stack.rawIndex++;
-          }
-        }
-      } else {
-        var step = 1 << stack.level;
-        stack.levelIndex || (stack.levelIndex = 0);
-        while (stack.levelIndex < stack.node.length) {
-          var newOffset = stack.offset + stack.levelIndex * step;
-          if (newOffset + step > 0 && newOffset < stack.max && stack.node.hasOwnProperty(stack.levelIndex)) {
-            var newNode = stack.node[stack.levelIndex].array;
-            stack.levelIndex++;
-            stack = this.$VectorIterator_stack = {
-              node: newNode,
-              level: stack.level - SHIFT,
-              offset: newOffset,
-              max: stack.max,
-              __prev: stack
-            };
-            continue iteration;
-          } else {
-            stack.levelIndex++;
-          }
+  return true;
+}
+var VectorIterator = function VectorIterator(vector, type, reverse) {
+  this._type = type;
+  this._reverse = !!reverse;
+  this._maxIndex = vector.length - 1;
+  var tailOffset = getTailOffset(vector._size);
+  var rootStack = vectIteratorFrame(vector._root && vector._root.array, vector._level, -vector._origin, tailOffset - vector._origin - 1);
+  var tailStack = vectIteratorFrame(vector._tail && vector._tail.array, 0, tailOffset - vector._origin, vector._size - vector._origin - 1);
+  this._stack = reverse ? tailStack : rootStack;
+  this._stack.__prev = reverse ? rootStack : tailStack;
+};
+($traceurRuntime.createClass)(VectorIterator, {next: function() {
+    var stack = this._stack;
+    while (stack) {
+      var array = stack.array;
+      var rawIndex = stack.index++;
+      if (this._reverse) {
+        rawIndex = MASK - rawIndex;
+        if (rawIndex > stack.rawMax) {
+          rawIndex = stack.rawMax;
+          stack.index = SIZE - rawIndex;
         }
       }
-      stack = this.$VectorIterator_stack = this.$VectorIterator_stack.__prev;
+      if (rawIndex >= 0 && rawIndex < SIZE && rawIndex <= stack.rawMax) {
+        var value = array && array[rawIndex];
+        if (stack.level === 0) {
+          var type = this._type;
+          var index;
+          if (type !== 1) {
+            index = stack.offset + (rawIndex << stack.level);
+            if (this._reverse) {
+              index = this._maxIndex - index;
+            }
+          }
+          return iteratorValue(type, index, value);
+        } else {
+          this._stack = stack = vectIteratorFrame(value && value.array, stack.level - SHIFT, stack.offset + (rawIndex << stack.level), stack.max, stack);
+        }
+        continue;
+      }
+      stack = this._stack = this._stack.__prev;
     }
-    if (global.StopIteration) {
-      throw global.StopIteration;
-    }
+    return iteratorDone();
+  }}, {}, Iterator);
+function vectIteratorFrame(array, level, offset, max, prevFrame) {
+  return {
+    array: array,
+    level: level,
+    offset: offset,
+    max: max,
+    rawMax: ((max - offset) >> level),
+    index: 0,
+    __prev: prevFrame
   };
-
-
-
-function vectorWithLengthOfLongestSeq(vector, seqs) {
-  var maxLength = Math.max.apply(null, seqs.map(function(seq)  {return seq.length || 0;}));
-  return maxLength > vector.length ? vector.setLength(maxLength) : vector;
 }
-
-function rawIndex(index, origin) {
-  if (index < 0) throw new Error('Index out of bounds');
-  return index + origin;
+function makeVector(origin, size, level, root, tail, ownerID, hash) {
+  var vect = Object.create(VectorPrototype);
+  vect.length = size - origin;
+  vect._origin = origin;
+  vect._size = size;
+  vect._level = level;
+  vect._root = root;
+  vect._tail = tail;
+  vect.__ownerID = ownerID;
+  vect.__hash = hash;
+  vect.__altered = false;
+  return vect;
 }
-
+function updateVector(vector, index, value) {
+  index = wrapIndex(vector, index);
+  if (index >= vector.length || index < 0) {
+    return value === NOT_SET ? vector : vector.withMutations((function(vect) {
+      index < 0 ? setVectorBounds(vect, index).set(0, value) : setVectorBounds(vect, 0, index + 1).set(index, value);
+    }));
+  }
+  index += vector._origin;
+  var newTail = vector._tail;
+  var newRoot = vector._root;
+  var didAlter = MakeRef(DID_ALTER);
+  if (index >= getTailOffset(vector._size)) {
+    newTail = updateVNode(newTail, vector.__ownerID, 0, index, value, didAlter);
+  } else {
+    newRoot = updateVNode(newRoot, vector.__ownerID, vector._level, index, value, didAlter);
+  }
+  if (!didAlter.value) {
+    return vector;
+  }
+  if (vector.__ownerID) {
+    vector._root = newRoot;
+    vector._tail = newTail;
+    vector.__hash = undefined;
+    vector.__altered = true;
+    return vector;
+  }
+  return makeVector(vector._origin, vector._size, vector._level, newRoot, newTail);
+}
+function updateVNode(node, ownerID, level, index, value, didAlter) {
+  var removed = value === NOT_SET;
+  var newNode;
+  var idx = (index >>> level) & MASK;
+  var nodeHas = node && idx < node.array.length;
+  if (removed && !nodeHas) {
+    return node;
+  }
+  if (level > 0) {
+    var lowerNode = node && node.array[idx];
+    var newLowerNode = updateVNode(lowerNode, ownerID, level - SHIFT, index, value, didAlter);
+    if (newLowerNode === lowerNode) {
+      return node;
+    }
+    newNode = editableVNode(node, ownerID);
+    newNode.array[idx] = newLowerNode;
+    return newNode;
+  }
+  if (!removed && nodeHas && node.array[idx] === value) {
+    return node;
+  }
+  SetRef(didAlter);
+  newNode = editableVNode(node, ownerID);
+  if (removed && idx === newNode.array.length - 1) {
+    newNode.array.pop();
+  } else {
+    newNode.array[idx] = removed ? undefined : value;
+  }
+  return newNode;
+}
+function editableVNode(node, ownerID) {
+  if (ownerID && node && ownerID === node.ownerID) {
+    return node;
+  }
+  return new VNode(node ? node.array.slice() : [], ownerID);
+}
+function vectorNodeFor(vector, rawIndex) {
+  if (rawIndex >= getTailOffset(vector._size)) {
+    return vector._tail;
+  }
+  if (rawIndex < 1 << (vector._level + SHIFT)) {
+    var node = vector._root;
+    var level = vector._level;
+    while (node && level > 0) {
+      node = node.array[(rawIndex >>> level) & MASK];
+      level -= SHIFT;
+    }
+    return node;
+  }
+}
+function setVectorBounds(vector, begin, end) {
+  var owner = vector.__ownerID || new OwnerID();
+  var oldOrigin = vector._origin;
+  var oldSize = vector._size;
+  var newOrigin = oldOrigin + begin;
+  var newSize = end == null ? oldSize : end < 0 ? oldSize + end : oldOrigin + end;
+  if (newOrigin === oldOrigin && newSize === oldSize) {
+    return vector;
+  }
+  if (newOrigin >= newSize) {
+    return vector.clear();
+  }
+  var newLevel = vector._level;
+  var newRoot = vector._root;
+  var offsetShift = 0;
+  while (newOrigin + offsetShift < 0) {
+    newRoot = new VNode(newRoot && newRoot.array.length ? [null, newRoot] : [], owner);
+    newLevel += SHIFT;
+    offsetShift += 1 << newLevel;
+  }
+  if (offsetShift) {
+    newOrigin += offsetShift;
+    oldOrigin += offsetShift;
+    newSize += offsetShift;
+    oldSize += offsetShift;
+  }
+  var oldTailOffset = getTailOffset(oldSize);
+  var newTailOffset = getTailOffset(newSize);
+  while (newTailOffset >= 1 << (newLevel + SHIFT)) {
+    newRoot = new VNode(newRoot && newRoot.array.length ? [newRoot] : [], owner);
+    newLevel += SHIFT;
+  }
+  var oldTail = vector._tail;
+  var newTail = newTailOffset < oldTailOffset ? vectorNodeFor(vector, newSize - 1) : newTailOffset > oldTailOffset ? new VNode([], owner) : oldTail;
+  if (oldTail && newTailOffset > oldTailOffset && newOrigin < oldSize && oldTail.array.length) {
+    newRoot = editableVNode(newRoot, owner);
+    var node = newRoot;
+    for (var level = newLevel; level > SHIFT; level -= SHIFT) {
+      var idx = (oldTailOffset >>> level) & MASK;
+      node = node.array[idx] = editableVNode(node.array[idx], owner);
+    }
+    node.array[(oldTailOffset >>> SHIFT) & MASK] = oldTail;
+  }
+  if (newSize < oldSize) {
+    newTail = newTail && newTail.removeAfter(owner, 0, newSize);
+  }
+  if (newOrigin >= newTailOffset) {
+    newOrigin -= newTailOffset;
+    newSize -= newTailOffset;
+    newLevel = SHIFT;
+    newRoot = null;
+    newTail = newTail && newTail.removeBefore(owner, 0, newOrigin);
+  } else if (newOrigin > oldOrigin || newTailOffset < oldTailOffset) {
+    offsetShift = 0;
+    while (newRoot) {
+      var beginIndex = (newOrigin >>> newLevel) & MASK;
+      if (beginIndex !== (newTailOffset >>> newLevel) & MASK) {
+        break;
+      }
+      if (beginIndex) {
+        offsetShift += (1 << newLevel) * beginIndex;
+      }
+      newLevel -= SHIFT;
+      newRoot = newRoot.array[beginIndex];
+    }
+    if (newRoot && newOrigin > oldOrigin) {
+      newRoot = newRoot.removeBefore(owner, newLevel, newOrigin - offsetShift);
+    }
+    if (newRoot && newTailOffset < oldTailOffset) {
+      newRoot = newRoot.removeAfter(owner, newLevel, newTailOffset - offsetShift);
+    }
+    if (offsetShift) {
+      newOrigin -= offsetShift;
+      newSize -= offsetShift;
+    }
+  }
+  if (vector.__ownerID) {
+    vector.length = newSize - newOrigin;
+    vector._origin = newOrigin;
+    vector._size = newSize;
+    vector._level = newLevel;
+    vector._root = newRoot;
+    vector._tail = newTail;
+    vector.__hash = undefined;
+    vector.__altered = true;
+    return vector;
+  }
+  return makeVector(newOrigin, newSize, newLevel, newRoot, newTail);
+}
+function mergeIntoVectorWith(vector, merger, iterables) {
+  var seqs = [];
+  for (var ii = 0; ii < iterables.length; ii++) {
+    var seq = iterables[ii];
+    seq && seqs.push(Sequence(seq));
+  }
+  var maxLength = Math.max.apply(null, seqs.map((function(s) {
+    return s.length || 0;
+  })));
+  if (maxLength > vector.length) {
+    vector = vector.setLength(maxLength);
+  }
+  return mergeIntoCollectionWith(vector, merger, seqs);
+}
 function getTailOffset(size) {
   return size < SIZE ? 0 : (((size - 1) >>> SHIFT) << SHIFT);
 }
+var EMPTY_VECT;
+var Stack = function Stack() {
+  for (var values = [],
+      $__9 = 0; $__9 < arguments.length; $__9++)
+    values[$__9] = arguments[$__9];
+  return $Stack.from(values);
+};
+var $Stack = Stack;
+($traceurRuntime.createClass)(Stack, {
+  toString: function() {
+    return this.__toString('Stack [', ']');
+  },
+  get: function(index, notSetValue) {
+    var head = this._head;
+    while (head && index--) {
+      head = head.next;
+    }
+    return head ? head.value : notSetValue;
+  },
+  peek: function() {
+    return this._head && this._head.value;
+  },
+  push: function() {
+    if (arguments.length === 0) {
+      return this;
+    }
+    var newLength = this.length + arguments.length;
+    var head = this._head;
+    for (var ii = arguments.length - 1; ii >= 0; ii--) {
+      head = {
+        value: arguments[ii],
+        next: head
+      };
+    }
+    if (this.__ownerID) {
+      this.length = newLength;
+      this._head = head;
+      this.__hash = undefined;
+      this.__altered = true;
+      return this;
+    }
+    return makeStack(newLength, head);
+  },
+  pushAll: function(seq) {
+    seq = Sequence(seq);
+    if (seq.length === 0) {
+      return this;
+    }
+    var newLength = this.length;
+    var head = this._head;
+    seq.reverse().forEach((function(value) {
+      newLength++;
+      head = {
+        value: value,
+        next: head
+      };
+    }));
+    if (this.__ownerID) {
+      this.length = newLength;
+      this._head = head;
+      this.__hash = undefined;
+      this.__altered = true;
+      return this;
+    }
+    return makeStack(newLength, head);
+  },
+  pop: function() {
+    return this.slice(1);
+  },
+  unshift: function() {
+    return this.push.apply(this, arguments);
+  },
+  unshiftAll: function(seq) {
+    return this.pushAll(seq);
+  },
+  shift: function() {
+    return this.pop.apply(this, arguments);
+  },
+  clear: function() {
+    if (this.length === 0) {
+      return this;
+    }
+    if (this.__ownerID) {
+      this.length = 0;
+      this._head = undefined;
+      this.__hash = undefined;
+      this.__altered = true;
+      return this;
+    }
+    return $Stack.empty();
+  },
+  slice: function(begin, end) {
+    if (wholeSlice(begin, end, this.length)) {
+      return this;
+    }
+    var resolvedBegin = resolveBegin(begin, this.length);
+    var resolvedEnd = resolveEnd(end, this.length);
+    if (resolvedEnd !== this.length) {
+      return $traceurRuntime.superCall(this, $Stack.prototype, "slice", [begin, end]);
+    }
+    var newLength = this.length - resolvedBegin;
+    var head = this._head;
+    while (resolvedBegin--) {
+      head = head.next;
+    }
+    if (this.__ownerID) {
+      this.length = newLength;
+      this._head = head;
+      this.__hash = undefined;
+      this.__altered = true;
+      return this;
+    }
+    return makeStack(newLength, head);
+  },
+  __ensureOwner: function(ownerID) {
+    if (ownerID === this.__ownerID) {
+      return this;
+    }
+    if (!ownerID) {
+      this.__ownerID = ownerID;
+      this.__altered = false;
+      return this;
+    }
+    return makeStack(this.length, this._head, ownerID, this.__hash);
+  },
+  __iterateUncached: function(fn, reverse) {
+    if (reverse) {
+      return this.cacheResult().__iterate(fn, reverse);
+    }
+    var iterations = 0;
+    var node = this._head;
+    while (node) {
+      if (fn(node.value, iterations++, this) === false) {
+        break;
+      }
+      node = node.next;
+    }
+    return iterations;
+  },
+  __iteratorUncached: function(type, reverse) {
+    if (reverse) {
+      return this.cacheResult().__iterator(type, reverse);
+    }
+    var iterations = 0;
+    var node = this._head;
+    return new Iterator((function() {
+      if (node) {
+        var value = node.value;
+        node = node.next;
+        return iteratorValue(type, iterations++, value);
+      }
+      return iteratorDone();
+    }));
+  }
+}, {
+  empty: function() {
+    return EMPTY_STACK || (EMPTY_STACK = makeStack(0));
+  },
+  from: function(sequence) {
+    var stack = $Stack.empty();
+    return sequence ? sequence.constructor === $Stack ? sequence : stack.unshiftAll(sequence) : stack;
+  }
+}, IndexedSequence);
+var StackPrototype = Stack.prototype;
+StackPrototype.withMutations = MapPrototype.withMutations;
+StackPrototype.asMutable = MapPrototype.asMutable;
+StackPrototype.asImmutable = MapPrototype.asImmutable;
+StackPrototype.wasAltered = MapPrototype.wasAltered;
+function makeStack(length, head, ownerID, hash) {
+  var map = Object.create(StackPrototype);
+  map.length = length;
+  map._head = head;
+  map.__ownerID = ownerID;
+  map.__hash = hash;
+  map.__altered = false;
+  return map;
+}
+var EMPTY_STACK;
+var Set = function Set() {
+  for (var values = [],
+      $__10 = 0; $__10 < arguments.length; $__10++)
+    values[$__10] = arguments[$__10];
+  return $Set.from(values);
+};
+var $Set = Set;
+($traceurRuntime.createClass)(Set, {
+  toString: function() {
+    return this.__toString('Set {', '}');
+  },
+  get: function(value, notSetValue) {
+    return this._map.has(value) ? value : notSetValue;
+  },
+  contains: function(value) {
+    return this._map.has(value);
+  },
+  add: function(value) {
+    var newMap = this._map.set(value, null);
+    if (this.__ownerID) {
+      this.length = newMap.length;
+      this._map = newMap;
+      return this;
+    }
+    return newMap === this._map ? this : makeSet(newMap);
+  },
+  remove: function(value) {
+    var newMap = this._map.remove(value);
+    if (this.__ownerID) {
+      this.length = newMap.length;
+      this._map = newMap;
+      return this;
+    }
+    return newMap === this._map ? this : newMap.length === 0 ? $Set.empty() : makeSet(newMap);
+  },
+  clear: function() {
+    if (this.length === 0) {
+      return this;
+    }
+    if (this.__ownerID) {
+      this.length = 0;
+      this._map.clear();
+      return this;
+    }
+    return $Set.empty();
+  },
+  union: function() {
+    var seqs = arguments;
+    if (seqs.length === 0) {
+      return this;
+    }
+    return this.withMutations((function(set) {
+      for (var ii = 0; ii < seqs.length; ii++) {
+        Sequence(seqs[ii]).forEach((function(value) {
+          return set.add(value);
+        }));
+      }
+    }));
+  },
+  intersect: function() {
+    for (var seqs = [],
+        $__11 = 0; $__11 < arguments.length; $__11++)
+      seqs[$__11] = arguments[$__11];
+    if (seqs.length === 0) {
+      return this;
+    }
+    seqs = seqs.map((function(seq) {
+      return Sequence(seq);
+    }));
+    var originalSet = this;
+    return this.withMutations((function(set) {
+      originalSet.forEach((function(value) {
+        if (!seqs.every((function(seq) {
+          return seq.contains(value);
+        }))) {
+          set.remove(value);
+        }
+      }));
+    }));
+  },
+  subtract: function() {
+    for (var seqs = [],
+        $__12 = 0; $__12 < arguments.length; $__12++)
+      seqs[$__12] = arguments[$__12];
+    if (seqs.length === 0) {
+      return this;
+    }
+    seqs = seqs.map((function(seq) {
+      return Sequence(seq);
+    }));
+    var originalSet = this;
+    return this.withMutations((function(set) {
+      originalSet.forEach((function(value) {
+        if (seqs.some((function(seq) {
+          return seq.contains(value);
+        }))) {
+          set.remove(value);
+        }
+      }));
+    }));
+  },
+  isSubset: function(seq) {
+    seq = Sequence(seq);
+    return this.every((function(value) {
+      return seq.contains(value);
+    }));
+  },
+  isSuperset: function(seq) {
+    var set = this;
+    seq = Sequence(seq);
+    return seq.every((function(value) {
+      return set.contains(value);
+    }));
+  },
+  merge: function() {
+    return this.union.apply(this, arguments);
+  },
+  mergeWith: function(merger) {
+    for (var seqs = [],
+        $__13 = 1; $__13 < arguments.length; $__13++)
+      seqs[$__13 - 1] = arguments[$__13];
+    return this.union.apply(this, seqs);
+  },
+  wasAltered: function() {
+    return this._map.wasAltered();
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    return this._map.__iterate((function(_, k) {
+      return fn(k, k, $__0);
+    }), reverse);
+  },
+  __iterator: function(type, reverse) {
+    return this._map.map((function(_, k) {
+      return k;
+    })).__iterator(type, reverse);
+  },
+  __ensureOwner: function(ownerID) {
+    if (ownerID === this.__ownerID) {
+      return this;
+    }
+    var newMap = this._map.__ensureOwner(ownerID);
+    if (!ownerID) {
+      this.__ownerID = ownerID;
+      this._map = newMap;
+      return this;
+    }
+    return makeSet(newMap, ownerID);
+  }
+}, {
+  empty: function() {
+    return EMPTY_SET || (EMPTY_SET = makeSet(Map.empty()));
+  },
+  from: function(sequence) {
+    var set = $Set.empty();
+    return sequence ? sequence.constructor === $Set ? sequence : set.union(sequence) : set;
+  },
+  fromKeys: function(sequence) {
+    return $Set.from(Sequence(sequence).flip());
+  }
+}, Sequence);
+var SetPrototype = Set.prototype;
+SetPrototype[DELETE] = SetPrototype.remove;
+SetPrototype[ITERATOR_SYMBOL] = SetPrototype.values;
+SetPrototype.mergeDeep = SetPrototype.merge;
+SetPrototype.mergeDeepWith = SetPrototype.mergeWith;
+SetPrototype.withMutations = MapPrototype.withMutations;
+SetPrototype.asMutable = MapPrototype.asMutable;
+SetPrototype.asImmutable = MapPrototype.asImmutable;
+SetPrototype.__toJS = IndexedSequencePrototype.__toJS;
+SetPrototype.__toStringMapper = IndexedSequencePrototype.__toStringMapper;
+function makeSet(map, ownerID) {
+  var set = Object.create(SetPrototype);
+  set.length = map ? map.length : 0;
+  set._map = map;
+  set.__ownerID = ownerID;
+  return set;
+}
+var EMPTY_SET;
+var OrderedMap = function OrderedMap(sequence) {
+  var map = $OrderedMap.empty();
+  return sequence ? sequence.constructor === $OrderedMap ? sequence : map.merge(sequence) : map;
+};
+var $OrderedMap = OrderedMap;
+($traceurRuntime.createClass)(OrderedMap, {
+  toString: function() {
+    return this.__toString('OrderedMap {', '}');
+  },
+  get: function(k, notSetValue) {
+    var index = this._map.get(k);
+    return index != null ? this._vector.get(index)[1] : notSetValue;
+  },
+  clear: function() {
+    if (this.length === 0) {
+      return this;
+    }
+    if (this.__ownerID) {
+      this.length = 0;
+      this._map.clear();
+      this._vector.clear();
+      return this;
+    }
+    return $OrderedMap.empty();
+  },
+  set: function(k, v) {
+    return updateOrderedMap(this, k, v);
+  },
+  remove: function(k) {
+    return updateOrderedMap(this, k, NOT_SET);
+  },
+  wasAltered: function() {
+    return this._map.wasAltered() || this._vector.wasAltered();
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    return this._vector.__iterate((function(entry) {
+      return entry && fn(entry[1], entry[0], $__0);
+    }), reverse);
+  },
+  __iterator: function(type, reverse) {
+    return this._vector.fromEntrySeq().__iterator(type, reverse);
+  },
+  __ensureOwner: function(ownerID) {
+    if (ownerID === this.__ownerID) {
+      return this;
+    }
+    var newMap = this._map.__ensureOwner(ownerID);
+    var newVector = this._vector.__ensureOwner(ownerID);
+    if (!ownerID) {
+      this.__ownerID = ownerID;
+      this._map = newMap;
+      this._vector = newVector;
+      return this;
+    }
+    return makeOrderedMap(newMap, newVector, ownerID, this.__hash);
+  }
+}, {empty: function() {
+    return EMPTY_ORDERED_MAP || (EMPTY_ORDERED_MAP = makeOrderedMap(Map.empty(), Vector.empty()));
+  }}, Map);
+OrderedMap.from = OrderedMap;
+OrderedMap.prototype[DELETE] = OrderedMap.prototype.remove;
+function makeOrderedMap(map, vector, ownerID, hash) {
+  var omap = Object.create(OrderedMap.prototype);
+  omap.length = map ? map.length : 0;
+  omap._map = map;
+  omap._vector = vector;
+  omap.__ownerID = ownerID;
+  omap.__hash = hash;
+  return omap;
+}
+function updateOrderedMap(omap, k, v) {
+  var map = omap._map;
+  var vector = omap._vector;
+  var i = map.get(k);
+  var has = i !== undefined;
+  var removed = v === NOT_SET;
+  if ((!has && removed) || (has && v === vector.get(i)[1])) {
+    return omap;
+  }
+  if (!has) {
+    i = vector.length;
+  }
+  var newMap = removed ? map.remove(k) : has ? map : map.set(k, i);
+  var newVector = removed ? vector.remove(i) : vector.set(i, [k, v]);
+  if (omap.__ownerID) {
+    omap.length = newMap.length;
+    omap._map = newMap;
+    omap._vector = newVector;
+    omap.__hash = undefined;
+    return omap;
+  }
+  return makeOrderedMap(newMap, newVector);
+}
+var EMPTY_ORDERED_MAP;
+var Record = function Record(defaultValues, name) {
+  var RecordType = function(values) {
+    if (!(this instanceof RecordType)) {
+      return new RecordType(values);
+    }
+    this._map = Map(values);
+  };
+  var keys = Object.keys(defaultValues);
+  var RecordTypePrototype = RecordType.prototype = Object.create(RecordPrototype);
+  RecordTypePrototype.constructor = RecordType;
+  name && (RecordTypePrototype._name = name);
+  RecordTypePrototype._defaultValues = defaultValues;
+  RecordTypePrototype._keys = keys;
+  RecordTypePrototype.length = keys.length;
+  try {
+    Sequence(defaultValues).forEach((function(_, key) {
+      Object.defineProperty(RecordType.prototype, key, {
+        get: function() {
+          return this.get(key);
+        },
+        set: function(value) {
+          invariant(this.__ownerID, 'Cannot set on an immutable record.');
+          this.set(key, value);
+        }
+      });
+    }));
+  } catch (error) {}
+  return RecordType;
+};
+($traceurRuntime.createClass)(Record, {
+  toString: function() {
+    return this.__toString(this._name + ' {', '}');
+  },
+  has: function(k) {
+    return this._defaultValues.hasOwnProperty(k);
+  },
+  get: function(k, notSetValue) {
+    if (notSetValue !== undefined && !this.has(k)) {
+      return notSetValue;
+    }
+    return this._map.get(k, this._defaultValues[k]);
+  },
+  clear: function() {
+    if (this.__ownerID) {
+      this._map.clear();
+      return this;
+    }
+    var SuperRecord = Object.getPrototypeOf(this).constructor;
+    return SuperRecord._empty || (SuperRecord._empty = makeRecord(this, Map.empty()));
+  },
+  set: function(k, v) {
+    if (!this.has(k)) {
+      throw new Error('Cannot set unknown key "' + k + '" on ' + this._name);
+    }
+    var newMap = this._map.set(k, v);
+    if (this.__ownerID || newMap === this._map) {
+      return this;
+    }
+    return makeRecord(this, newMap);
+  },
+  remove: function(k) {
+    if (k == null || !this.has(k)) {
+      return this;
+    }
+    var newMap = this._map.remove(k);
+    if (this.__ownerID || newMap === this._map) {
+      return this;
+    }
+    return makeRecord(this, newMap);
+  },
+  keys: function() {
+    return this._map.keys();
+  },
+  values: function() {
+    return this._map.values();
+  },
+  entries: function() {
+    return this._map.entries();
+  },
+  wasAltered: function() {
+    return this._map.wasAltered();
+  },
+  __iterator: function(type, reverse) {
+    return this._map.__iterator(type, reverse);
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    return Sequence(this._defaultValues).map((function(_, k) {
+      return $__0.get(k);
+    })).__iterate(fn, reverse);
+  },
+  __ensureOwner: function(ownerID) {
+    if (ownerID === this.__ownerID) {
+      return this;
+    }
+    var newMap = this._map && this._map.__ensureOwner(ownerID);
+    if (!ownerID) {
+      this.__ownerID = ownerID;
+      this._map = newMap;
+      return this;
+    }
+    return makeRecord(this, newMap, ownerID);
+  }
+}, {}, Sequence);
+var RecordPrototype = Record.prototype;
+RecordPrototype._name = 'Record';
+RecordPrototype[DELETE] = RecordPrototype.remove;
+RecordPrototype.merge = MapPrototype.merge;
+RecordPrototype.mergeWith = MapPrototype.mergeWith;
+RecordPrototype.mergeDeep = MapPrototype.mergeDeep;
+RecordPrototype.mergeDeepWith = MapPrototype.mergeDeepWith;
+RecordPrototype.update = MapPrototype.update;
+RecordPrototype.updateIn = MapPrototype.updateIn;
+RecordPrototype.cursor = MapPrototype.cursor;
+RecordPrototype.withMutations = MapPrototype.withMutations;
+RecordPrototype.asMutable = MapPrototype.asMutable;
+RecordPrototype.asImmutable = MapPrototype.asImmutable;
+function makeRecord(likeRecord, map, ownerID) {
+  var record = Object.create(Object.getPrototypeOf(likeRecord));
+  record._map = map;
+  record.__ownerID = ownerID;
+  return record;
+}
+var Range = function Range(start, end, step) {
+  if (!(this instanceof $Range)) {
+    return new $Range(start, end, step);
+  }
+  invariant(step !== 0, 'Cannot step a Range by 0');
+  start = start || 0;
+  if (end == null) {
+    end = Infinity;
+  }
+  if (start === end && __EMPTY_RANGE) {
+    return __EMPTY_RANGE;
+  }
+  step = step == null ? 1 : Math.abs(step);
+  if (end < start) {
+    step = -step;
+  }
+  this._start = start;
+  this._end = end;
+  this._step = step;
+  this.length = Math.max(0, Math.ceil((end - start) / step - 1) + 1);
+};
+var $Range = Range;
+($traceurRuntime.createClass)(Range, {
+  toString: function() {
+    if (this.length === 0) {
+      return 'Range []';
+    }
+    return 'Range [ ' + this._start + '...' + this._end + (this._step > 1 ? ' by ' + this._step : '') + ' ]';
+  },
+  get: function(index, notSetValue) {
+    return this.has(index) ? this._start + wrapIndex(this, index) * this._step : notSetValue;
+  },
+  contains: function(searchValue) {
+    var possibleIndex = (searchValue - this._start) / this._step;
+    return possibleIndex >= 0 && possibleIndex < this.length && possibleIndex === Math.floor(possibleIndex);
+  },
+  slice: function(begin, end) {
+    if (wholeSlice(begin, end, this.length)) {
+      return this;
+    }
+    begin = resolveBegin(begin, this.length);
+    end = resolveEnd(end, this.length);
+    if (end <= begin) {
+      return __EMPTY_RANGE;
+    }
+    return new $Range(this.get(begin, this._end), this.get(end, this._end), this._step);
+  },
+  indexOf: function(searchValue) {
+    var offsetValue = searchValue - this._start;
+    if (offsetValue % this._step === 0) {
+      var index = offsetValue / this._step;
+      if (index >= 0 && index < this.length) {
+        return index;
+      }
+    }
+    return -1;
+  },
+  lastIndexOf: function(searchValue) {
+    return this.indexOf(searchValue);
+  },
+  take: function(amount) {
+    return this.slice(0, Math.max(0, amount));
+  },
+  skip: function(amount) {
+    return this.slice(Math.max(0, amount));
+  },
+  __iterate: function(fn, reverse) {
+    var maxIndex = this.length - 1;
+    var step = this._step;
+    var value = reverse ? this._start + maxIndex * step : this._start;
+    for (var ii = 0; ii <= maxIndex; ii++) {
+      if (fn(value, ii, this) === false) {
+        return ii + 1;
+      }
+      value += reverse ? -step : step;
+    }
+    return ii;
+  },
+  __iterator: function(type, reverse) {
+    var maxIndex = this.length - 1;
+    var step = this._step;
+    var value = reverse ? this._start + maxIndex * step : this._start;
+    var ii = 0;
+    return new Iterator((function() {
+      var v = value;
+      value += reverse ? -step : step;
+      return ii > maxIndex ? iteratorDone() : iteratorValue(type, ii++, v);
+    }));
+  },
+  __deepEquals: function(other) {
+    return other instanceof $Range ? this._start === other._start && this._end === other._end && this._step === other._step : $traceurRuntime.superCall(this, $Range.prototype, "__deepEquals", [other]);
+  }
+}, {}, IndexedSequence);
+var RangePrototype = Range.prototype;
+RangePrototype.__toJS = RangePrototype.toArray;
+RangePrototype.first = VectorPrototype.first;
+RangePrototype.last = VectorPrototype.last;
+var __EMPTY_RANGE = Range(0, 0);
+var Repeat = function Repeat(value, times) {
+  if (times === 0 && EMPTY_REPEAT) {
+    return EMPTY_REPEAT;
+  }
+  if (!(this instanceof $Repeat)) {
+    return new $Repeat(value, times);
+  }
+  this._value = value;
+  this.length = times == null ? Infinity : Math.max(0, times);
+};
+var $Repeat = Repeat;
+($traceurRuntime.createClass)(Repeat, {
+  toString: function() {
+    if (this.length === 0) {
+      return 'Repeat []';
+    }
+    return 'Repeat [ ' + this._value + ' ' + this.length + ' times ]';
+  },
+  get: function(index, notSetValue) {
+    return this.has(index) ? this._value : notSetValue;
+  },
+  contains: function(searchValue) {
+    return is(this._value, searchValue);
+  },
+  slice: function(begin, end) {
+    var length = this.length;
+    begin = begin < 0 ? Math.max(0, length + begin) : Math.min(length, begin);
+    end = end == null ? length : end > 0 ? Math.min(length, end) : Math.max(0, length + end);
+    return end > begin ? new $Repeat(this._value, end - begin) : EMPTY_REPEAT;
+  },
+  reverse: function() {
+    return this;
+  },
+  indexOf: function(searchValue) {
+    if (is(this._value, searchValue)) {
+      return 0;
+    }
+    return -1;
+  },
+  lastIndexOf: function(searchValue) {
+    if (is(this._value, searchValue)) {
+      return this.length;
+    }
+    return -1;
+  },
+  __iterate: function(fn, reverse) {
+    for (var ii = 0; ii < this.length; ii++) {
+      if (fn(this._value, ii, this) === false) {
+        return ii + 1;
+      }
+    }
+    return ii;
+  },
+  __iterator: function(type, reverse) {
+    var $__0 = this;
+    var ii = 0;
+    return new Iterator((function() {
+      return ii < $__0.length ? iteratorValue(type, ii++, $__0._value) : iteratorDone();
+    }));
+  },
+  __deepEquals: function(other) {
+    return other instanceof $Repeat ? is(this._value, other._value) : $traceurRuntime.superCall(this, $Repeat.prototype, "__deepEquals", [other]);
+  }
+}, {}, IndexedSequence);
+var RepeatPrototype = Repeat.prototype;
+RepeatPrototype.last = RepeatPrototype.first;
+RepeatPrototype.has = RangePrototype.has;
+RepeatPrototype.take = RangePrototype.take;
+RepeatPrototype.skip = RangePrototype.skip;
+RepeatPrototype.__toJS = RangePrototype.__toJS;
+var EMPTY_REPEAT = new Repeat(undefined, 0);
+function fromJS(json, converter) {
+  if (converter) {
+    return _fromJSWith(converter, json, '', {'': json});
+  }
+  return _fromJSDefault(json);
+}
+function _fromJSWith(converter, json, key, parentJSON) {
+  if (json && (Array.isArray(json) || json.constructor === Object)) {
+    return converter.call(parentJSON, key, Sequence(json).map((function(v, k) {
+      return _fromJSWith(converter, v, k, json);
+    })));
+  }
+  return json;
+}
+function _fromJSDefault(json) {
+  if (json) {
+    if (Array.isArray(json)) {
+      return Sequence(json).map(_fromJSDefault).toVector();
+    }
+    if (json.constructor === Object) {
+      return Sequence(json).map(_fromJSDefault).toMap();
+    }
+  }
+  return json;
+}
+var Cursor = function Cursor(rootData, keyPath, onChange, length) {
+  this.length = length;
+  this._rootData = rootData;
+  this._keyPath = keyPath;
+  this._onChange = onChange;
+};
+($traceurRuntime.createClass)(Cursor, {
+  equals: function(second) {
+    return is(this.deref(), second && (typeof second.deref === 'function' ? second.deref() : second));
+  },
+  deref: function(notSetValue) {
+    return this._rootData.getIn(this._keyPath, notSetValue);
+  },
+  get: function(key, notSetValue) {
+    if (Array.isArray(key) && key.length === 0) {
+      return this;
+    }
+    var value = this._rootData.getIn(this._keyPath.concat(key), NOT_SET);
+    return value === NOT_SET ? notSetValue : wrappedValue(this, key, value);
+  },
+  set: function(key, value) {
+    return updateCursor(this, (function(m) {
+      return m.set(key, value);
+    }), key);
+  },
+  remove: function(key) {
+    return updateCursor(this, (function(m) {
+      return m.remove(key);
+    }), key);
+  },
+  clear: function() {
+    return updateCursor(this, (function(m) {
+      return m.clear();
+    }));
+  },
+  update: function(keyOrFn, notSetValue, updater) {
+    return arguments.length === 1 ? updateCursor(this, keyOrFn) : updateCursor(this, (function(map) {
+      return map.update(keyOrFn, notSetValue, updater);
+    }), keyOrFn);
+  },
+  withMutations: function(fn) {
+    return updateCursor(this, (function(m) {
+      return (m || Map.empty()).withMutations(fn);
+    }));
+  },
+  cursor: function(subKey) {
+    return Array.isArray(subKey) && subKey.length === 0 ? this : subCursor(this, subKey);
+  },
+  __iterate: function(fn, reverse) {
+    var $__0 = this;
+    var deref = this.deref();
+    return deref && deref.__iterate ? deref.__iterate((function(v, k) {
+      return fn(wrappedValue($__0, k, v), k, $__0);
+    }), reverse) : 0;
+  },
+  __iterator: function(type, reverse) {
+    var $__0 = this;
+    var deref = this.deref();
+    var iterator = deref && deref.__iterator && deref.__iterator(ITERATE_ENTRIES, reverse);
+    return new Iterator((function() {
+      if (!iterator) {
+        return iteratorDone();
+      }
+      var step = iterator.next();
+      if (step.done) {
+        return step;
+      }
+      var entry = step.value;
+      var k = entry[0];
+      var v = entry[1];
+      return iteratorValue(type, k, wrappedValue($__0, k, v), step);
+    }));
+  }
+}, {}, Sequence);
+var CursorPrototype = Cursor.prototype;
+CursorPrototype[DELETE] = CursorPrototype.remove;
+CursorPrototype.getIn = CursorPrototype.get;
+var IndexedCursor = function IndexedCursor(rootData, keyPath, onChange, length) {
+  this.length = length;
+  this._rootData = rootData;
+  this._keyPath = keyPath;
+  this._onChange = onChange;
+};
+($traceurRuntime.createClass)(IndexedCursor, {}, {}, IndexedSequence);
+var IndexedCursorPrototype = IndexedCursor.prototype;
+IndexedCursorPrototype.equals = CursorPrototype.equals;
+IndexedCursorPrototype.deref = CursorPrototype.deref;
+IndexedCursorPrototype.get = CursorPrototype.get;
+IndexedCursorPrototype.getIn = CursorPrototype.getIn;
+IndexedCursorPrototype.set = CursorPrototype.set;
+IndexedCursorPrototype[DELETE] = IndexedCursorPrototype.remove = CursorPrototype.remove;
+IndexedCursorPrototype.clear = CursorPrototype.clear;
+IndexedCursorPrototype.update = CursorPrototype.update;
+IndexedCursorPrototype.withMutations = CursorPrototype.withMutations;
+IndexedCursorPrototype.cursor = CursorPrototype.cursor;
+IndexedCursorPrototype.__iterate = CursorPrototype.__iterate;
+IndexedCursorPrototype.__iterator = CursorPrototype.__iterator;
+function makeCursor(rootData, keyPath, onChange, value) {
+  if (arguments.length < 4) {
+    value = rootData.getIn(keyPath);
+  }
+  var length = value instanceof Sequence ? value.length : null;
+  var CursorClass = value instanceof IndexedSequence ? IndexedCursor : Cursor;
+  return new CursorClass(rootData, keyPath, onChange, length);
+}
+function wrappedValue(cursor, key, value) {
+  return value instanceof Sequence ? subCursor(cursor, key, value) : value;
+}
+function subCursor(cursor, key, value) {
+  return makeCursor(cursor._rootData, cursor._keyPath.concat(key), cursor._onChange, value);
+}
+function updateCursor(cursor, changeFn, changeKey) {
+  var newRootData = cursor._rootData.updateIn(cursor._keyPath, changeKey ? Map.empty() : undefined, changeFn);
+  var keyPath = cursor._keyPath || [];
+  cursor._onChange && cursor._onChange.call(undefined, newRootData, cursor._rootData, changeKey ? keyPath.concat(changeKey) : keyPath);
+  return makeCursor(newRootData, cursor._keyPath, cursor._onChange);
+}
+var Immutable = {
+  Sequence: Sequence,
+  Map: Map,
+  Vector: Vector,
+  Stack: Stack,
+  Set: Set,
+  OrderedMap: OrderedMap,
+  Record: Record,
+  Range: Range,
+  Repeat: Repeat,
+  is: is,
+  fromJS: fromJS
+};
 
+  return Immutable;
+}
+typeof exports === 'object' ? module.exports = universalModule() :
+  typeof define === 'function' && define.amd ? define(universalModule) :
+    Immutable = universalModule();
 
-var SHIFT = 5; // Resulted in best performance after ______?
-var SIZE = 1 << SHIFT;
-var MASK = SIZE - 1;
-var __SENTINEL = {};
-var __EMPTY_VECT;
-var __EMPTY_VNODE = new VNode([]);
-
-module.exports = Vector;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/Vector.js","/../../../node_modules/immutable/dist")
-},{"./Immutable":173,"./Map":174,"./Sequence":179,"1YiZ5S":11,"buffer":7}],182:[function(require,module,exports){
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/immutable/dist/immutable.js","/../../../node_modules/immutable/dist")
+},{"1YiZ5S":11,"buffer":8}],166:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -24820,81 +24853,7 @@ function forEach(collection, callback, thisArg) {
 module.exports = forEach;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/collections/forEach.js","/../../../node_modules/lodash-node/modern/collections")
-},{"../internals/baseCreateCallback":189,"../objects/forOwn":205,"1YiZ5S":11,"buffer":7}],183:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="node" -o ./modern/`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var createCallback = require('../functions/createCallback'),
-    forOwn = require('../objects/forOwn');
-
-/**
- * Creates an array of values by running each element in the collection
- * through the callback. The callback is bound to `thisArg` and invoked with
- * three arguments; (value, index|key, collection).
- *
- * If a property name is provided for `callback` the created "_.pluck" style
- * callback will return the property value of the given element.
- *
- * If an object is provided for `callback` the created "_.where" style callback
- * will return `true` for elements that have the properties of the given object,
- * else `false`.
- *
- * @static
- * @memberOf _
- * @alias collect
- * @category Collections
- * @param {Array|Object|string} collection The collection to iterate over.
- * @param {Function|Object|string} [callback=identity] The function called
- *  per iteration. If a property name or object is provided it will be used
- *  to create a "_.pluck" or "_.where" style callback, respectively.
- * @param {*} [thisArg] The `this` binding of `callback`.
- * @returns {Array} Returns a new array of the results of each `callback` execution.
- * @example
- *
- * _.map([1, 2, 3], function(num) { return num * 3; });
- * // => [3, 6, 9]
- *
- * _.map({ 'one': 1, 'two': 2, 'three': 3 }, function(num) { return num * 3; });
- * // => [3, 6, 9] (property order is not guaranteed across environments)
- *
- * var characters = [
- *   { 'name': 'barney', 'age': 36 },
- *   { 'name': 'fred',   'age': 40 }
- * ];
- *
- * // using "_.pluck" callback shorthand
- * _.map(characters, 'name');
- * // => ['barney', 'fred']
- */
-function map(collection, callback, thisArg) {
-  var index = -1,
-      length = collection ? collection.length : 0;
-
-  callback = createCallback(callback, thisArg, 3);
-  if (typeof length == 'number') {
-    var result = Array(length);
-    while (++index < length) {
-      result[index] = callback(collection[index], index, collection);
-    }
-  } else {
-    result = [];
-    forOwn(collection, function(value, key, collection) {
-      result[++index] = callback(value, key, collection);
-    });
-  }
-  return result;
-}
-
-module.exports = map;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/collections/map.js","/../../../node_modules/lodash-node/modern/collections")
-},{"../functions/createCallback":185,"../objects/forOwn":205,"1YiZ5S":11,"buffer":7}],184:[function(require,module,exports){
+},{"../internals/baseCreateCallback":171,"../objects/forOwn":185,"1YiZ5S":11,"buffer":8}],167:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -24938,92 +24897,7 @@ function bind(func, thisArg) {
 module.exports = bind;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/functions/bind.js","/../../../node_modules/lodash-node/modern/functions")
-},{"../internals/createWrapper":193,"../internals/slice":202,"1YiZ5S":11,"buffer":7}],185:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="node" -o ./modern/`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var baseCreateCallback = require('../internals/baseCreateCallback'),
-    baseIsEqual = require('../internals/baseIsEqual'),
-    isObject = require('../objects/isObject'),
-    keys = require('../objects/keys'),
-    property = require('../utilities/property');
-
-/**
- * Produces a callback bound to an optional `thisArg`. If `func` is a property
- * name the created callback will return the property value for a given element.
- * If `func` is an object the created callback will return `true` for elements
- * that contain the equivalent object properties, otherwise it will return `false`.
- *
- * @static
- * @memberOf _
- * @category Utilities
- * @param {*} [func=identity] The value to convert to a callback.
- * @param {*} [thisArg] The `this` binding of the created callback.
- * @param {number} [argCount] The number of arguments the callback accepts.
- * @returns {Function} Returns a callback function.
- * @example
- *
- * var characters = [
- *   { 'name': 'barney', 'age': 36 },
- *   { 'name': 'fred',   'age': 40 }
- * ];
- *
- * // wrap to create custom callback shorthands
- * _.createCallback = _.wrap(_.createCallback, function(func, callback, thisArg) {
- *   var match = /^(.+?)__([gl]t)(.+)$/.exec(callback);
- *   return !match ? func(callback, thisArg) : function(object) {
- *     return match[2] == 'gt' ? object[match[1]] > match[3] : object[match[1]] < match[3];
- *   };
- * });
- *
- * _.filter(characters, 'age__gt38');
- * // => [{ 'name': 'fred', 'age': 40 }]
- */
-function createCallback(func, thisArg, argCount) {
-  var type = typeof func;
-  if (func == null || type == 'function') {
-    return baseCreateCallback(func, thisArg, argCount);
-  }
-  // handle "_.pluck" style callback shorthands
-  if (type != 'object') {
-    return property(func);
-  }
-  var props = keys(func),
-      key = props[0],
-      a = func[key];
-
-  // handle "_.where" style callback shorthands
-  if (props.length == 1 && a === a && !isObject(a)) {
-    // fast path the common case of providing an object with a single
-    // property containing a primitive value
-    return function(object) {
-      var b = object[key];
-      return a === b && (a !== 0 || (1 / a == 1 / b));
-    };
-  }
-  return function(object) {
-    var length = props.length,
-        result = false;
-
-    while (length--) {
-      if (!(result = baseIsEqual(object[props[length]], func[props[length]], null, true))) {
-        break;
-      }
-    }
-    return result;
-  };
-}
-
-module.exports = createCallback;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/functions/createCallback.js","/../../../node_modules/lodash-node/modern/functions")
-},{"../internals/baseCreateCallback":189,"../internals/baseIsEqual":191,"../objects/isObject":208,"../objects/keys":211,"../utilities/property":216,"1YiZ5S":11,"buffer":7}],186:[function(require,module,exports){
+},{"../internals/createWrapper":174,"../internals/slice":183,"1YiZ5S":11,"buffer":8}],168:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25040,7 +24914,7 @@ var arrayPool = [];
 module.exports = arrayPool;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/arrayPool.js","/../../../node_modules/lodash-node/modern/internals")
-},{"1YiZ5S":11,"buffer":7}],187:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],169:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25106,7 +24980,7 @@ function baseBind(bindData) {
 module.exports = baseBind;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/baseBind.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../objects/isObject":208,"./baseCreate":188,"./setBindData":199,"./slice":202,"1YiZ5S":11,"buffer":7}],188:[function(require,module,exports){
+},{"../objects/isObject":188,"./baseCreate":170,"./setBindData":180,"./slice":183,"1YiZ5S":11,"buffer":8}],170:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25152,7 +25026,7 @@ if (!nativeCreate) {
 module.exports = baseCreate;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/baseCreate.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../objects/isObject":208,"../utilities/noop":215,"./isNative":195,"1YiZ5S":11,"buffer":7}],189:[function(require,module,exports){
+},{"../objects/isObject":188,"../utilities/noop":195,"./isNative":176,"1YiZ5S":11,"buffer":8}],171:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25236,7 +25110,7 @@ function baseCreateCallback(func, thisArg, argCount) {
 module.exports = baseCreateCallback;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/baseCreateCallback.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../functions/bind":184,"../support":213,"../utilities/identity":214,"./setBindData":199,"1YiZ5S":11,"buffer":7}],190:[function(require,module,exports){
+},{"../functions/bind":167,"../support":193,"../utilities/identity":194,"./setBindData":180,"1YiZ5S":11,"buffer":8}],172:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25318,220 +25192,7 @@ function baseCreateWrapper(bindData) {
 module.exports = baseCreateWrapper;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/baseCreateWrapper.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../objects/isObject":208,"./baseCreate":188,"./setBindData":199,"./slice":202,"1YiZ5S":11,"buffer":7}],191:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="node" -o ./modern/`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var forIn = require('../objects/forIn'),
-    getArray = require('./getArray'),
-    isFunction = require('../objects/isFunction'),
-    objectTypes = require('./objectTypes'),
-    releaseArray = require('./releaseArray');
-
-/** `Object#toString` result shortcuts */
-var argsClass = '[object Arguments]',
-    arrayClass = '[object Array]',
-    boolClass = '[object Boolean]',
-    dateClass = '[object Date]',
-    numberClass = '[object Number]',
-    objectClass = '[object Object]',
-    regexpClass = '[object RegExp]',
-    stringClass = '[object String]';
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-/** Used to resolve the internal [[Class]] of values */
-var toString = objectProto.toString;
-
-/** Native method shortcuts */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * The base implementation of `_.isEqual`, without support for `thisArg` binding,
- * that allows partial "_.where" style comparisons.
- *
- * @private
- * @param {*} a The value to compare.
- * @param {*} b The other value to compare.
- * @param {Function} [callback] The function to customize comparing values.
- * @param {Function} [isWhere=false] A flag to indicate performing partial comparisons.
- * @param {Array} [stackA=[]] Tracks traversed `a` objects.
- * @param {Array} [stackB=[]] Tracks traversed `b` objects.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- */
-function baseIsEqual(a, b, callback, isWhere, stackA, stackB) {
-  // used to indicate that when comparing objects, `a` has at least the properties of `b`
-  if (callback) {
-    var result = callback(a, b);
-    if (typeof result != 'undefined') {
-      return !!result;
-    }
-  }
-  // exit early for identical values
-  if (a === b) {
-    // treat `+0` vs. `-0` as not equal
-    return a !== 0 || (1 / a == 1 / b);
-  }
-  var type = typeof a,
-      otherType = typeof b;
-
-  // exit early for unlike primitive values
-  if (a === a &&
-      !(a && objectTypes[type]) &&
-      !(b && objectTypes[otherType])) {
-    return false;
-  }
-  // exit early for `null` and `undefined` avoiding ES3's Function#call behavior
-  // http://es5.github.io/#x15.3.4.4
-  if (a == null || b == null) {
-    return a === b;
-  }
-  // compare [[Class]] names
-  var className = toString.call(a),
-      otherClass = toString.call(b);
-
-  if (className == argsClass) {
-    className = objectClass;
-  }
-  if (otherClass == argsClass) {
-    otherClass = objectClass;
-  }
-  if (className != otherClass) {
-    return false;
-  }
-  switch (className) {
-    case boolClass:
-    case dateClass:
-      // coerce dates and booleans to numbers, dates to milliseconds and booleans
-      // to `1` or `0` treating invalid dates coerced to `NaN` as not equal
-      return +a == +b;
-
-    case numberClass:
-      // treat `NaN` vs. `NaN` as equal
-      return (a != +a)
-        ? b != +b
-        // but treat `+0` vs. `-0` as not equal
-        : (a == 0 ? (1 / a == 1 / b) : a == +b);
-
-    case regexpClass:
-    case stringClass:
-      // coerce regexes to strings (http://es5.github.io/#x15.10.6.4)
-      // treat string primitives and their corresponding object instances as equal
-      return a == String(b);
-  }
-  var isArr = className == arrayClass;
-  if (!isArr) {
-    // unwrap any `lodash` wrapped values
-    var aWrapped = hasOwnProperty.call(a, '__wrapped__'),
-        bWrapped = hasOwnProperty.call(b, '__wrapped__');
-
-    if (aWrapped || bWrapped) {
-      return baseIsEqual(aWrapped ? a.__wrapped__ : a, bWrapped ? b.__wrapped__ : b, callback, isWhere, stackA, stackB);
-    }
-    // exit for functions and DOM nodes
-    if (className != objectClass) {
-      return false;
-    }
-    // in older versions of Opera, `arguments` objects have `Array` constructors
-    var ctorA = a.constructor,
-        ctorB = b.constructor;
-
-    // non `Object` object instances with different constructors are not equal
-    if (ctorA != ctorB &&
-          !(isFunction(ctorA) && ctorA instanceof ctorA && isFunction(ctorB) && ctorB instanceof ctorB) &&
-          ('constructor' in a && 'constructor' in b)
-        ) {
-      return false;
-    }
-  }
-  // assume cyclic structures are equal
-  // the algorithm for detecting cyclic structures is adapted from ES 5.1
-  // section 15.12.3, abstract operation `JO` (http://es5.github.io/#x15.12.3)
-  var initedStack = !stackA;
-  stackA || (stackA = getArray());
-  stackB || (stackB = getArray());
-
-  var length = stackA.length;
-  while (length--) {
-    if (stackA[length] == a) {
-      return stackB[length] == b;
-    }
-  }
-  var size = 0;
-  result = true;
-
-  // add `a` and `b` to the stack of traversed objects
-  stackA.push(a);
-  stackB.push(b);
-
-  // recursively compare objects and arrays (susceptible to call stack limits)
-  if (isArr) {
-    // compare lengths to determine if a deep comparison is necessary
-    length = a.length;
-    size = b.length;
-    result = size == length;
-
-    if (result || isWhere) {
-      // deep compare the contents, ignoring non-numeric properties
-      while (size--) {
-        var index = length,
-            value = b[size];
-
-        if (isWhere) {
-          while (index--) {
-            if ((result = baseIsEqual(a[index], value, callback, isWhere, stackA, stackB))) {
-              break;
-            }
-          }
-        } else if (!(result = baseIsEqual(a[size], value, callback, isWhere, stackA, stackB))) {
-          break;
-        }
-      }
-    }
-  }
-  else {
-    // deep compare objects using `forIn`, instead of `forOwn`, to avoid `Object.keys`
-    // which, in this case, is more costly
-    forIn(b, function(value, key, b) {
-      if (hasOwnProperty.call(b, key)) {
-        // count the number of properties.
-        size++;
-        // deep compare each property value.
-        return (result = hasOwnProperty.call(a, key) && baseIsEqual(a[key], value, callback, isWhere, stackA, stackB));
-      }
-    });
-
-    if (result && !isWhere) {
-      // ensure both objects have the same number of properties
-      forIn(a, function(value, key, a) {
-        if (hasOwnProperty.call(a, key)) {
-          // `size` will be `-1` if `a` has more properties than `b`
-          return (result = --size > -1);
-        }
-      });
-    }
-  }
-  stackA.pop();
-  stackB.pop();
-
-  if (initedStack) {
-    releaseArray(stackA);
-    releaseArray(stackB);
-  }
-  return result;
-}
-
-module.exports = baseIsEqual;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/baseIsEqual.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../objects/forIn":204,"../objects/isFunction":207,"./getArray":194,"./objectTypes":197,"./releaseArray":198,"1YiZ5S":11,"buffer":7}],192:[function(require,module,exports){
+},{"../objects/isObject":188,"./baseCreate":170,"./setBindData":180,"./slice":183,"1YiZ5S":11,"buffer":8}],173:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25614,7 +25275,7 @@ function baseMerge(object, source, callback, stackA, stackB) {
 module.exports = baseMerge;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/baseMerge.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../collections/forEach":182,"../objects/forOwn":205,"../objects/isArray":206,"../objects/isPlainObject":209,"1YiZ5S":11,"buffer":7}],193:[function(require,module,exports){
+},{"../collections/forEach":166,"../objects/forOwn":185,"../objects/isArray":186,"../objects/isPlainObject":189,"1YiZ5S":11,"buffer":8}],174:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25724,7 +25385,7 @@ function createWrapper(func, bitmask, partialArgs, partialRightArgs, thisArg, ar
 module.exports = createWrapper;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/createWrapper.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../objects/isFunction":207,"./baseBind":187,"./baseCreateWrapper":190,"./slice":202,"1YiZ5S":11,"buffer":7}],194:[function(require,module,exports){
+},{"../objects/isFunction":187,"./baseBind":169,"./baseCreateWrapper":172,"./slice":183,"1YiZ5S":11,"buffer":8}],175:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25749,7 +25410,7 @@ function getArray() {
 module.exports = getArray;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/getArray.js","/../../../node_modules/lodash-node/modern/internals")
-},{"./arrayPool":186,"1YiZ5S":11,"buffer":7}],195:[function(require,module,exports){
+},{"./arrayPool":168,"1YiZ5S":11,"buffer":8}],176:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25787,7 +25448,7 @@ function isNative(value) {
 module.exports = isNative;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/isNative.js","/../../../node_modules/lodash-node/modern/internals")
-},{"1YiZ5S":11,"buffer":7}],196:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],177:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25804,7 +25465,7 @@ var maxPoolSize = 40;
 module.exports = maxPoolSize;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/maxPoolSize.js","/../../../node_modules/lodash-node/modern/internals")
-},{"1YiZ5S":11,"buffer":7}],197:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],178:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25828,7 +25489,7 @@ var objectTypes = {
 module.exports = objectTypes;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/objectTypes.js","/../../../node_modules/lodash-node/modern/internals")
-},{"1YiZ5S":11,"buffer":7}],198:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],179:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25857,7 +25518,7 @@ function releaseArray(array) {
 module.exports = releaseArray;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/releaseArray.js","/../../../node_modules/lodash-node/modern/internals")
-},{"./arrayPool":186,"./maxPoolSize":196,"1YiZ5S":11,"buffer":7}],199:[function(require,module,exports){
+},{"./arrayPool":168,"./maxPoolSize":177,"1YiZ5S":11,"buffer":8}],180:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25904,7 +25565,7 @@ var setBindData = !defineProperty ? noop : function(func, value) {
 module.exports = setBindData;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/setBindData.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../utilities/noop":215,"./isNative":195,"1YiZ5S":11,"buffer":7}],200:[function(require,module,exports){
+},{"../utilities/noop":195,"./isNative":176,"1YiZ5S":11,"buffer":8}],181:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -25960,7 +25621,7 @@ function shimIsPlainObject(value) {
 module.exports = shimIsPlainObject;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/shimIsPlainObject.js","/../../../node_modules/lodash-node/modern/internals")
-},{"../objects/forIn":204,"../objects/isFunction":207,"1YiZ5S":11,"buffer":7}],201:[function(require,module,exports){
+},{"../objects/forIn":184,"../objects/isFunction":187,"1YiZ5S":11,"buffer":8}],182:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26002,7 +25663,7 @@ var shimKeys = function(object) {
 module.exports = shimKeys;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/shimKeys.js","/../../../node_modules/lodash-node/modern/internals")
-},{"./objectTypes":197,"1YiZ5S":11,"buffer":7}],202:[function(require,module,exports){
+},{"./objectTypes":178,"1YiZ5S":11,"buffer":8}],183:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26044,81 +25705,7 @@ function slice(array, start, end) {
 module.exports = slice;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/internals/slice.js","/../../../node_modules/lodash-node/modern/internals")
-},{"1YiZ5S":11,"buffer":7}],203:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="node" -o ./modern/`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var baseCreateCallback = require('../internals/baseCreateCallback'),
-    keys = require('./keys'),
-    objectTypes = require('../internals/objectTypes');
-
-/**
- * Assigns own enumerable properties of source object(s) to the destination
- * object. Subsequent sources will overwrite property assignments of previous
- * sources. If a callback is provided it will be executed to produce the
- * assigned values. The callback is bound to `thisArg` and invoked with two
- * arguments; (objectValue, sourceValue).
- *
- * @static
- * @memberOf _
- * @type Function
- * @alias extend
- * @category Objects
- * @param {Object} object The destination object.
- * @param {...Object} [source] The source objects.
- * @param {Function} [callback] The function to customize assigning values.
- * @param {*} [thisArg] The `this` binding of `callback`.
- * @returns {Object} Returns the destination object.
- * @example
- *
- * _.assign({ 'name': 'fred' }, { 'employer': 'slate' });
- * // => { 'name': 'fred', 'employer': 'slate' }
- *
- * var defaults = _.partialRight(_.assign, function(a, b) {
- *   return typeof a == 'undefined' ? b : a;
- * });
- *
- * var object = { 'name': 'barney' };
- * defaults(object, { 'name': 'fred', 'employer': 'slate' });
- * // => { 'name': 'barney', 'employer': 'slate' }
- */
-var assign = function(object, source, guard) {
-  var index, iterable = object, result = iterable;
-  if (!iterable) return result;
-  var args = arguments,
-      argsIndex = 0,
-      argsLength = typeof guard == 'number' ? 2 : args.length;
-  if (argsLength > 3 && typeof args[argsLength - 2] == 'function') {
-    var callback = baseCreateCallback(args[--argsLength - 1], args[argsLength--], 2);
-  } else if (argsLength > 2 && typeof args[argsLength - 1] == 'function') {
-    callback = args[--argsLength];
-  }
-  while (++argsIndex < argsLength) {
-    iterable = args[argsIndex];
-    if (iterable && objectTypes[typeof iterable]) {
-    var ownIndex = -1,
-        ownProps = objectTypes[typeof iterable] && keys(iterable),
-        length = ownProps ? ownProps.length : 0;
-
-    while (++ownIndex < length) {
-      index = ownProps[ownIndex];
-      result[index] = callback ? callback(result[index], iterable[index]) : iterable[index];
-    }
-    }
-  }
-  return result
-};
-
-module.exports = assign;
-
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/assign.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/baseCreateCallback":189,"../internals/objectTypes":197,"./keys":211,"1YiZ5S":11,"buffer":7}],204:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],184:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26176,7 +25763,7 @@ var forIn = function(collection, callback, thisArg) {
 module.exports = forIn;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/forIn.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/baseCreateCallback":189,"../internals/objectTypes":197,"1YiZ5S":11,"buffer":7}],205:[function(require,module,exports){
+},{"../internals/baseCreateCallback":171,"../internals/objectTypes":178,"1YiZ5S":11,"buffer":8}],185:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26230,7 +25817,7 @@ var forOwn = function(collection, callback, thisArg) {
 module.exports = forOwn;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/forOwn.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/baseCreateCallback":189,"../internals/objectTypes":197,"./keys":211,"1YiZ5S":11,"buffer":7}],206:[function(require,module,exports){
+},{"../internals/baseCreateCallback":171,"../internals/objectTypes":178,"./keys":191,"1YiZ5S":11,"buffer":8}],186:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26279,7 +25866,7 @@ var isArray = nativeIsArray || function(value) {
 module.exports = isArray;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/isArray.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/isNative":195,"1YiZ5S":11,"buffer":7}],207:[function(require,module,exports){
+},{"../internals/isNative":176,"1YiZ5S":11,"buffer":8}],187:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26310,7 +25897,7 @@ function isFunction(value) {
 module.exports = isFunction;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/isFunction.js","/../../../node_modules/lodash-node/modern/objects")
-},{"1YiZ5S":11,"buffer":7}],208:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],188:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26353,7 +25940,7 @@ function isObject(value) {
 module.exports = isObject;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/isObject.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/objectTypes":197,"1YiZ5S":11,"buffer":7}],209:[function(require,module,exports){
+},{"../internals/objectTypes":178,"1YiZ5S":11,"buffer":8}],189:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26417,7 +26004,7 @@ var isPlainObject = !getPrototypeOf ? shimIsPlainObject : function(value) {
 module.exports = isPlainObject;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/isPlainObject.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/isNative":195,"../internals/shimIsPlainObject":200,"1YiZ5S":11,"buffer":7}],210:[function(require,module,exports){
+},{"../internals/isNative":176,"../internals/shimIsPlainObject":181,"1YiZ5S":11,"buffer":8}],190:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26458,7 +26045,7 @@ function isString(value) {
 module.exports = isString;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/isString.js","/../../../node_modules/lodash-node/modern/objects")
-},{"1YiZ5S":11,"buffer":7}],211:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],191:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26498,7 +26085,7 @@ var keys = !nativeKeys ? shimKeys : function(object) {
 module.exports = keys;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/keys.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/isNative":195,"../internals/shimKeys":201,"./isObject":208,"1YiZ5S":11,"buffer":7}],212:[function(require,module,exports){
+},{"../internals/isNative":176,"../internals/shimKeys":182,"./isObject":188,"1YiZ5S":11,"buffer":8}],192:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26599,7 +26186,7 @@ function merge(object) {
 module.exports = merge;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/objects/merge.js","/../../../node_modules/lodash-node/modern/objects")
-},{"../internals/baseCreateCallback":189,"../internals/baseMerge":192,"../internals/getArray":194,"../internals/releaseArray":198,"../internals/slice":202,"./isObject":208,"1YiZ5S":11,"buffer":7}],213:[function(require,module,exports){
+},{"../internals/baseCreateCallback":171,"../internals/baseMerge":173,"../internals/getArray":175,"../internals/releaseArray":179,"../internals/slice":183,"./isObject":188,"1YiZ5S":11,"buffer":8}],193:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26643,7 +26230,7 @@ support.funcNames = typeof Function.name == 'string';
 module.exports = support;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/support.js","/../../../node_modules/lodash-node/modern")
-},{"./internals/isNative":195,"1YiZ5S":11,"buffer":7}],214:[function(require,module,exports){
+},{"./internals/isNative":176,"1YiZ5S":11,"buffer":8}],194:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26675,7 +26262,7 @@ function identity(value) {
 module.exports = identity;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/utilities/identity.js","/../../../node_modules/lodash-node/modern/utilities")
-},{"1YiZ5S":11,"buffer":7}],215:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],195:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -26705,48 +26292,432 @@ function noop() {
 module.exports = noop;
 
 }).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/utilities/noop.js","/../../../node_modules/lodash-node/modern/utilities")
-},{"1YiZ5S":11,"buffer":7}],216:[function(require,module,exports){
+},{"1YiZ5S":11,"buffer":8}],196:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/**
- * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="node" -o ./modern/`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
+'use strict';
 
-/**
- * Creates a "_.pluck" style function, which returns the `key` value of a
- * given object.
- *
- * @static
- * @memberOf _
- * @category Utilities
- * @param {string} key The name of the property to retrieve.
- * @returns {Function} Returns the new function.
- * @example
- *
- * var characters = [
- *   { 'name': 'fred',   'age': 40 },
- *   { 'name': 'barney', 'age': 36 }
- * ];
- *
- * var getName = _.property('name');
- *
- * _.map(characters, getName);
- * // => ['barney', 'fred']
- *
- * _.sortBy(characters, getName);
- * // => [{ 'name': 'barney', 'age': 36 }, { 'name': 'fred',   'age': 40 }]
- */
-function property(key) {
-  return function(object) {
-    return object[key];
-  };
+module.exports = require('./lib/core.js')
+require('./lib/done.js')
+require('./lib/es6-extensions.js')
+require('./lib/node-extensions.js')
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/promise/index.js","/../../../node_modules/promise")
+},{"./lib/core.js":197,"./lib/done.js":198,"./lib/es6-extensions.js":199,"./lib/node-extensions.js":200,"1YiZ5S":11,"buffer":8}],197:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+'use strict';
+
+var asap = require('asap')
+
+module.exports = Promise;
+function Promise(fn) {
+  if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new')
+  if (typeof fn !== 'function') throw new TypeError('not a function')
+  var state = null
+  var value = null
+  var deferreds = []
+  var self = this
+
+  this.then = function(onFulfilled, onRejected) {
+    return new self.constructor(function(resolve, reject) {
+      handle(new Handler(onFulfilled, onRejected, resolve, reject))
+    })
+  }
+
+  function handle(deferred) {
+    if (state === null) {
+      deferreds.push(deferred)
+      return
+    }
+    asap(function() {
+      var cb = state ? deferred.onFulfilled : deferred.onRejected
+      if (cb === null) {
+        (state ? deferred.resolve : deferred.reject)(value)
+        return
+      }
+      var ret
+      try {
+        ret = cb(value)
+      }
+      catch (e) {
+        deferred.reject(e)
+        return
+      }
+      deferred.resolve(ret)
+    })
+  }
+
+  function resolve(newValue) {
+    try { //Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+      if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.')
+      if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+        var then = newValue.then
+        if (typeof then === 'function') {
+          doResolve(then.bind(newValue), resolve, reject)
+          return
+        }
+      }
+      state = true
+      value = newValue
+      finale()
+    } catch (e) { reject(e) }
+  }
+
+  function reject(newValue) {
+    state = false
+    value = newValue
+    finale()
+  }
+
+  function finale() {
+    for (var i = 0, len = deferreds.length; i < len; i++)
+      handle(deferreds[i])
+    deferreds = null
+  }
+
+  doResolve(fn, resolve, reject)
 }
 
-module.exports = property;
 
-}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/lodash-node/modern/utilities/property.js","/../../../node_modules/lodash-node/modern/utilities")
-},{"1YiZ5S":11,"buffer":7}]},{},[1])
+function Handler(onFulfilled, onRejected, resolve, reject){
+  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null
+  this.onRejected = typeof onRejected === 'function' ? onRejected : null
+  this.resolve = resolve
+  this.reject = reject
+}
+
+/**
+ * Take a potentially misbehaving resolver function and make sure
+ * onFulfilled and onRejected are only called once.
+ *
+ * Makes no guarantees about asynchrony.
+ */
+function doResolve(fn, onFulfilled, onRejected) {
+  var done = false;
+  try {
+    fn(function (value) {
+      if (done) return
+      done = true
+      onFulfilled(value)
+    }, function (reason) {
+      if (done) return
+      done = true
+      onRejected(reason)
+    })
+  } catch (ex) {
+    if (done) return
+    done = true
+    onRejected(ex)
+  }
+}
+
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/promise/lib/core.js","/../../../node_modules/promise/lib")
+},{"1YiZ5S":11,"asap":201,"buffer":8}],198:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+'use strict';
+
+var Promise = require('./core.js')
+var asap = require('asap')
+
+module.exports = Promise
+Promise.prototype.done = function (onFulfilled, onRejected) {
+  var self = arguments.length ? this.then.apply(this, arguments) : this
+  self.then(null, function (err) {
+    asap(function () {
+      throw err
+    })
+  })
+}
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/promise/lib/done.js","/../../../node_modules/promise/lib")
+},{"./core.js":197,"1YiZ5S":11,"asap":201,"buffer":8}],199:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+'use strict';
+
+//This file contains the ES6 extensions to the core Promises/A+ API
+
+var Promise = require('./core.js')
+var asap = require('asap')
+
+module.exports = Promise
+
+/* Static Functions */
+
+function ValuePromise(value) {
+  this.then = function (onFulfilled) {
+    if (typeof onFulfilled !== 'function') return this
+    return new Promise(function (resolve, reject) {
+      asap(function () {
+        try {
+          resolve(onFulfilled(value))
+        } catch (ex) {
+          reject(ex);
+        }
+      })
+    })
+  }
+}
+ValuePromise.prototype = Promise.prototype
+
+var TRUE = new ValuePromise(true)
+var FALSE = new ValuePromise(false)
+var NULL = new ValuePromise(null)
+var UNDEFINED = new ValuePromise(undefined)
+var ZERO = new ValuePromise(0)
+var EMPTYSTRING = new ValuePromise('')
+
+Promise.resolve = function (value) {
+  if (value instanceof Promise) return value
+
+  if (value === null) return NULL
+  if (value === undefined) return UNDEFINED
+  if (value === true) return TRUE
+  if (value === false) return FALSE
+  if (value === 0) return ZERO
+  if (value === '') return EMPTYSTRING
+
+  if (typeof value === 'object' || typeof value === 'function') {
+    try {
+      var then = value.then
+      if (typeof then === 'function') {
+        return new Promise(then.bind(value))
+      }
+    } catch (ex) {
+      return new Promise(function (resolve, reject) {
+        reject(ex)
+      })
+    }
+  }
+
+  return new ValuePromise(value)
+}
+
+Promise.all = function (arr) {
+  var args = Array.prototype.slice.call(arr)
+
+  return new Promise(function (resolve, reject) {
+    if (args.length === 0) return resolve([])
+    var remaining = args.length
+    function res(i, val) {
+      try {
+        if (val && (typeof val === 'object' || typeof val === 'function')) {
+          var then = val.then
+          if (typeof then === 'function') {
+            then.call(val, function (val) { res(i, val) }, reject)
+            return
+          }
+        }
+        args[i] = val
+        if (--remaining === 0) {
+          resolve(args);
+        }
+      } catch (ex) {
+        reject(ex)
+      }
+    }
+    for (var i = 0; i < args.length; i++) {
+      res(i, args[i])
+    }
+  })
+}
+
+Promise.reject = function (value) {
+  return new Promise(function (resolve, reject) { 
+    reject(value);
+  });
+}
+
+Promise.race = function (values) {
+  return new Promise(function (resolve, reject) { 
+    values.forEach(function(value){
+      Promise.resolve(value).then(resolve, reject);
+    })
+  });
+}
+
+/* Prototype Methods */
+
+Promise.prototype['catch'] = function (onRejected) {
+  return this.then(null, onRejected);
+}
+
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/promise/lib/es6-extensions.js","/../../../node_modules/promise/lib")
+},{"./core.js":197,"1YiZ5S":11,"asap":201,"buffer":8}],200:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+'use strict';
+
+//This file contains then/promise specific extensions that are only useful for node.js interop
+
+var Promise = require('./core.js')
+var asap = require('asap')
+
+module.exports = Promise
+
+/* Static Functions */
+
+Promise.denodeify = function (fn, argumentCount) {
+  argumentCount = argumentCount || Infinity
+  return function () {
+    var self = this
+    var args = Array.prototype.slice.call(arguments)
+    return new Promise(function (resolve, reject) {
+      while (args.length && args.length > argumentCount) {
+        args.pop()
+      }
+      args.push(function (err, res) {
+        if (err) reject(err)
+        else resolve(res)
+      })
+      fn.apply(self, args)
+    })
+  }
+}
+Promise.nodeify = function (fn) {
+  return function () {
+    var args = Array.prototype.slice.call(arguments)
+    var callback = typeof args[args.length - 1] === 'function' ? args.pop() : null
+    var ctx = this
+    try {
+      return fn.apply(this, arguments).nodeify(callback, ctx)
+    } catch (ex) {
+      if (callback === null || typeof callback == 'undefined') {
+        return new Promise(function (resolve, reject) { reject(ex) })
+      } else {
+        asap(function () {
+          callback.call(ctx, ex)
+        })
+      }
+    }
+  }
+}
+
+Promise.prototype.nodeify = function (callback, ctx) {
+  if (typeof callback != 'function') return this
+
+  this.then(function (value) {
+    asap(function () {
+      callback.call(ctx, null, value)
+    })
+  }, function (err) {
+    asap(function () {
+      callback.call(ctx, err)
+    })
+  })
+}
+
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/promise/lib/node-extensions.js","/../../../node_modules/promise/lib")
+},{"./core.js":197,"1YiZ5S":11,"asap":201,"buffer":8}],201:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+
+// Use the fastest possible means to execute a task in a future turn
+// of the event loop.
+
+// linked list of tasks (single, with head node)
+var head = {task: void 0, next: null};
+var tail = head;
+var flushing = false;
+var requestFlush = void 0;
+var isNodeJS = false;
+
+function flush() {
+    /* jshint loopfunc: true */
+
+    while (head.next) {
+        head = head.next;
+        var task = head.task;
+        head.task = void 0;
+        var domain = head.domain;
+
+        if (domain) {
+            head.domain = void 0;
+            domain.enter();
+        }
+
+        try {
+            task();
+
+        } catch (e) {
+            if (isNodeJS) {
+                // In node, uncaught exceptions are considered fatal errors.
+                // Re-throw them synchronously to interrupt flushing!
+
+                // Ensure continuation if the uncaught exception is suppressed
+                // listening "uncaughtException" events (as domains does).
+                // Continue in next event to avoid tick recursion.
+                if (domain) {
+                    domain.exit();
+                }
+                setTimeout(flush, 0);
+                if (domain) {
+                    domain.enter();
+                }
+
+                throw e;
+
+            } else {
+                // In browsers, uncaught exceptions are not fatal.
+                // Re-throw them asynchronously to avoid slow-downs.
+                setTimeout(function() {
+                   throw e;
+                }, 0);
+            }
+        }
+
+        if (domain) {
+            domain.exit();
+        }
+    }
+
+    flushing = false;
+}
+
+if (typeof process !== "undefined" && process.nextTick) {
+    // Node.js before 0.9. Note that some fake-Node environments, like the
+    // Mocha test runner, introduce a `process` global without a `nextTick`.
+    isNodeJS = true;
+
+    requestFlush = function () {
+        process.nextTick(flush);
+    };
+
+} else if (typeof setImmediate === "function") {
+    // In IE10, Node.js 0.9+, or https://github.com/NobleJS/setImmediate
+    if (typeof window !== "undefined") {
+        requestFlush = setImmediate.bind(window, flush);
+    } else {
+        requestFlush = function () {
+            setImmediate(flush);
+        };
+    }
+
+} else if (typeof MessageChannel !== "undefined") {
+    // modern browsers
+    // http://www.nonblocking.io/2011/06/windownexttick.html
+    var channel = new MessageChannel();
+    channel.port1.onmessage = flush;
+    requestFlush = function () {
+        channel.port2.postMessage(0);
+    };
+
+} else {
+    // old browsers
+    requestFlush = function () {
+        setTimeout(flush, 0);
+    };
+}
+
+function asap(task) {
+    tail = tail.next = {
+        task: task,
+        domain: isNodeJS && process.domain,
+        next: null
+    };
+
+    if (!flushing) {
+        flushing = true;
+        requestFlush();
+    }
+};
+
+module.exports = asap;
+
+
+}).call(this,require("1YiZ5S"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../../node_modules/promise/node_modules/asap/asap.js","/../../../node_modules/promise/node_modules/asap")
+},{"1YiZ5S":11,"buffer":8}]},{},[2])

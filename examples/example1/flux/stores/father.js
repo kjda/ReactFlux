@@ -3,7 +3,7 @@ var userConstants = require('../constants/user');
 
 var MotherStore = require('./mother');
 
-module.exports = ReactFlux.createStore(null, [
+var Store = ReactFlux.createStore(null, [
 	
 	[userConstants.LOGIN_SUCCESS, [MotherStore],  function notifyFatherOfLogin(payload){
 
@@ -21,3 +21,6 @@ module.exports = ReactFlux.createStore(null, [
 	}]
 
 ]);
+
+
+module.exports = Store;
