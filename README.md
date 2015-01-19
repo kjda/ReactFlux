@@ -91,13 +91,12 @@ var userActions = ReactFlux.createActions({
 calling userActions.login("mustermann", "1234567") will dispatch USER_LOGIN message directly, before it executes the passed callback. Depending on the action callback result it will also either dispatch USER_LOGIN_SUCCESS or USER_LOGIN_FAIL. 
 
 USER_LOGIN_SUCCESS gets dispatched in two cases:
-1. The callback retuns a value, like in the example above
-2. the callback retuns a promise which gets resolved
-
+1. The callback returns a value, like in the example above
+2. the callback returns a promise which gets resolved
 
 USER_LOGIN_FAIL gets dispatched in two cases:
 1. The action callback throws an exception or returns an Error
-2. It returns a promise whicht gets rejected
+2. It returns a promise which gets rejected
 
 USER_LOGIN_AFTER gets dispatched always after the action has either succeeded or failed.
 
