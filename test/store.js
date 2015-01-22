@@ -8,16 +8,35 @@ var constants = ReactFlux.createConstants(['ONE','TWO'], 'STORE');
 var storeDidMountSpy = sinon.spy();
 
 var FooMixin = {
-  bar: sinon.spy()
+  bar: sinon.spy(),
+  getInitialState: sinon.spy(function () {
+    return {
+      abc: "abc",
+      xyz: "xyz"
+    };
+  }),
+  storeDidMount: sinon.spy()
 };
 
 var BarMixin = {
-  foo: sinon.spy()
+  foo: sinon.spy(),
+  getInitialState: sinon.spy(function () {
+    return {
+      def: "def"
+    };
+  }),
+  storeDidMount: sinon.spy()
 };
 
 var EnhancedFooMixin = {
   mixins: [FooMixin],
-  enhancedBar: sinon.spy()
+  enhancedBar: sinon.spy(),
+  getInitialState: sinon.spy(function () {
+    return {
+      abc: "abc-enhanced"
+    };
+  }),
+  storeDidMount: sinon.spy()
 };
 
 var getInitialStateSpy = sinon.spy(function(){
@@ -76,6 +95,19 @@ describe("store", function(){
 
   it("should recursively use the mixins property", function(){
     assert.typeOf(store.bar, 'function');
+  });
+
+  it("should call each mixin's storeDidMount function", function(){
+    assert.isTrue(FooMixin.storeDidMount.calledOnce);
+    assert.isTrue(BarMixin.storeDidMount.calledOnce);
+    assert.isTrue(EnhancedFooMixin.storeDidMount.calledOnce);
+    assert.isTrue(storeDidMountSpy.calledOnce);
+  });
+
+  it("should call and merge each mixin's getInitialState function", function(){
+    assert.equal(store.state.get('abc'),'abc-enhanced');
+    assert.equal(store.state.get('xyz'),'xyz');
+    assert.equal(store.state.get('def'),'def');
   });
 
 	it("should call getInitialState", function(){
