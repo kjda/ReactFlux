@@ -7,6 +7,19 @@ var constants = ReactFlux.createConstants(['ONE','TWO'], 'STORE');
 
 var storeDidMountSpy = sinon.spy();
 
+var FooMixin = {
+  bar: sinon.spy()
+};
+
+var BarMixin = {
+  foo: sinon.spy()
+};
+
+var EnhancedFooMixin = {
+  mixins: [FooMixin],
+  enhancedBar: sinon.spy()
+};
+
 var getInitialStateSpy = sinon.spy(function(){
 	return {
 		id: 1,
@@ -15,6 +28,11 @@ var getInitialStateSpy = sinon.spy(function(){
 });
 
 var store = ReactFlux.createStore({
+
+  mixins: [
+    EnhancedFooMixin,
+    BarMixin
+  ],
 	
 	getInitialState: getInitialStateSpy,
 
@@ -50,6 +68,15 @@ describe("store", function(){
 		assert.typeOf(store, 'object');
 		assert.typeOf(store.getId, 'function');
 	});
+
+  it("should use the mixins property", function(){
+    assert.typeOf(store.foo, 'function');
+    assert.typeOf(store.enhancedBar, 'function');
+  });
+
+  it("should recursively use the mixins property", function(){
+    assert.typeOf(store.bar, 'function');
+  });
 
 	it("should call getInitialState", function(){
 		assert.isTrue( getInitialStateSpy.called );
@@ -116,6 +143,6 @@ describe("store", function(){
 		assert.typeOf(state, 'object', 'store.getActionState should return an object');
 		assert.equal(state.name, 'TWO_HANDLER', 'store.getActionState should return state object correctly');
 		assert.equal(store.getActionState(constants.TWO, 'name'), 'TWO_HANDLER');
-	})
+	});
 
 });
