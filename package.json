@@ -22,10 +22,13 @@
   },
   "homepage": "https://github.com/kjda/ReactFlux",
   "dependencies": {
+    "colors": "^1.0.3",
+    "commander": "^2.6.0",
     "immutable": "^2.0.3",
     "lodash-node": "~2.4.1",
     "promise": "^6.0.1",
-    "react": "^0.11.1"
+    "react": "^0.11.1",
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
