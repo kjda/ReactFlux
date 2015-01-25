@@ -88,7 +88,7 @@ var userActions = ReactFlux.createActions({
   
 });
 ```
-calling userActions.login("mustermann", "1234567") will dispatch USER_LOGIN message directly, before it executes the passed callback. Depending on the action callback result it will also either dispatch USER_LOGIN_SUCCESS or USER_LOGIN_FAIL. 
+calling userActions.login("mustermann", "1234567") will dispatch USER_LOGIN message directly before it executes the passed callback. Depending on the action callback result it will also either dispatch USER_LOGIN_SUCCESS or USER_LOGIN_FAIL. 
 
 USER_LOGIN_SUCCESS gets dispatched in two cases:
 1. The callback returns a value, like in the example above
@@ -101,13 +101,12 @@ USER_LOGIN_FAIL gets dispatched in two cases:
 USER_LOGIN_AFTER gets dispatched always after the action has either succeeded or failed.
 
 
-an action that returns a promise may look like this:
+An action that returns a promise may look like this:
 ```
 login: [userConstants.LOGIN, function(username, password){
-    //API.post returns a promise
-    return api.post('/user/login', {username: username, password: password});
-
-  }],
+  //API.post returns a promise
+  return api.post('/user/login', {username: username, password: password});
+}],
 ```
 
 
@@ -116,6 +115,8 @@ Stores
 ```
 var userStore = ReactFlux.createStore({
   
+  mixins: [ SomeStoreMixin ],
+
   getInitialState: function(){
     return {
       isAuth: false,
@@ -136,40 +137,42 @@ var userStore = ReactFlux.createStore({
 }, [
  
  /**
- * called directly before executing login action
- */
+  * called directly before executing login action
+  */
  [userConstants.LOGIN, function onLogin(){
   this.setState({
     isLoggingIn: true,
     error: null
   });
  }],
-  /**
- * called after login action succeeds or fails
- */
- [userConstants.LOGIN_AFTER, function onloginAfter(error){
-  this.setState({
-    isLoggingIn: false
-  });
- }],
  
  /**
- * called if login action was successful
- */
+  * called if login action was successful
+  */
  [userConstants.LOGIN_SUCCESS, function onLoginSuccess(payload){
   this.setState({
     isAuth: true,
     data: payload
   });
  }],
-  /**
- * called if login action failed
- */
+
+ /**
+  * called if login action failed
+  */
  [userConstants.LOGIN_FAIL, function onloginFail(error){
   this.setState({
     error: error.message
   });
  }]
+ 
+ /**
+  * called after login action succeeds or fails
+  */
+ [userConstants.LOGIN_AFTER, function onloginAfter(error){
+  this.setState({
+    isLoggingIn: false
+  });
+ }],
 
 ]);
 ```
@@ -180,14 +183,16 @@ createStore takes two parameters: 1. A mixin object for the store 2. an array of
 
 The state of the store is an [Immutable][1] object
 to get the state of the store, use store.state.
-to set the state use store.setState
+to set/reset the state use store.setState
 to get a specific property from a state, use: store.get('property')
+Thanks to [Leland Richardson][2] store definition accepts a mixin object which gets mixed into the store.  A store mixin may be recursive and it may hook into store lifecycle events i.e getInitialState and storeDidMount. Please have a look at the tests for more insights.
 
 To listen to store changes use: store.onChange(onChangeCallback)
 
 To stop listening to store changes use: store.offChange(onChangeCallback)
 
-Each store has a mixin method which returns a ReactMixin, so that you don't need to manually couple the component with the store. If you use this mixin you must implement a getStateFromStores method on the component which will be called in componentWillMount and whenever you set the state of the store 
+
+Each store exposes a "mixin" method which returns a ReactMixin, so that you don't need to manually couple the component with the store. If you use this mixin you must implement a getStateFromStores method on the component which will be called in componentWillMount and whenever you set the state of the store 
 
 all *_SUCCESS callbacks get payload as parameter, which is the value returned from an actioin, or the payload passed to it's promise resolve function
 
@@ -267,6 +272,36 @@ UserStore.setActionState(constants.SAVE_NEW_USERNAME, {
 
 setting handler state will cause the store to emit a change event
 
+Code Generation
+===============
+ReactFlux ships with a code generation utility which can make life a lot easier.
+To use this functionality create a special js file in your working directory:
+
+flux.js
+```
+#!/usr/bin/env node
+require('react-flux/codegen');
+```
+
+make it executable
+```
+chmod +x
+```
+
+then look at the help
+```
+./flux --help
+```
+
+code generator will put your files into "flux" directory by default. if you want to change it, create another file "reactflux.json" in the same directory as "flux.js" and specify where you want to have your flux folder
+```
+{
+  "directory": "my-special-flux-directory"
+}
+```
+
+
+
 Example React component
 =======================
 ```
@@ -323,3 +358,4 @@ var LoginComponent = React.createClass({
 });
 ```
 [1]: https://github.com/facebook/immutable-js
+[2]: https://github.com/lelandrichardson
