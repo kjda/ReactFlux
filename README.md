@@ -90,13 +90,13 @@ var userActions = ReactFlux.createActions({
 ```
 calling userActions.login("mustermann", "1234567") will dispatch USER_LOGIN message directly before it executes the passed callback. Depending on the action callback result it will also either dispatch USER_LOGIN_SUCCESS or USER_LOGIN_FAIL. 
 
-USER_LOGIN_SUCCESS gets dispatched in two cases:
-1. The callback returns a value, like in the example above
-2. the callback returns a promise which gets resolved
+USER_LOGIN_SUCCESS gets dispatched in two cases:  
+1. The callback returns a value, like in the example above  
+2. the callback returns a promise which gets resolved  
 
-USER_LOGIN_FAIL gets dispatched in two cases:
-1. The action callback throws an exception or returns an Error
-2. It returns a promise which gets rejected
+USER_LOGIN_FAIL gets dispatched in two cases:  
+1. The action callback throws an exception or returns an Error  
+2. It returns a promise which gets rejected  
 
 USER_LOGIN_AFTER gets dispatched always after the action has either succeeded or failed.
 
@@ -181,10 +181,10 @@ var userStore = ReactFlux.createStore({
 createStore takes two parameters: 1. A mixin object for the store 2. an array of action listeners
 
 
-The state of the store is an [Immutable][1] object
-to get the state of the store, use store.state.
-to set/reset the state use store.setState
-to get a specific property from a state, use: store.get('property')
+The state of the store is an [Immutable][1] object  
+to get the state of the store, use store.state.  
+to set/reset the state use store.setState  
+to get a specific property from a state, use: store.get('property')  
 Thanks to [Leland Richardson][2] store definition accepts a mixin object which gets mixed into the store.  A store mixin may be recursive and it may hook into store lifecycle events i.e getInitialState and storeDidMount. Please have a look at the tests for more insights.
 
 To listen to store changes use: store.onChange(onChangeCallback)
@@ -274,26 +274,26 @@ setting handler state will cause the store to emit a change event
 
 Code Generation
 ===============
-ReactFlux ships with a code generation utility which can make life a lot easier.
+ReactFlux ships with a code generation utility which can make life a lot easier.  
 To use this functionality create a special js file in your working directory:
 
-flux.js
+flux.js  
 ```
 #!/usr/bin/env node
 require('react-flux/codegen');
 ```
 
-make it executable
+make it executable  
 ```
 chmod +x
 ```
 
-then look at the help
+then look at the help  
 ```
 ./flux --help
 ```
 
-code generator will put your files into "flux" directory by default. if you want to change it, create another file "reactflux.json" in the same directory as "flux.js" and specify where you want to have your flux folder
+code generator will put your files into "flux" directory by default. if you want to change it, create another file "reactflux.json" in the same directory as "flux.js" and specify where you want to have your flux folder  
 ```
 {
   "directory": "my-special-flux-directory"
