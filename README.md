@@ -285,7 +285,7 @@ require('react-flux/codegen');
 
 make it executable  
 ```
-chmod +x
+chmod +x flux.js
 ```
 
 then look at the help  
