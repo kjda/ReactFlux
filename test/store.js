@@ -8,35 +8,35 @@ var constants = ReactFlux.createConstants(['ONE','TWO'], 'STORE');
 var storeDidMountSpy = sinon.spy();
 
 var FooMixin = {
-  bar: sinon.spy(),
-  getInitialState: sinon.spy(function () {
-    return {
-      abc: "abc",
-      xyz: "xyz"
-    };
-  }),
-  storeDidMount: sinon.spy()
+	bar: sinon.spy(),
+	getInitialState: sinon.spy(function () {
+		return {
+			abc: "abc",
+			xyz: "xyz"
+		};
+	}),
+	storeDidMount: sinon.spy()
 };
 
 var BarMixin = {
-  foo: sinon.spy(),
-  getInitialState: sinon.spy(function () {
-    return {
-      def: "def"
-    };
-  }),
-  storeDidMount: sinon.spy()
+	foo: sinon.spy(),
+	getInitialState: sinon.spy(function () {
+		return {
+			def: "def"
+		};
+	}),
+	storeDidMount: sinon.spy()
 };
 
 var EnhancedFooMixin = {
-  mixins: [FooMixin],
-  enhancedBar: sinon.spy(),
-  getInitialState: sinon.spy(function () {
-    return {
-      abc: "abc-enhanced"
-    };
-  }),
-  storeDidMount: sinon.spy()
+	mixins: [FooMixin],
+	enhancedBar: sinon.spy(),
+	getInitialState: sinon.spy(function () {
+		return {
+			abc: "abc-enhanced"
+		};
+	}),
+	storeDidMount: sinon.spy()
 };
 
 var getInitialStateSpy = sinon.spy(function(){
@@ -48,21 +48,21 @@ var getInitialStateSpy = sinon.spy(function(){
 
 var store = ReactFlux.createStore({
 
-  mixins: [
-    EnhancedFooMixin,
-    BarMixin
-  ],
+	mixins: [
+		EnhancedFooMixin,
+		BarMixin
+	],
 	
 	getInitialState: getInitialStateSpy,
 
 	storeDidMount: storeDidMountSpy,
 
 	getId: function(){
-		return this.state.get('id')
+		return this.state.get('id');
 	}
 
 }, [
-	[constants.ONE, function(){}]
+[constants.ONE, function(){}]
 ]);
 
 store.addActionHandler(constants.TWO, {
@@ -88,27 +88,27 @@ describe("store", function(){
 		assert.typeOf(store.getId, 'function');
 	});
 
-  it("should use the mixins property", function(){
-    assert.typeOf(store.foo, 'function');
-    assert.typeOf(store.enhancedBar, 'function');
-  });
+	it("should use the mixins property", function(){
+		assert.typeOf(store.foo, 'function');
+		assert.typeOf(store.enhancedBar, 'function');
+	});
 
-  it("should recursively use the mixins property", function(){
-    assert.typeOf(store.bar, 'function');
-  });
+	it("should recursively use the mixins property", function(){
+		assert.typeOf(store.bar, 'function');
+	});
 
-  it("should call each mixin's storeDidMount function", function(){
-    assert.isTrue(FooMixin.storeDidMount.calledOnce);
-    assert.isTrue(BarMixin.storeDidMount.calledOnce);
-    assert.isTrue(EnhancedFooMixin.storeDidMount.calledOnce);
-    assert.isTrue(storeDidMountSpy.calledOnce);
-  });
+	it("should call each mixin's storeDidMount function", function(){
+		assert.isTrue(FooMixin.storeDidMount.calledOnce);
+		assert.isTrue(BarMixin.storeDidMount.calledOnce);
+		assert.isTrue(EnhancedFooMixin.storeDidMount.calledOnce);
+		assert.isTrue(storeDidMountSpy.calledOnce);
+	});
 
-  it("should call and merge each mixin's getInitialState function", function(){
-    assert.equal(store.state.get('abc'),'abc-enhanced');
-    assert.equal(store.state.get('xyz'),'xyz');
-    assert.equal(store.state.get('def'),'def');
-  });
+	it("should call and merge each mixin's getInitialState function", function(){
+		assert.equal(store.state.get('abc'),'abc-enhanced');
+		assert.equal(store.state.get('xyz'),'xyz');
+		assert.equal(store.state.get('def'),'def');
+	});
 
 	it("should call getInitialState", function(){
 		assert.isTrue( getInitialStateSpy.called );

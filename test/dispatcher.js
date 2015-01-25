@@ -31,7 +31,7 @@ describe("dispatcher", function(){
 		actions = ReactFlux.createActions({
 			action1: [constants.ONE, action1Spy],
 			action2: [constants.TWO, action2Spy],
-			action3: [constants.THREE, function(){ return {}}]
+			action3: [constants.THREE, function(){ return {};}]
 		});
 		
 		store1Action1BeforeSpy = sinon.spy(function(){});
