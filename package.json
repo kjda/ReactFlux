@@ -1,6 +1,6 @@
 {
   "name": "react-flux",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A library implementing React Flux data flow",
   "main": "index.js",
   "scripts": {
