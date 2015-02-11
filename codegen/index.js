@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var Template = require('lodash-node/modern/utilities/template');
 var fs = require('fs');
 var path = require('path');
 var colors = require('colors');
@@ -28,9 +28,9 @@ function initFluxDirectory(){
 		ACTIONS_DIR,
 		STORES_DIR
 	];
-
-	for(var i in directories){
+	for(var i = 0; i < directories.length; i++){
 		if( !fs.existsSync(directories[i]) ){
+			log("Creating directory: " + directories[i]);
 			fs.mkdirSync(directories[i]);
 		}
 	}
@@ -41,7 +41,7 @@ function initFluxDirectory(){
 }
 
 
-function error(error){
+function logError(error){
 	console.error(error.red);
 }
 
@@ -52,7 +52,7 @@ function log(msg){
 function getTemplate(templateName){
 	var templatePath = path.resolve(__dirname + '/templates/' + templateName + '.js');
 	var content = fs.readFileSync(templatePath).toString();
-	return _.template(content);
+	return Template(content);
 }
 
 function getFluxFilePaths(name){
@@ -101,19 +101,19 @@ function getDefaultIndexFile(){
 function createFlux(name){
 	var fluxPaths = getFluxFilePaths(name);
 	if (fs.existsSync(fluxPaths.module)) {
-		error("FILE EXISTS: " + fluxPaths.module);
+		logError("FILE EXISTS: " + fluxPaths.module);
 		return;
 	}
 	if (fs.existsSync(fluxPaths.constants)) {
-		error("FILE EXISTS: " + fluxPaths.constants);
+		logError("FILE EXISTS: " + fluxPaths.constants);
 		return;
 	}
 	if (fs.existsSync(fluxPaths.actions)) {
-		error("FILE EXISTS: " + fluxPaths.actions);
+		logError("FILE EXISTS: " + fluxPaths.actions);
 		return;
 	}
 	if (fs.existsSync(fluxPaths.store)) {
-		error("FILE EXISTS: " + fluxPaths.store);
+		logError("FILE EXISTS: " + fluxPaths.store);
 		return;
 	}
 	log("Creating file: " + fluxPaths.module);
@@ -135,7 +135,7 @@ function addFluxToIndex(name){
 	for(var i=0, len = lines.length; i < len; i++){
 		newLines.push(lines[i]);
 		if( lines[i].match('module\\.exports') ){
-			newLines.push( "\t" + name + ": require('./" + name + "')," )
+			newLines.push( "\t" + name + ": require('./" + name + "')," );
 		}
 	}
 	fs.writeFileSync(INDEX_PATH, newLines.join("\n"));
@@ -144,13 +144,13 @@ function addFluxToIndex(name){
 function createConstant(filePath, constantName) {
 	constantName = constantName.toUpperCase();
 	if (!fs.existsSync(filePath)) {
-		error("FILE DOES NOT EXIST: " + filePath);
+		logError("FILE DOES NOT EXIST: " + filePath);
 		return false;
 	}
 	var fileContents = fs.readFileSync(filePath).toString();
 	if (fileContents.match("'" + constantName + "'")) {
 		var msg = "ERROR: Constant '" + constantName + "' seems to exists in " + filePath + "";
-		error(msg);
+		logError(msg);
 		return false;
 	}
 	var lines = fileContents.split('\n');
@@ -174,7 +174,7 @@ function createConstant(filePath, constantName) {
 function createAction(filePath, constantName) {
   constantName = constantName.toUpperCase();
   if (!fs.existsSync(filePath)) {
-    error("FILE DOES NOT EXIST: " + filePath);
+		logError("FILE DOES NOT EXIST: " + filePath);
     return false;
   }
   var ps = constantName.toLowerCase().split('_');
@@ -184,10 +184,10 @@ function createAction(filePath, constantName) {
   }
   var fileContents = fs.readFileSync(filePath).toString();
   if (fileContents.match(actionName + ":")) {
-    error("ERROR: Action for '" + constantName + "' seems to exists in " + filePath)
+		logError("ERROR: Action for '" + constantName + "' seems to exists in " + filePath);
     return false;
   }
-  
+
   var lines = fileContents.split('\n');
   var newLines = [];
   for (var i = 0, len = lines.length; i < len; i++) {
@@ -208,13 +208,13 @@ function createAction(filePath, constantName) {
 function createActionHandler(filePath, constantName) {
   constantName = constantName.toUpperCase();
   if (!fs.existsSync(filePath)) {
-    error("FILE DOES NOT EXIST: " + filePath);
+		logError("FILE DOES NOT EXIST: " + filePath);
     return false;
   }
   var fileContents = fs.readFileSync(filePath).toString();
   var expr = "addActionHandler\\(constants\\." + constantName;
   if ( fileContents.match(expr) ) {
-    error("ERROR: ActionHandler for '" + constantName + "' seems to exists in " + filePath)
+		logError("ERROR: ActionHandler for '" + constantName + "' seems to exists in " + filePath);
     return false;
   }
   var lines = fileContents.split('\n');
@@ -248,7 +248,7 @@ commander
 	.description('Creates a flux group(constants, actions and store)')
 	.action(function (fluxName) {
 		if( !DID_INIT_FLUX ){
-			error('You did not init flux. run init command');
+			logError('You did not init flux. run init command');
 			return;
 		}
   	createFlux(fluxName);
@@ -261,7 +261,7 @@ commander
 	.description('Creates a constant')
 	.action(function (fluxName, constant, opts) {
 		if( !DID_INIT_FLUX ){
-			error('You did not init flux. run init command');
+			logError('You did not init flux. run init command');
 			return;
 		}
 		var paths = getFluxFilePaths(fluxName);
@@ -284,17 +284,17 @@ commander.on('--help', function(){
 	console.log("  Examples:");
 	var progName = module.parent.filename.split('/').pop();
 	console.log("    Init flux directory:");
-	console.log("      ./" + progName + ' init');
+	console.log("      ./" + progName + ' init\n');
 	console.log("    Create user flux group:");
-	console.log("      ./" + progName + ' flux user');
+	console.log("      ./" + progName + ' flux user\n');
 	console.log("    Create a constant[LOAD] for user group:");
-	console.log("      ./" + progName + ' constant user LOAD');
+	console.log("      ./" + progName + ' constant user LOAD\n');
 	console.log("    Create a constant[LOAD] for user group along with a corresponding action:");
-	console.log("      ./" + progName + ' constant -a user LOAD');
+	console.log("      ./" + progName + ' constant -a user LOAD\n');
 	console.log("    Create a constant[LOAD] for user group along with a corresponding store handler:");
-	console.log("      ./" + progName + ' constant -s user LOAD');
+	console.log("      ./" + progName + ' constant -s user LOAD\n');
 	console.log("    Create a constant[LOAD] for user group along with corresponding action and store handler:");
-	console.log("      ./" + progName + ' constant -as user LOAD');
+	console.log("      ./" + progName + ' constant -as user LOAD\n');
 });
 
 commander.parse(process.argv);
