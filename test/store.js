@@ -52,7 +52,7 @@ var store = ReactFlux.createStore({
 		EnhancedFooMixin,
 		BarMixin
 	],
-	
+
 	getInitialState: getInitialStateSpy,
 
 	storeDidMount: storeDidMountSpy,
@@ -170,11 +170,131 @@ describe("store", function(){
 	});
 
 	it("getActionState should work", function(){
+
 		assert.typeOf(store.getActionState, 'function', 'store.getActionState should be a function');
+
 		var state = store.getActionState(constants.TWO);
+
 		assert.typeOf(state, 'object', 'store.getActionState should return an object');
 		assert.equal(state.name, 'TWO_HANDLER', 'store.getActionState should return state object correctly');
 		assert.equal(store.getActionState(constants.TWO, 'name'), 'TWO_HANDLER');
+
+		assert.throw(function(){
+			store.getActionState('nonexistant');
+		}, 'Store.getActionState constant handler for [nonexistant] is not defined');
+
+		assert.equal(store.getActionState(constants.TWO, 'nonexistantKey'), undefined);
+	});
+
+	it("should have a working setActionState method", function(){
+			assert.typeOf(store.setActionState, 'function', 'store.setActionState should be a function');
+
+			store.setActionState(constants.TWO, {'name': 'bar'});
+			assert.equal(store.getActionState(constants.TWO, 'name'), 'bar', 'setActionState should reset state');
+	});
+
+	it("should have a working resetActionState method", function(){
+		assert.typeOf(store.resetActionState, 'function', 'store.resetActionState should be a function');
+
+		assert.throw(function(){
+			store.resetActionState('nonexistant');
+		}, 'Store.resetActionState constant handler for [nonexistant] is not defined');
+
+		store.setActionState(constants.TWO, {'name': 'bar'});
+		store.resetActionState(constants.TWO);
+		assert.equal(store.getActionState(constants.TWO, 'name'), 'TWO_HANDLER', 'resetActionState should reset state');
+	});
+
+	it("should provide a functional toJS method", function(){
+		assert.typeOf(store.toJS, 'function', 'store.toJS should be a function');
+		store.setState({'foo': 'bar'});
+		var toJS = store.toJS();
+		assert.typeOf(toJS, 'object', 'store.toJS should return an object');
+		assert.equal(toJS.foo, 'bar', 'store.toJS should return state');
+	});
+
+	it("should provide a functional toObject method", function(){
+		assert.typeOf(store.toObject, 'function', 'store.toObject should be a function');
+		store.setState({'foo': 'bar'});
+		var toObject = store.toObject();
+		assert.typeOf(toObject, 'object', 'store.toObject should return an object');
+		assert.equal(toObject.foo, 'bar', 'store.toObject should return state');
+	});
+
+	it("should provide a functional toJSON method", function(){
+		assert.typeOf(store.toJSON, 'function', 'store.toJSON should be a function');
+		store.setState({'foo': 'bar'});
+		var toJSON = store.toJSON();
+		assert.typeOf(toJSON, 'object', 'store.toJSON should return an object');
+		assert.equal(toJSON.foo, 'bar', 'store.toJSON should return state');
+	});
+
+	it("should be able to replaceState", function(){
+		store.setState({'foo': 'bar'});
+		store.replaceState({
+			'foo2': 'bar2'
+		});
+		assert.isUndefined(store.get('foo'));
+		assert.equal(store.get('foo2'), 'bar2');
+	});
+
+	it("getHandlerIndex should throw an error when provided a non-existant constant", function(){
+		assert.throw(function(){
+			store.getHandlerIndex();
+		}, /Can not get store handler for constant/);
+	});
+
+	it("should provide a mixin method for react components", function(){
+		var mixin = store.mixin();
+		assert.typeOf(mixin, 'Object', 'Store mixin should return a mixin');
+		assert.typeOf(mixin.componentWillMount, 'function', 'store.mixin should return a mixin with componentWillMount');
+		assert.typeOf(mixin.componentDidMount, 'function', 'store.mixin should return a mixin with componentDidMount');
+		assert.typeOf(mixin.componentWillUnmount, 'function', 'store.mixin should return a mixin with componentWillUnmount');
+	});
+
+
+	it("createStore should complain about wrong handler definitions", function(){
+		assert.throw(function(){
+			ReactFlux.createStore({
+
+			}, {});
+		}, /store expects handler definitions to be an array/);
+
+		assert.throw(function(){
+			ReactFlux.createStore({
+			}, [
+				[null, function(){}]
+			]);
+		}, /store expects all handler definitions to contain a constant as the first parameter/);
+
+		assert.throw(function(){
+			ReactFlux.createStore({
+			}, [
+				['FOO', null]
+			]);
+		}, /store expects all handler definitions to contain a callback/);
+
+		assert.throw(function(){
+			ReactFlux.createStore({
+				},[
+					'buggy', function(){}
+				]);
+		}, /store expects handler definition to be an array/);
+
+		assert.throw(function(){
+			ReactFlux.createStore({
+			},[
+				['FOO', store, function(){}]
+			]);
+		}, /store expects waitFor to be an array of stores/);
+
+		assert.throw(function(){
+			ReactFlux.createStore({
+			},[
+				['FOO', [function(){}], function(){}]
+			]);
+		}, /store expects waitFor to be an array of stores/);
+
 	});
 
 });

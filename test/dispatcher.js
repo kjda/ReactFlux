@@ -5,7 +5,7 @@ var sinon = require("sinon");
 var constants = ReactFlux.createConstants(['ONE', 'TWO', 'THREE'], 'DIS');
 
 describe("dispatcher", function(){
-	
+
 	var action1Spy, action2Spy;
 	var store1Action1BeforeSpy, store1Action1AfterSpy, store1Action1SuccessSpy;
 	var actionHandlerBeforeSpy, actionHandlerAfterSpy, actionHandlerSuccessSpy, actionHandlerFailSpy;
@@ -16,7 +16,7 @@ describe("dispatcher", function(){
 	var store1, store2;
 
 	beforeEach(function(){
-		
+
 		action1Spy = sinon.spy(function(id, username){
 			return {
 				id: id,
@@ -33,12 +33,12 @@ describe("dispatcher", function(){
 			action2: [constants.TWO, action2Spy],
 			action3: [constants.THREE, function(){ return {};}]
 		});
-		
+
 		store1Action1BeforeSpy = sinon.spy(function(){});
 		store1Action1AfterSpy = sinon.spy(function(){});
 		store1Action1SuccessSpy = sinon.spy(function(){});
 		store1Action2FailSpy = sinon.spy(function(){});
-		
+
 		store2Action1SuccessSpy = sinon.spy(function(){});
 
 		actionHandlerBeforeSpy = sinon.spy(function(){});
@@ -106,7 +106,7 @@ describe("dispatcher", function(){
 		actions.action1(1, "mustermann");
 		setTimeout(function(){
 			assert.isTrue(store1Action1AfterSpy.called);
-			done();	
+			done();
 		}, 0);
 	});
 
@@ -114,7 +114,7 @@ describe("dispatcher", function(){
 		actions.action1(1, "mustermann");
 		setTimeout(function(){
 			assert.isTrue(store1Action1SuccessSpy.called);
-			done();	
+			done();
 		}, 0);
 	});
 
@@ -130,7 +130,7 @@ describe("dispatcher", function(){
 		actions.action2();
 		setTimeout(function(){
 			assert.isTrue(store1Action2FailSpy.called);
-			done();	
+			done();
 		}, 0);
 	});
 
@@ -138,7 +138,7 @@ describe("dispatcher", function(){
 		actions.action1();
 		setTimeout(function(){
 			assert.isTrue(store2Action1SuccessSpy.calledAfter(store1Action1SuccessSpy));
-			done();	
+			done();
 		}, 0);
 	});
 
@@ -154,14 +154,14 @@ describe("dispatcher", function(){
 	it("should dispatch BEFORE to actionHandler", function(done){
 		actions.action3(1, "mustermann");
 			assert.isTrue(actionHandlerBeforeSpy.called);
-			done();	
+			done();
 	});
 
 	it("should dispatch AFTER to actionHandler", function(done){
 		actions.action3(1, "mustermann");
 		setTimeout(function(){
 			assert.isTrue(actionHandlerAfterSpy.called);
-			done();	
+			done();
 		}, 0);
 	});
 
@@ -169,7 +169,7 @@ describe("dispatcher", function(){
 		actions.action3(1, "mustermann");
 		setTimeout(function(){
 			assert.isTrue(actionHandlerSuccessSpy.called);
-			done();	
+			done();
 		}, 0);
 	});
 
@@ -177,8 +177,20 @@ describe("dispatcher", function(){
 		actions.action3(1, "mustermann");
 		setTimeout(function(){
 			assert.isFalse(actionHandlerFailSpy.called);
-			done();	
+			done();
 		}, 0);
+	});
+
+	it("register should throw an error if callback is not a function", function(){
+		assert.throw(function(){
+			ReactFlux.dispatcher.register("SOME_CONST", null);
+		}, /Dispatcher.register expects second parameter to be a callback/);
+	});
+
+	it("register should throw an error if waitForIndexes is not an array", function(){
+		assert.throw(function(){
+			ReactFlux.dispatcher.register("SOME_CONST", function(){}, {});
+		}, /Dispatcher.register expects third parameter to be null or an array/);
 	});
 
 });
