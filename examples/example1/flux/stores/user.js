@@ -4,7 +4,7 @@ var userConstants = require('../constants/user');
 var MotherStore = require('./mother');
 var FatherStore = require('./father');
 
-module.exports = ReactFlux.createStore({
+var Store = ReactFlux.createStore({
 
 	getInitialState: function(){
 		console.log("UserStore.getInitialState");
@@ -46,7 +46,7 @@ module.exports = ReactFlux.createStore({
 			isLoggingIn: false,
 			error: null,
 			data: payload,
-			isAuth: true 
+			isAuth: true
 		});
 	}],
 
@@ -59,17 +59,18 @@ module.exports = ReactFlux.createStore({
 			isLoggingIn: false,
 			error: error.message
 		});
-	}],
+	}]
 
-	/**
-	*
-	*/
-	[userConstants.LOGOUT_SUCCESS, function handleLogout(){
+]);
+
+Store.addActionHandler(userConstants.LOGOUT, {
+	success: function(){
 		console.log("UserStore.handleLogout");
-		this.setState({
+		this.parent.setState({
 			isAuth: false,
 			data: null
 		});
-	}]
-	
-]);
+	}
+});
+
+module.exports = Store;

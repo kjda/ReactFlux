@@ -12,16 +12,16 @@ module.exports = ReactFlux.createActions({
 			setTimeout(function(){
 				if( username.length ){
 					resolve({
-						id: 1, 
+						id: 1,
 						username: username
 					});
 				}
 				else{
 					reject(new Error('Invalid login'));
 				}
-			}, 250);
+			}, 500);
 		});
-		return promise; 
+		return promise;
 	}],
 
 
@@ -30,6 +30,5 @@ module.exports = ReactFlux.createActions({
 	*/
 	logout: [userConstants.LOGOUT]
 
-	
-});
 
+});
