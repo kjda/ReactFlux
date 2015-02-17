@@ -26,7 +26,7 @@ describe("Mixin", function(){
 		}, Error, /stores/);
 	});
 
-	it("calls component.setState", function(done){
+	it("should call component.setState", function(done){
 		var mixin = Flux.mixin( Flux.createStore() );
 		mixin.state = {};
 		mixin.setState = function(state){
@@ -43,6 +43,54 @@ describe("Mixin", function(){
 		mixin.componentWillMount();
 		setTimeout(function(){
 			assert.equal(mixin.state.foo, 'bar');
+			done();
+		}, 0);
+	});
+
+	it("should call getStateFromStores onChange", function(done){
+		var store = Flux.createStore();
+		var mixin = Flux.mixin( store );
+		mixin.state = {};
+		mixin.setState = function(state){
+			mixin.state = state;
+		};
+		mixin.getStateFromStores = sinon.spy(function(){
+			return {
+				foo: 'bar'
+			};
+		});
+		mixin.isMounted = function(){
+			return true;
+		};
+		mixin.componentWillMount();
+		mixin.componentDidMount();
+		store.setState({foo: 'bar'});
+		setTimeout(function(){
+			assert.isTrue( mixin.getStateFromStores.calledTwice );
+			done();
+		}, 0);
+	});
+
+	it("should not call getStateFromStores onChange if component is not mounted", function(done){
+		var store = Flux.createStore();
+		var mixin = Flux.mixin( store );
+		mixin.state = {};
+		mixin.setState = function(state){
+			mixin.state = state;
+		};
+		mixin.getStateFromStores = sinon.spy(function(){
+			return {
+				foo: 'bar'
+			};
+		});
+		mixin.isMounted = function(){
+			return false;
+		};
+		mixin.componentWillMount();
+		mixin.componentDidMount();
+		store.setState({foo: 'bar'});
+		setTimeout(function(){
+			assert.isTrue( mixin.getStateFromStores.calledOnce );
 			done();
 		}, 0);
 	});
