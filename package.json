@@ -1,6 +1,6 @@
 {
 	"name": "react-flux",
-	"version": "0.0.22",
+	"version": "0.0.23",
 	"description": "A library implementing React Flux data flow",
 	"main": "index.js",
 	"scripts": {
@@ -25,9 +25,7 @@
 	"dependencies": {
 		"colors": "^1.0.3",
 		"commander": "^2.7.1",
-		"immutable": "^3.7.1",
-		"lodash-node": "~3.6.0",
-		"promise": "^7.0.0"
+		"lodash-node": "~3.6.0"
 	},
 	"devDependencies": {
 		"chai": "^2.2.0",

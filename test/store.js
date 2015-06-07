@@ -126,6 +126,29 @@ describe("store", function(){
 		assert.typeOf(store.state, "object");
 	});
 
+	it("store.state.getState() should work", function(){
+		assert.typeOf(store.getState, "function");
+		assert.typeOf(store.getState(), "object");
+	});
+
+	it("store.state.getState() should return a copy of state", function(){
+		var id = store.get('id');
+		var stateCopy = store.getState();
+		stateCopy.id = 'foo';
+		assert.equal(store.get('id'), id);
+	});
+
+	it("store.state.get() should return a copy of state", function(){
+		var state = store.getState();
+		state.deepFoo = {
+			x: 1
+		};
+		store.setState(state);
+		var deepFoo = store.get('deepFoo');
+		deepFoo.x = 'bar';
+		assert.equal(store.get('deepFoo').x, 1);
+	});
+
 	it("store.state.get() should work", function(){
 		assert.equal(store.state.get('id'), 1);
 		assert.equal(store.state.get('username'), "mustermann");
@@ -234,22 +257,22 @@ describe("store", function(){
 		store.replaceState({
 			'foo2': 'bar2'
 		});
-		assert.isUndefined(store.get('foo'));
-		assert.equal(store.get('foo2'), 'bar2');
+		assert.isUndefined(store.get('foo'), "foo should not exist");
+		assert.equal(store.get('foo2'), 'bar2', "foo2 should equal bar2");
 	});
 
-	it("getHandlerIndex should throw an error when provided a non-existant constant", function(){
+	it("_getHandlerIndex should throw an error when provided a non-existant constant", function(){
 		assert.throw(function(){
-			store.getHandlerIndex();
+			store._getHandlerIndex();
 		}, /Can not get store handler for constant/);
 	});
 
-	it("should provide a mixin method for react components", function(){
-		var mixin = store.mixin();
-		assert.typeOf(mixin, 'Object', 'Store mixin should return a mixin');
-		assert.typeOf(mixin.componentWillMount, 'function', 'store.mixin should return a mixin with componentWillMount');
-		assert.typeOf(mixin.componentDidMount, 'function', 'store.mixin should return a mixin with componentDidMount');
-		assert.typeOf(mixin.componentWillUnmount, 'function', 'store.mixin should return a mixin with componentWillUnmount');
+	it("should provide a mixinFor method for react components", function(){
+		var mixinFor = store.mixinFor();
+		assert.typeOf(mixinFor, 'Object', 'Store mixinFor should return a mixin');
+		assert.typeOf(mixinFor.componentWillMount, 'function', 'store.mixinFor should return a mixin with componentWillMount');
+		assert.typeOf(mixinFor.componentDidMount, 'function', 'store.mixinFor should return a mixin with componentDidMount');
+		assert.typeOf(mixinFor.componentWillUnmount, 'function', 'store.mixinFor should return a mixin with componentWillUnmount');
 	});
 
 
