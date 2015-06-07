@@ -20,7 +20,7 @@ var Store = ReactFlux.createStore({
 	},
 
 	getUsername: function(){
-		return this.state.get('isAuth') ? this.state.get('data').username : null;
+		return this.get('isAuth') ? this.get('data').username : null;
 	}
 
 }, [

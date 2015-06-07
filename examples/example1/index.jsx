@@ -6,13 +6,13 @@ var Flux = require('../../');
 var App = React.createClass({
 
 	mixins: [
-		userStore.mixin()
+		userStore.mixinFor()
 	],
 
 	getStateFromStores: function(){
 		console.log("App.getStateFromStores");
 		return {
-			user: userStore.state
+			user: userStore.getState()
 		};
 	},
 
@@ -28,7 +28,7 @@ var App = React.createClass({
 	},
 
 	render: function(){
-		if( !this.state.user.get('isAuth') ){
+		if( !this.state.user.isAuth ){
 			return this.renderLogin();
 		}
 		return this.renderHome();
@@ -37,14 +37,14 @@ var App = React.createClass({
 	renderHome: function(){
 		return (
 			<div>
-			<h3>Hello {this.state.user.get('data').username}!</h3>
+			<h3>Hello {this.state.user.data.username}!</h3>
 			<a href="#" onClick={this.logout}>Logout</a>
 			</div>
 		);
 	},
 
 	renderLogin: function(){
-		if( this.state.user.get('isLoggingIn') ){
+		if( this.state.user.isLoggingIn ){
 			return(<div>Logging in...</div>);
 		}
 		return(
@@ -59,10 +59,10 @@ var App = React.createClass({
 	},
 
 	renderLoginError: function(){
-		if( !this.state.user.get('error') ){
+		if( !this.state.user.error ){
 			return;
 		}
-		return (<div style={{color: 'brown'}}>{this.state.user.get('error')}</div>)
+		return (<div style={{color: 'brown'}}>{this.state.user.error}</div>)
 	}
 
 });
