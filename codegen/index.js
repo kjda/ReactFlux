@@ -1,4 +1,4 @@
-var Template = require('lodash-node/modern/utilities/template');
+var Template = require('underscore').template;
 var fs = require('fs');
 var path = require('path');
 var colors = require('colors');
