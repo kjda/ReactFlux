@@ -26,12 +26,6 @@ module.exports = {
 	},
 
 	externals: {
-		immutable: {
-			root: 'Immutable',
-			commonjs: 'immutable',
-			commonjs2: 'immutable',
-			amd: 'immutable'
-		},
 		promise: true,
 		react: {
 			root: 'React',
