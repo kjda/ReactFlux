@@ -5,9 +5,13 @@ Read about [Flux-Data-Flow](http://facebook.github.io/flux/docs/overview.html)
 
 Install
 =======
-
+Npm:
 ```
 $ npm install react-flux
+```
+Bower:
+```
+$ bower install react-flux
 ```
 
 Use it
@@ -16,14 +20,20 @@ Use it
 var ReactFlux = require("react-flux");
 ```
 
+Browser:  
+```
+<script src="/react-flux/dist/react-flux.js" type="text/javascript"></script>
+```
+
+
 ReactFlux
 =========
 ReactFlux expose the following methods:  
-1. createConstants( Array constants, String prefix )  
-2. createActions( Object actions )  
-3. createStore( Object mixin, Array listeners )  
-4. dispatch( String constant, Object payload )  
-5. mixin( Store store, ..... )  
+	1. createConstants( Array constants, String prefix )  
+	2. createActions( Object actions )  
+	3. createStore( Object mixin, Array listeners )  
+	4. dispatch( String constant, Object payload )  
+	5. mixinFor( Store store, ..... )  
 
 Constants
 =========
@@ -78,39 +88,28 @@ Actions
 ```
 var userActions = ReactFlux.createActions({
   
-  login: [userConstants.LOGIN, function(username, password){
+  login: [userConstants.LOGIN, function loginAction(username, password){
     return {
       id: 1,
       username: 'Max Mustermann'
     }
-  }],
-  
-  logout: [userConstant.LOGOUT, function(){
-    return ....; 
   }]
   
 });
 ```
-calling userActions.login("mustermann", "1234567") will dispatch USER_LOGIN message directly before it executes the passed callback. Depending on the action callback result it will also either dispatch USER_LOGIN_SUCCESS or USER_LOGIN_FAIL. 
+calling userActions.login("mustermann", "1234567") will do the following:  
+	1. **USER_LOGIN** gets dispatched directly before the passed callback gets executed.   which means: any store handlers registered for USER_LOGIN will get invoked.
+	2. the passed callback gets executed, in this case **loginAction**.  
+	3. Depending on the result of the action callback, it will either dispatch **USER_LOGIN_SUCCESS** or **USER_LOGIN_FAIL**.  
+	4. **USER_LOGIN_AFTER** get's dispatched after step 3 
 
-USER_LOGIN_SUCCESS gets dispatched in two cases:  
-1. The callback returns a value, like in the example above  
-2. the callback returns a promise which gets resolved  
+**USER_LOGIN_SUCCESS** gets dispatched in two cases:  
+	1. The callback returns a value, like in the example above  
+	2. the callback returns a promise which gets resolved  
 
-USER_LOGIN_FAIL gets dispatched in two cases:  
-1. The action callback throws an exception or returns an Error  
-2. It returns a promise which gets rejected  
-
-USER_LOGIN_AFTER gets dispatched always after the action has either succeeded or failed.
-
-
-An action that returns a promise may look like this:
-```
-login: [userConstants.LOGIN, function(username, password){
-  //API.post returns a promise
-  return api.post('/user/login', {username: username, password: password});
-}],
-```
+**USER_LOGIN_FAIL** gets dispatched in two cases:  
+	1. The action callback throws an exception or returns an Error  
+	2. It returns a promise which gets rejected  
 
 
 Stores
@@ -118,7 +117,7 @@ Stores
 ```
 var userStore = ReactFlux.createStore({
   
-  mixins: [ SomeStoreMixin ],
+  mixins: [ SomeStoreMixin, AnotherStoreMixin ],
 
   getInitialState: function(){
     return {
@@ -130,11 +129,11 @@ var userStore = ReactFlux.createStore({
   },
   
   storeDidMount: function(){
-    //....
+    //Get called when store is ready
   },
   
   isAuth: function(){
-    return this.state.get('isAuth')
+    return this.get('isAuth')
   }
   
 }, [
@@ -181,27 +180,59 @@ var userStore = ReactFlux.createStore({
 ```
 
 
-createStore takes two parameters: 1. A mixin object for the store 2. an array of action listeners
+ReactFlux.createStore takes two parameters: 
+	1. A mixin object for the store:
+	   
+
+> Thanks to [Leland Richardson][1] store definition accepts mixins  which get mixed into the store.  A store mixin may be recursive and it may hook into store lifecycle events i.e getInitialState and storeDidMount. Please have a look at the tests for more insights. 
+
+	2. an array of action listeners
 
 
-The state of the store is an [Immutable][1] object  
-to get the state of the store, use store.state.  
-to set/reset the state use store.setState  
-to get a specific property from a state, use: store.get('property')  
-Thanks to [Leland Richardson][2] store definition accepts a mixin object which gets mixed into the store.  A store mixin may be recursive and it may hook into store lifecycle events i.e getInitialState and storeDidMount. Please have a look at the tests for more insights.
+###all *_SUCCESS callbacks get payload as parameter, which is the value returned from an actioin, or the payload passed to it's promise resolve function
 
-To listen to store changes use: store.onChange(onChangeCallback)
+###all *_FAIL callbacks get an Error object, or whatever you pass to a promise reject function
 
-To stop listening to store changes use: store.offChange(onChangeCallback)
+###Store API
+#####store.setState(obj)  
+ 	sets the state of the store
+#####store.replaceState(obj) 
+    replaces the state of the store
+#####store.getState() 
+    gets a copy of the store state
+#####store.get(key)
+    gets a copy of the value corresponding to the key
+#####store.onChange(callback)
+	registers a callback which gets invoked whenever store's state changes
+#####store.offChange(callback)
+	deregisters callback from store changes
+#####store.mixinFor()
+	Each store exposes a "mixinFor" method which returns a ReactMixin, so that you don't need to manually couple your your components with different stores. If you use this mixin you must implement a getStateFromStores method on the component which gets called in componentWillMount and whenever the store's state gets updated    
+	```
+	var fooComponent = React.createClass({
+		mixins: [
+			fooStore.mixinFor()
+		],
+		getStateFromStores: function(){
+			return {
+				fooState: fooStore.getState()
+			};
+		},
+		
+	});
+	```
+#####store.addActionHandler(constant, actionHandlerMixin)
+    register an action handler for the given constant.. please refer to ActionHandlers sections for more details.
+#####store.getActionState(constant)
+	returns a copy of the state of the action handler related to the given constant
+#####store.setActionState(const, newState)
+	sets the state of the action handler related to the given constant
+  
 
 
-Each store exposes a "mixin" method which returns a ReactMixin, so that you don't need to manually couple the component with the store. If you use this mixin you must implement a getStateFromStores method on the component which will be called in componentWillMount and whenever you set the state of the store 
-
-all *_SUCCESS callbacks get payload as parameter, which is the value returned from an actioin, or the payload passed to it's promise resolve function
-
-all *_FAIL callbacks get an Error object, or whatever you pass to a promise reject callback
-
-stores also provide a different way for setting handlers, through StoreActionHandler, which is an object defining handlers for all action possible constants. It provides a seperate sub-state specific to a single action handler. This could be useful when maintaining different UI states in a store that is used by different UI views. This way we don't need to pollute a Store state with many variables correlating to the state of UI Views, we can just dump those variables into sub-states, while keeping store's state dedicated to real data. 
+### Store Action Handlers
+stores also provide a different way for setting handlers, namely through StoreActionHandler.
+StoreActionHandler is an object defining handlers for all action possible constants. It provides a **seperate sub-state** specific to every single action handler. This could be useful when maintaining different UI states in a store that is used by different UI views. This way we don't need to pollute a Store's state with many variables correlating to the state of UI Views, we can just dump those variables into sub-states, while keeping store's state dedicated to real data. 
 
 ```
 UserStore.addActionHandler(constants.SAVE_NEW_USERNAME, {
@@ -251,7 +282,7 @@ UserStore.addActionHandler(constants.SAVE_NEW_USERNAME, {
 });
 ```
 
-getInitialState, before, after, success and fail are optional.
+**getInitialState**, **before**, **after**, **success** and fail are optional.
 
 
 We can access handler specific state using:
@@ -274,6 +305,8 @@ UserStore.setActionState(constants.SAVE_NEW_USERNAME, {
 ```
 
 setting handler state will cause the store to emit a change event
+
+Inside an ActionHandler the parent store is accessible through this.parent.  So, to update the state of the parent store from within the actionHandler, use **this.parent.setState**
 
 Code Generation
 ===============
@@ -311,7 +344,7 @@ Example React component
 var LoginComponent = React.createClass({
   
   mixins: [ 
-    ReactFlux.mixin(userStore) //or  userStore.mixin() 
+    ReactFlux.mixinFor(userStore) //or  userStore.mixin() 
   ], 
   
   getStateFromStores: function(){
@@ -360,5 +393,4 @@ var LoginComponent = React.createClass({
   
 });
 ```
-[1]: https://github.com/facebook/immutable-js
-[2]: https://github.com/lelandrichardson
+[1]: https://github.com/lelandrichardson
