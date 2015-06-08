@@ -208,7 +208,7 @@ registers a callback which gets invoked whenever store's state changes
 deregisters callback from store changes
 #####store.mixinFor()
 Each store exposes a "mixinFor" method which returns a ReactMixin, so that you don't need to manually couple your your components with different stores. If you use this mixin you must implement a getStateFromStores method on the component which gets called in componentWillMount and whenever the store's state gets updated    
-	```
+```
 	var fooComponent = React.createClass({
 		mixins: [
 			fooStore.mixinFor()
@@ -220,7 +220,7 @@ Each store exposes a "mixinFor" method which returns a ReactMixin, so that you d
 		},
 		
 	});
-	```
+```
 #####store.addActionHandler(constant, actionHandlerMixin)
 register an action handler for the given constant.. please refer to ActionHandlers sections for more details.
 #####store.getActionState(constant)
