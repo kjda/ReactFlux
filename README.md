@@ -182,6 +182,7 @@ var userStore = ReactFlux.createStore({
 
 ReactFlux.createStore takes two parameters: 
 
+
 	1. A mixin object for the store:
 		 
 
@@ -208,12 +209,12 @@ ReactFlux.createStore takes two parameters:
 #####store.getClone(key)
 		gets a clone of the value corresponding to the key from store's state
 #####store.onChange(callback)
-	registers a callback which gets invoked whenever store's state changes
+registers a callback which gets invoked whenever store's state changes
 #####store.offChange(callback)
-	deregisters callback from store changes
+deregisters callback from store changes
 #####store.mixinFor()
-	Each store exposes a "mixinFor" method which returns a ReactMixin, so that you don't need to manually couple your your components with different stores. If you use this mixin you must implement a getStateFromStores method on the component which gets called in componentWillMount and whenever the store's state gets updated    
-	```
+Each store exposes a "mixinFor" method which returns a ReactMixin, so that you don't need to manually couple your your components with different stores. If you use this mixin you must implement a getStateFromStores method on the component which gets called in componentWillMount and whenever the store's state gets updated    
+```
 	var fooComponent = React.createClass({
 		mixins: [
 			fooStore.mixinFor()
@@ -225,14 +226,14 @@ ReactFlux.createStore takes two parameters:
 		},
 		
 	});
-	```
+```
 #####store.addActionHandler(constant, actionHandlerMixin)
-		register an action handler for the given constant.. please refer to ActionHandlers sections for more details.
+register an action handler for the given constant.. please refer to ActionHandlers sections for more details.
+
 #####store.getActionState(constant)
-	returns a copy of the state of the action handler related to the given constant
+returns a copy of the state of the action handler related to the given constant
 #####store.setActionState(const, newState)
-	sets the state of the action handler related to the given constant
-	
+sets the state of the action handler related to the given constant
 
 
 ### Store Action Handlers
