@@ -131,22 +131,11 @@ describe("store", function(){
 		assert.typeOf(store.getState(), "object");
 	});
 
-	it("store.state.getState() should return a copy of state", function(){
+	it("store.state.getStateClone() should return a copy of state", function(){
 		var id = store.get('id');
-		var stateCopy = store.getState();
+		var stateCopy = store.getStateClone();
 		stateCopy.id = 'foo';
 		assert.equal(store.get('id'), id);
-	});
-
-	it("store.state.get() should return a copy of state", function(){
-		var state = store.getState();
-		state.deepFoo = {
-			x: 1
-		};
-		store.setState(state);
-		var deepFoo = store.get('deepFoo');
-		deepFoo.x = 'bar';
-		assert.equal(store.get('deepFoo').x, 1);
 	});
 
 	it("store.state.get() should work", function(){
@@ -157,6 +146,17 @@ describe("store", function(){
 	it("store.get() should work", function(){
 		assert.equal(store.get('id'), 1);
 		assert.equal(store.get('username'), "mustermann");
+	});
+
+	it("store.state.getClone() should return a copy of state", function(){
+		var stateClone = store.getStateClone();
+		stateClone.deepFoo = {
+			x: 1
+		};
+		store.setState(stateClone);
+		var deepFoo = store.getClone('deepFoo');
+		deepFoo.x = 'bar';
+		assert.equal(store.get('deepFoo').x, 1);
 	});
 
 	it("should be able to call mixin methods", function(){
@@ -226,30 +226,6 @@ describe("store", function(){
 		store.setActionState(constants.TWO, {'name': 'bar'});
 		store.resetActionState(constants.TWO);
 		assert.equal(store.getActionState(constants.TWO, 'name'), 'TWO_HANDLER', 'resetActionState should reset state');
-	});
-
-	it("should provide a functional toJS method", function(){
-		assert.typeOf(store.toJS, 'function', 'store.toJS should be a function');
-		store.setState({'foo': 'bar'});
-		var toJS = store.toJS();
-		assert.typeOf(toJS, 'object', 'store.toJS should return an object');
-		assert.equal(toJS.foo, 'bar', 'store.toJS should return state');
-	});
-
-	it("should provide a functional toObject method", function(){
-		assert.typeOf(store.toObject, 'function', 'store.toObject should be a function');
-		store.setState({'foo': 'bar'});
-		var toObject = store.toObject();
-		assert.typeOf(toObject, 'object', 'store.toObject should return an object');
-		assert.equal(toObject.foo, 'bar', 'store.toObject should return state');
-	});
-
-	it("should provide a functional toJSON method", function(){
-		assert.typeOf(store.toJSON, 'function', 'store.toJSON should be a function');
-		store.setState({'foo': 'bar'});
-		var toJSON = store.toJSON();
-		assert.typeOf(toJSON, 'object', 'store.toJSON should return an object');
-		assert.equal(toJSON.foo, 'bar', 'store.toJSON should return state');
 	});
 
 	it("should be able to replaceState", function(){

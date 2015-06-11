@@ -39,8 +39,8 @@ Constants
 =========
 ```
 var userConstants = ReactFlux.createConstants([
-  'LOGIN',
-  'LOGOUT'
+	'LOGIN',
+	'LOGOUT'
 ], 'USER');
 ```
 The second parameter which is a prefix to be added to all messages is optional
@@ -50,12 +50,12 @@ this will result in the following:
 
 ```
 {
-   LOGIN:           'USER_LOGIN',
-   LOGIN_SUCCESS:   'USER_LOGIN_SUCCESS',
-   LOGIN_FAIL:      'USER_LOGIN_FAIL',
-   LOGIN_AFTER:     'USER_LOGIN_AFTER',
-   LOGOUT:          'USER_LOGOUT',
-   ...
+	 LOGIN:           'USER_LOGIN',
+	 LOGIN_SUCCESS:   'USER_LOGIN_SUCCESS',
+	 LOGIN_FAIL:      'USER_LOGIN_FAIL',
+	 LOGIN_AFTER:     'USER_LOGIN_AFTER',
+	 LOGOUT:          'USER_LOGOUT',
+	 ...
 }
 ```
 
@@ -70,12 +70,12 @@ ReactFlux.configs.constants.setAfterSuffix('DONE');
 now the previous example will result in:
 ```
 {
-   LOGIN:            'USER:LOGIN',
-   LOGIN_OK:         'USER:LOGIN:OK',
-   LOGIN_ERROR:      'USER:LOGIN:ERROR',
-   LOGIN_DONE:       'USER:LOGIN:DONE',
-   LOGOUT:           'USER:LOGOUT',
-   ...
+	 LOGIN:            'USER:LOGIN',
+	 LOGIN_OK:         'USER:LOGIN:OK',
+	 LOGIN_ERROR:      'USER:LOGIN:ERROR',
+	 LOGIN_DONE:       'USER:LOGIN:DONE',
+	 LOGOUT:           'USER:LOGOUT',
+	 ...
 }
 ```
 to go back to default configurations use:
@@ -87,14 +87,14 @@ Actions
 =======
 ```
 var userActions = ReactFlux.createActions({
-  
-  login: [userConstants.LOGIN, function loginAction(username, password){
-    return {
-      id: 1,
-      username: 'Max Mustermann'
-    }
-  }]
-  
+	
+	login: [userConstants.LOGIN, function loginAction(username, password){
+		return {
+			id: 1,
+			username: 'Max Mustermann'
+		}
+	}]
+	
 });
 ```
 calling userActions.login("mustermann", "1234567") will do the following:  
@@ -116,64 +116,64 @@ Stores
 ==== 
 ```
 var userStore = ReactFlux.createStore({
-  
-  mixins: [ SomeStoreMixin, AnotherStoreMixin ],
+	
+	mixins: [ SomeStoreMixin, AnotherStoreMixin ],
 
-  getInitialState: function(){
-    return {
-      isAuth: false,
-      data: null,
-      isLoggingIn: false,
-      error: null
-    };
-  },
-  
-  storeDidMount: function(){
-    //Get called when store is ready
-  },
-  
-  isAuth: function(){
-    return this.get('isAuth')
-  }
-  
+	getInitialState: function(){
+		return {
+			isAuth: false,
+			data: null,
+			isLoggingIn: false,
+			error: null
+		};
+	},
+	
+	storeDidMount: function(){
+		//Get called when store is ready
+	},
+	
+	isAuth: function(){
+		return this.get('isAuth')
+	}
+	
 }, [
  
  /**
-  * called directly before executing login action
-  */
+	* called directly before executing login action
+	*/
  [userConstants.LOGIN, function onLogin(){
-  this.setState({
-    isLoggingIn: true,
-    error: null
-  });
+	this.setState({
+		isLoggingIn: true,
+		error: null
+	});
  }],
  
  /**
-  * called if login action was successful
-  */
+	* called if login action was successful
+	*/
  [userConstants.LOGIN_SUCCESS, function onLoginSuccess(payload){
-  this.setState({
-    isAuth: true,
-    data: payload
-  });
+	this.setState({
+		isAuth: true,
+		data: payload
+	});
  }],
 
  /**
-  * called if login action failed
-  */
+	* called if login action failed
+	*/
  [userConstants.LOGIN_FAIL, function onloginFail(error){
-  this.setState({
-    error: error.message
-  });
+	this.setState({
+		error: error.message
+	});
  }]
  
  /**
-  * called after login action succeeds or fails
-  */
+	* called after login action succeeds or fails
+	*/
  [userConstants.LOGIN_AFTER, function onloginAfter(error){
-  this.setState({
-    isLoggingIn: false
-  });
+	this.setState({
+		isLoggingIn: false
+	});
  }],
 
 ]);
@@ -181,8 +181,9 @@ var userStore = ReactFlux.createStore({
 
 
 ReactFlux.createStore takes two parameters: 
+
 	1. A mixin object for the store:
-	   
+		 
 
 > Thanks to [Leland Richardson][1] store definition accepts mixins  which get mixed into the store.  A store mixin may be recursive and it may hook into store lifecycle events i.e getInitialState and storeDidMount. Please have a look at the tests for more insights. 
 
@@ -195,13 +196,17 @@ ReactFlux.createStore takes two parameters:
 
 ###Store API
 #####store.setState(obj)  
- 	sets the state of the store
+	sets the state of the store
 #####store.replaceState(obj) 
-    replaces the state of the store
+		replaces the state of the store
 #####store.getState() 
-    gets a copy of the store state
+		gets the store state. getState does not return a copy or a clone of state, rather it returns the object itself.
+#####store.getStateClone() 
+		gets a clone of the store state
 #####store.get(key)
-    gets a copy of the value corresponding to the key
+		gets the value corresponding to the key from store's state. *get* does not return a clone of the value if it's an object, rather it returns the object itself.
+#####store.getClone(key)
+		gets a clone of the value corresponding to the key from store's state
 #####store.onChange(callback)
 	registers a callback which gets invoked whenever store's state changes
 #####store.offChange(callback)
@@ -222,12 +227,12 @@ ReactFlux.createStore takes two parameters:
 	});
 	```
 #####store.addActionHandler(constant, actionHandlerMixin)
-    register an action handler for the given constant.. please refer to ActionHandlers sections for more details.
+		register an action handler for the given constant.. please refer to ActionHandlers sections for more details.
 #####store.getActionState(constant)
 	returns a copy of the state of the action handler related to the given constant
 #####store.setActionState(const, newState)
 	sets the state of the action handler related to the given constant
-  
+	
 
 
 ### Store Action Handlers
@@ -237,48 +242,48 @@ StoreActionHandler is an object defining handlers for all action possible consta
 ```
 UserStore.addActionHandler(constants.SAVE_NEW_USERNAME, {
 
-  //returns initial state specific only to this handler
-  getInitialState: function(){
-     isSaving: false,
-     error: null,
-     success: false
-  },
-    
-  //this gets called before the action associated with SAVE_NEW_USERNAME is executed
-  before: function(){
-    //this inside handler callbacks refers to the action handler itself and not to the store
-    this.setState({
-     isSaving: true,
-     error: null
-    });
-  },
-  
-  //this gets called after the action associated with SAVE_NEW_USERNAME succeeds or fails
-  after: function(){
-    this.setState({
-      isSaving: false
-    });
-  },
-  
-  //this gets called if the action associated with SAVE_NEW_USERNAME succeeds
-  success: function(payload){
-    this.setState({
-      success: true
-    });
-    
-    //here we set the state of parent store(UserStore) using this.parent.setState
-    this.parent.setState({
-      username: payload.username
-    });
-  },
-  
-  //this gets called if the action associated with SAVE_NEW_USERNAME fails
-  fail: function(error){
-    this.setState({
-      error: error
-    });
-  }
-  
+	//returns initial state specific only to this handler
+	getInitialState: function(){
+		 isSaving: false,
+		 error: null,
+		 success: false
+	},
+		
+	//this gets called before the action associated with SAVE_NEW_USERNAME is executed
+	before: function(){
+		//this inside handler callbacks refers to the action handler itself and not to the store
+		this.setState({
+		 isSaving: true,
+		 error: null
+		});
+	},
+	
+	//this gets called after the action associated with SAVE_NEW_USERNAME succeeds or fails
+	after: function(){
+		this.setState({
+			isSaving: false
+		});
+	},
+	
+	//this gets called if the action associated with SAVE_NEW_USERNAME succeeds
+	success: function(payload){
+		this.setState({
+			success: true
+		});
+		
+		//here we set the state of parent store(UserStore) using this.parent.setState
+		this.parent.setState({
+			username: payload.username
+		});
+	},
+	
+	//this gets called if the action associated with SAVE_NEW_USERNAME fails
+	fail: function(error){
+		this.setState({
+			error: error
+		});
+	}
+	
 });
 ```
 
@@ -332,7 +337,7 @@ then look at the help
 code generator will put your files into "flux" directory by default. if you want to change it, create another file "reactflux.json" in the same directory as "flux.js" and specify where you want to have your flux folder  
 ```
 {
-  "directory": "my-special-flux-directory"
+	"directory": "my-special-flux-directory"
 }
 ```
 
@@ -342,55 +347,55 @@ Example React component
 =======================
 ```
 var LoginComponent = React.createClass({
-  
-  mixins: [ 
-    ReactFlux.mixinFor(userStore) //or  userStore.mixin() 
-  ], 
-  
-  getStateFromStores: function(){
-    return {
-      user: userStore.state
-    };
-  },
-  
-  render: function(){
-    if( !this.state.user.get('isAuth') ){
-      return this.renderLogin();
-    }
-    return this.renderLogout();
-  },
-  
-  renderLogin: function(){
-    if( this.state.user.get('isLoggingIn') ){
-      return (<div>...</div>);
-    }
-    return(
-      <div>
-        Hello Stranger! 
-        <a href="#" onClick={this.login}>login</a>
-      </div>
-    );
-  },
-  
-  renderLogout: function(){
-    return(
-      <div>
-      Hello {this.state.user.get('data').username}!
-      <a href="#" onClick={this.logout}>Logout</a>
-      </div>
-    );
-  },
-  
-  login: function(){
-    userActions.login("mustermann", "1234567");
-    return false;
-  },
-  
-  logout: function(){
-    userActions.logout();
-    return false;
-  }
-  
+	
+	mixins: [ 
+		ReactFlux.mixinFor(userStore) //or  userStore.mixin() 
+	], 
+	
+	getStateFromStores: function(){
+		return {
+			user: userStore.state
+		};
+	},
+	
+	render: function(){
+		if( !this.state.user.get('isAuth') ){
+			return this.renderLogin();
+		}
+		return this.renderLogout();
+	},
+	
+	renderLogin: function(){
+		if( this.state.user.get('isLoggingIn') ){
+			return (<div>...</div>);
+		}
+		return(
+			<div>
+				Hello Stranger! 
+				<a href="#" onClick={this.login}>login</a>
+			</div>
+		);
+	},
+	
+	renderLogout: function(){
+		return(
+			<div>
+			Hello {this.state.user.get('data').username}!
+			<a href="#" onClick={this.logout}>Logout</a>
+			</div>
+		);
+	},
+	
+	login: function(){
+		userActions.login("mustermann", "1234567");
+		return false;
+	},
+	
+	logout: function(){
+		userActions.logout();
+		return false;
+	}
+	
 });
 ```
 [1]: https://github.com/lelandrichardson
