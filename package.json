@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/kjda/ReactFlux",
   "dependencies": {
-    "lodash-node": "~3.6.0",
+    "lodash": "^3.10.1",
     "promise": "^7.0.1"
   },
   "devDependencies": {

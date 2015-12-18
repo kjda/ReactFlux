@@ -74,7 +74,7 @@ window.onload = function(){
 	React.renderComponent(App(null), document.getElementById('__wrap'));
 };
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_6f582535.js","/")
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_d2443037.js","/")
 },{"../../":157,"./flux/actions/user":2,"./flux/stores/user":6,"IrXUsu":12,"buffer":7,"react":156}],2:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var ReactFlux = require('../../../../index');
@@ -1503,127 +1503,129 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib/b64.js","/node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/base64-js/lib")
 },{"IrXUsu":12,"buffer":7}],9:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-exports.read = function(buffer, offset, isLE, mLen, nBytes) {
-  var e, m,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      nBits = -7,
-      i = isLE ? (nBytes - 1) : 0,
-      d = isLE ? -1 : 1,
-      s = buffer[offset + i];
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
 
-  i += d;
+  i += d
 
-  e = s & ((1 << (-nBits)) - 1);
-  s >>= (-nBits);
-  nBits += eLen;
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
-  m = e & ((1 << (-nBits)) - 1);
-  e >>= (-nBits);
-  nBits += mLen;
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
-    e = 1 - eBias;
+    e = 1 - eBias
   } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity);
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
   } else {
-    m = m + Math.pow(2, mLen);
-    e = e - eBias;
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
   }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-};
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
 
-exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c,
-      eLen = nBytes * 8 - mLen - 1,
-      eMax = (1 << eLen) - 1,
-      eBias = eMax >> 1,
-      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
-      i = isLE ? 0 : (nBytes - 1),
-      d = isLE ? 1 : -1,
-      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
 
-  value = Math.abs(value);
+  value = Math.abs(value)
 
   if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0;
-    e = eMax;
+    m = isNaN(value) ? 1 : 0
+    e = eMax
   } else {
-    e = Math.floor(Math.log(value) / Math.LN2);
+    e = Math.floor(Math.log(value) / Math.LN2)
     if (value * (c = Math.pow(2, -e)) < 1) {
-      e--;
-      c *= 2;
+      e--
+      c *= 2
     }
     if (e + eBias >= 1) {
-      value += rt / c;
+      value += rt / c
     } else {
-      value += rt * Math.pow(2, 1 - eBias);
+      value += rt * Math.pow(2, 1 - eBias)
     }
     if (value * c >= 2) {
-      e++;
-      c /= 2;
+      e++
+      c /= 2
     }
 
     if (e + eBias >= eMax) {
-      m = 0;
-      e = eMax;
+      m = 0
+      e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen);
-      e = e + eBias;
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
     } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-      e = 0;
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
     }
   }
 
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
 
-  e = (e << mLen) | m;
-  eLen += mLen;
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
 
-  buffer[offset + i - d] |= s * 128;
-};
+  buffer[offset + i - d] |= s * 128
+}
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/ieee754/index.js","/node_modules/gulp-browserify/node_modules/browserify/node_modules/buffer/node_modules/ieee754")
 },{"IrXUsu":12,"buffer":7}],10:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/*global define:false require:false */
-module.exports = (function(){
+// This file should be ES5 compatible
+/* eslint prefer-spread:0, no-var:0, prefer-reflect:0, no-magic-numbers:0 */
+'use strict'
+module.exports = (function () {
 	// Import Events
 	var events = require('events')
 
 	// Export Domain
 	var domain = {}
-	domain.createDomain = domain.create = function(){
+	domain.createDomain = domain.create = function () {
 		var d = new events.EventEmitter()
 
-		function emitError(e) {
+		function emitError (e) {
 			d.emit('error', e)
 		}
 
-		d.add = function(emitter){
+		d.add = function (emitter) {
 			emitter.on('error', emitError)
 		}
-		d.remove = function(emitter){
+		d.remove = function (emitter) {
 			emitter.removeListener('error', emitError)
 		}
-		d.bind = function(fn){
-			return function(){
+		d.bind = function (fn) {
+			return function () {
 				var args = Array.prototype.slice.call(arguments)
 				try {
 					fn.apply(null, args)
 				}
-				catch (err){
+				catch (err) {
 					emitError(err)
 				}
 			}
 		}
-		d.intercept = function(fn){
-			return function(err){
+		d.intercept = function (fn) {
+			return function (err) {
 				if ( err ) {
 					emitError(err)
 				}
@@ -1632,13 +1634,13 @@ module.exports = (function(){
 					try {
 						fn.apply(null, args)
 					}
-					catch (err){
+					catch (err) {
 						emitError(err)
 					}
 				}
 			}
 		}
-		d.run = function(fn){
+		d.run = function (fn) {
 			try {
 				fn()
 			}
@@ -1646,18 +1648,19 @@ module.exports = (function(){
 				emitError(err)
 			}
 			return this
-		};
-		d.dispose = function(){
+		}
+		d.dispose = function () {
 			this.removeAllListeners()
 			return this
-		};
-		d.enter = d.exit = function(){
+		}
+		d.enter = d.exit = function () {
 			return this
 		}
 		return d
-	};
+	}
 	return domain
 }).call(this)
+
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/node_modules/gulp-browserify/node_modules/browserify/node_modules/domain-browser/index.js","/node_modules/gulp-browserify/node_modules/browserify/node_modules/domain-browser")
 },{"IrXUsu":12,"buffer":7,"events":11}],11:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
@@ -20806,14 +20809,14 @@ module.exports = require('./lib/index');
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../index.js","/../..")
 },{"./lib/index":162,"IrXUsu":12,"buffer":7}],158:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var _merge = require('lodash-node/modern/object/merge');
-var _forEach = require('lodash-node/modern/collection/forEach');
-var _isArray = require('lodash-node/modern/lang/isArray');
+var _merge = require('lodash/object/merge');
+var _forEach = require('lodash/collection/forEach');
+var _isArray = require('lodash/lang/isArray');
 var Promise = Promise || require('promise');
 
 var constantsConfigs = require('./configs').constants.get();
 
-var Actions = function(dispather, actions){
+var Actions = function (dispather, actions) {
 
 	this._dispatcher = dispather;
 	this._registerActions(actions);
@@ -20823,19 +20826,20 @@ var Actions = function(dispather, actions){
 Actions.prototype = _merge(Actions.prototype, {
 
 	/**
-	*@param {object} actions
-	*/
-	_registerActions: function(actions){
-		_forEach(actions, function(options, actionName){
-			if( !_isArray(options) ){
+	 *@param {object} actions
+	 */
+	_registerActions: function (actions) {
+		_forEach(actions, function (options, actionName) {
+			if (!_isArray(options)) {
 				throw new Error('ReactFlux.Actions: Action must be an array {login: [CONSTANT, callback]}');
 			}
 			var constant = options[0];
 			var callback = options[1];
-			if( typeof callback === "undefined" ){
-				callback = function(){};
+			if (typeof callback === "undefined") {
+				callback = function () {
+				};
 			}
-			else if( typeof callback != 'function' ){
+			else if (typeof callback != 'function') {
 				throw new Error('ReactFlux.Actions: you did not provide a valid callback for action: ' + actionName);
 			}
 			this[actionName] = this._createAction(actionName, constant, callback);
@@ -20843,44 +20847,44 @@ Actions.prototype = _merge(Actions.prototype, {
 	},
 
 	/**
-	*@param {string} name
-	*@param {string} constant
-	*@param {string} callback
-	*/
-	_createAction: function(name, constant, callback){
-		return function(){
+	 *@param {string} name
+	 *@param {string} constant
+	 *@param {string} callback
+	 */
+	_createAction: function (name, constant, callback) {
+		return function () {
 			this._dispatch(constant, null, arguments);
 			var resp = null;
-			try{
+			try {
 				resp = callback.apply(this, arguments);
-				if( !!resp && typeof resp == 'object' && Object.prototype.toString.call(resp) == '[object Error]' ){
+				if (!!resp && typeof resp == 'object' && Object.prototype.toString.call(resp) == '[object Error]') {
 					throw resp;
 				}
-			}catch(e){
-				resp = new Promise(function(_, reject){
+			} catch (e) {
+				resp = new Promise(function (_, reject) {
 					reject(e);
 				});
 			}
-			Promise.resolve(resp).then(function(payload){
+			Promise.resolve(resp).then(function (payload) {
 				this._dispatch(constant, 'successSuffix', payload);
 				this._dispatch(constant, 'afterSuffix', payload);
-			}.bind(this), function(payload){
+			}.bind(this), function (payload) {
 				this._dispatch(constant, 'failSuffix', payload);
 				this._dispatch(constant, 'afterSuffix', payload);
 			}.bind(this))
-			.catch(function(e){
-				console.error(e.toString(), e.stack);
-			});
+				.catch(function (e) {
+					console.error(e.toString(), e.stack);
+				});
 		}.bind(this);
 	},
 
-		/**
-	*@param {string} constant
-	*@param {string} suffixName
-	*@param {mixed} payload
-	*/
-	_dispatch: function(constant, suffixName, payload){
-		if( !!suffixName ){
+	/**
+	 *@param {string} constant
+	 *@param {string} suffixName
+	 *@param {mixed} payload
+	 */
+	_dispatch: function (constant, suffixName, payload) {
+		if (!!suffixName) {
 			constant += constantsConfigs.separator + constantsConfigs[suffixName];
 		}
 		this._dispatcher.dispatch(constant, payload);
@@ -20891,9 +20895,9 @@ Actions.prototype = _merge(Actions.prototype, {
 module.exports = Actions;
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/actions.js","/../../lib")
-},{"./configs":159,"IrXUsu":12,"buffer":7,"lodash-node/modern/collection/forEach":166,"lodash-node/modern/lang/isArray":191,"lodash-node/modern/object/merge":201,"promise":205}],159:[function(require,module,exports){
+},{"./configs":159,"IrXUsu":12,"buffer":7,"lodash/collection/forEach":166,"lodash/lang/isArray":201,"lodash/object/merge":212,"promise":214}],159:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var _isString = require('lodash-node/modern/lang/isString');
+var _isString = require('lodash/lang/isString');
 
 var CONSTANTS_DEFAULT_SEPARATOR = '_';
 var CONSTANTS_DEFAULT_SUCCESS_SUFFIX = 'SUCCESS';
@@ -20913,61 +20917,61 @@ var CONFIGS = {
 module.exports = {
 
 	/**
-	* constants
-	*/
+	 * constants
+	 */
 	constants: {
 
 		/**
-		* @param {string} separator
-		*/
-		setSeparator: function(separator){
-			if( !_isString(separator) || !separator.length ){
+		 * @param {string} separator
+		 */
+		setSeparator: function (separator) {
+			if (!_isString(separator) || !separator.length) {
 				throw new Error('Constants.separator must be a non empty string');
 			}
 			CONFIGS.constants.separator = separator;
 		},
 
 		/**
-		* @param {string} suffix
-		*/
-		setSuccessSuffix: function(suffix){
-			if( !_isString(suffix) || !suffix.length ){
+		 * @param {string} suffix
+		 */
+		setSuccessSuffix: function (suffix) {
+			if (!_isString(suffix) || !suffix.length) {
 				throw new Error('Constants.successSuffix must be a non empty string');
 			}
 			CONFIGS.constants.successSuffix = suffix;
 		},
 
 		/**
-		* @param {string} suffix
-		*/
-		setFailSuffix: function(suffix){
-			if( !_isString(suffix) || !suffix.length ){
+		 * @param {string} suffix
+		 */
+		setFailSuffix: function (suffix) {
+			if (!_isString(suffix) || !suffix.length) {
 				throw new Error('Constants.failSuffix must be a non empty string');
 			}
 			CONFIGS.constants.failSuffix = suffix;
 		},
 
 		/**
-		* @param {string} suffix
-		*/
-		setAfterSuffix: function(suffix){
-			if( !_isString(suffix) || !suffix.length ){
+		 * @param {string} suffix
+		 */
+		setAfterSuffix: function (suffix) {
+			if (!_isString(suffix) || !suffix.length) {
 				throw new Error('Constants.afterSuffix must be a non empty string');
 			}
 			CONFIGS.constants.afterSuffix = suffix;
 		},
 
 		/**
-		*
-		*/
-		resetToDefaults: function(){
+		 *
+		 */
+		resetToDefaults: function () {
 			CONFIGS.constants.separator = CONSTANTS_DEFAULT_SEPARATOR;
 			CONFIGS.constants.successSuffix = CONSTANTS_DEFAULT_SUCCESS_SUFFIX;
 			CONFIGS.constants.failSuffix = CONSTANTS_DEFAULT_FAIL_SUFFIX;
 			CONFIGS.constants.afterSuffix = CONSTANTS_DEFAULT_AFTER_SUFFIX;
 		},
 
-		get: function(){
+		get: function () {
 			return CONFIGS.constants;
 		}
 
@@ -20976,34 +20980,34 @@ module.exports = {
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/configs.js","/../../lib")
-},{"IrXUsu":12,"buffer":7,"lodash-node/modern/lang/isString":195}],160:[function(require,module,exports){
+},{"IrXUsu":12,"buffer":7,"lodash/lang/isString":206}],160:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var _forEach = require('lodash-node/modern/collection/forEach');
-var _isArray = require('lodash-node/modern/lang/isArray');
-var _isString = require('lodash-node/modern/lang/isString');
+var _forEach = require('lodash/collection/forEach');
+var _isArray = require('lodash/lang/isArray');
+var _isString = require('lodash/lang/isString');
 
 var cfgs = require('./configs').constants.get();
 
-module.exports = function(constants, prefix){
+module.exports = function (constants, prefix) {
 
-	if( !_isArray(constants) ){
+	if (!_isArray(constants)) {
 		throw new Error('createConstants expects first parameter to be an array of strings');
 	}
 
 	prefix = prefix || '';
 
-	if( !_isString(prefix) ){
+	if (!_isString(prefix)) {
 		throw new Error('createConstants expects second parameter string');
 	}
 
-	if( prefix.length > 0 ){
+	if (prefix.length > 0) {
 		prefix += cfgs.separator;
 	}
 
 	var ret = {};
-	_forEach(constants, function(constant){
+	_forEach(constants, function (constant) {
 
-		if( !_isString(constant) ){
+		if (!_isString(constant)) {
 			throw new Error('createConstants expects all constants to be strings');
 		}
 
@@ -21017,44 +21021,44 @@ module.exports = function(constants, prefix){
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/constants.js","/../../lib")
-},{"./configs":159,"IrXUsu":12,"buffer":7,"lodash-node/modern/collection/forEach":166,"lodash-node/modern/lang/isArray":191,"lodash-node/modern/lang/isString":195}],161:[function(require,module,exports){
+},{"./configs":159,"IrXUsu":12,"buffer":7,"lodash/collection/forEach":166,"lodash/lang/isArray":201,"lodash/lang/isString":206}],161:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var Promise = Promise || require('promise');
-var _merge = require('lodash-node/modern/object/merge');
-var _isArray = require('lodash-node/modern/lang/isArray');
-var _isString= require('lodash-node/modern/lang/isString');
-var _forEach  = require('lodash-node/modern/collection/forEach');
+var _merge = require('lodash/object/merge');
+var _isArray = require('lodash/lang/isArray');
+var _isString = require('lodash/lang/isString');
+var _forEach = require('lodash/collection/forEach');
 
 /**
-* Dispatcher
-*/
-function Dispatcher(){
+ * Dispatcher
+ */
+function Dispatcher() {
 	/**
-	* Registry of callbacks, waitFor, promises, etc
-	* each constant has it's own array of callbacks, waitFor, promises, etc
-	*/
+	 * Registry of callbacks, waitFor, promises, etc
+	 * each constant has it's own array of callbacks, waitFor, promises, etc
+	 */
 	this._registry = {};
 }
 
 Dispatcher.prototype = _merge(Dispatcher.prototype, {
 
 	/**
-	* Registers a callback
-	* @param {string} constant
-	* @param {function} callback
-	* @param {array|null} waitFor Array indexes to callbacks
-	*/
-	register: function(constant, callback, waitForIndexes){
-		if( !_isString(constant) || !constant.length ){
+	 * Registers a callback
+	 * @param {string} constant
+	 * @param {function} callback
+	 * @param {array|null} waitFor Array indexes to callbacks
+	 */
+	register: function (constant, callback, waitForIndexes) {
+		if (!_isString(constant) || !constant.length) {
 			throw new Error('Dispatcher.register: constant must be a string');
 		}
 		waitForIndexes = waitForIndexes || null;
 
-		if( typeof callback != 'function' ){
+		if (typeof callback != 'function') {
 			throw new Error('Dispatcher.register expects second parameter to be a callback');
 		}
 
-		if( waitForIndexes !== null && !_isArray(waitForIndexes) ){
+		if (waitForIndexes !== null && !_isArray(waitForIndexes)) {
 			throw new Error('Dispatcher.register expects third parameter to be null or an array');
 		}
 
@@ -21066,11 +21070,11 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 
 
 	/**
-	* Dispatch
-	* @param {string} constant
-	* @param {object} payload
-	*/
-	dispatch: function(constant, payload){
+	 * Dispatch
+	 * @param {string} constant
+	 * @param {object} payload
+	 */
+	dispatch: function (constant, payload) {
 		var registry = this._getRegistry(constant);
 		registry.dispatchQueue.push({
 			constant: constant,
@@ -21079,9 +21083,9 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 		this._dispatch(registry);
 	},
 
-	_dispatch: function(registry){
+	_dispatch: function (registry) {
 
-		if( registry.isDispatching || !registry.dispatchQueue.length ) {
+		if (registry.isDispatching || !registry.dispatchQueue.length) {
 			return;
 		}
 
@@ -21090,35 +21094,35 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 
 		this._createDispatchPromises(registry);
 
-		_forEach(registry.callbacks, function(callback, idx){
+		_forEach(registry.callbacks, function (callback, idx) {
 
-			var resolver = (function(registry, idx, payload){
-				return function(){
-					Promise.resolve( registry.callbacks[idx](payload) ).then(function(){
+			var resolver = (function (registry, idx, payload) {
+				return function () {
+					Promise.resolve(registry.callbacks[idx](payload)).then(function () {
 						registry.resolves[idx](payload);
-					}, function(){
+					}, function () {
 						registry.rejects[idx](new Error('Dispatch callback error'));
 					});
 				};
 			})(registry, idx, job.payload);
 
 			var waitFor = registry.waitFor[idx];
-			if( !waitFor ){
+			if (!waitFor) {
 				resolver();
 			}
-			else{
+			else {
 				var promisesToWaitFor = this._getPromisesByIndexes(registry, waitFor);
 				Promise.all(promisesToWaitFor).then(
 					resolver,
 					resolver  //Should we really resolve the callback here?
-						// Some of the WaitForStores callbacks rejected the request
+					// Some of the WaitForStores callbacks rejected the request
 				);
 			}
 		}.bind(this));//_forEach(registry.callbacks,
 
-		Promise.all(registry.promises).then(function(){
+		Promise.all(registry.promises).then(function () {
 			this._onDispatchEnd(registry);
-		}.bind(this), function(){
+		}.bind(this), function () {
 			this._onDispatchEnd(registry);
 		});
 
@@ -21126,11 +21130,11 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 
 
 	/**
-	* Gets a registry for a constant
-	* @param {string} constant
-	*/
-	_getRegistry: function(constant){
-		if( typeof this._registry[constant] == "undefined" ){
+	 * Gets a registry for a constant
+	 * @param {string} constant
+	 */
+	_getRegistry: function (constant) {
+		if (typeof this._registry[constant] == "undefined") {
 			this._registry[constant] = {
 				callbacks: [],
 				waitFor: [],
@@ -21145,25 +21149,25 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 	},
 
 	/**
-	* @param {object} registry
-	* @param {array} callbacks
-	*/
-	_getPromisesByIndexes: function(registry, indexes){
-		return indexes.map(function(idx){
+	 * @param {object} registry
+	 * @param {array} callbacks
+	 */
+	_getPromisesByIndexes: function (registry, indexes) {
+		return indexes.map(function (idx) {
 			return registry.promises[idx];
 		});
 	},
 
 	/**
-	* Create promises for all callbacks in this registry
-	* @param {object} registry
-	*/
-	_createDispatchPromises: function(registry){
+	 * Create promises for all callbacks in this registry
+	 * @param {object} registry
+	 */
+	_createDispatchPromises: function (registry) {
 		registry.promises = [];
 		registry.resolves = [];
 		registry.rejects = [];
-		_forEach(registry.callbacks, function(callback, i){
-			registry.promises[i] = new Promise(function(resolve, reject){
+		_forEach(registry.callbacks, function (callback, i) {
+			registry.promises[i] = new Promise(function (resolve, reject) {
 				registry.resolves[i] = resolve;
 				registry.rejects[i] = reject;
 			});
@@ -21172,10 +21176,10 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 
 
 	/**
-	* Clean registry
-	* @param {object} registry
-	*/
-	_onDispatchEnd: function(registry){
+	 * Clean registry
+	 * @param {object} registry
+	 */
+	_onDispatchEnd: function (registry) {
 		registry.promises = [];
 		registry.resolves = [];
 		registry.rejects = [];
@@ -21188,7 +21192,7 @@ Dispatcher.prototype = _merge(Dispatcher.prototype, {
 module.exports = Dispatcher;
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/dispatcher.js","/../../lib")
-},{"IrXUsu":12,"buffer":7,"lodash-node/modern/collection/forEach":166,"lodash-node/modern/lang/isArray":191,"lodash-node/modern/lang/isString":195,"lodash-node/modern/object/merge":201,"promise":205}],162:[function(require,module,exports){
+},{"IrXUsu":12,"buffer":7,"lodash/collection/forEach":166,"lodash/lang/isArray":201,"lodash/lang/isString":206,"lodash/object/merge":212,"promise":214}],162:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var Constants = require('./constants');
 var Actions = require('./actions');
@@ -21197,83 +21201,74 @@ var MixinFor = require('./mixinFor');
 var Dispatcher = require('./dispatcher');
 var Configs = require('./configs');
 
-var  dispatcher = new Dispatcher();
+var dispatcher = new Dispatcher();
 
 module.exports = {
-	
+
 	configs: Configs,
 	/**
-	* createActions
-	* @param {object} actions
-	*/
-	createActions: function(actions){
+	 * createActions
+	 * @param {object} actions
+	 */
+	createActions: function (actions) {
 		return new Actions(dispatcher, actions);
 	},
-	
+
 	/**
-	* createStore
-	* @param {object} storeMixin
-	* @param {array} handlers
-	*/
-	createStore: function(storeMixin, handlers){
+	 * createStore
+	 * @param {object} storeMixin
+	 * @param {array} handlers
+	 */
+	createStore: function (storeMixin, handlers) {
 		return new Store(dispatcher, storeMixin, handlers);
 	},
 
 	/**
-	* createConstants
-	* @param {array} constants
-	*
-	*/
-	createConstants: function(constants, prefix){
+	 * createConstants
+	 * @param {array} constants
+	 *
+	 */
+	createConstants: function (constants, prefix) {
 		return new Constants(constants, prefix);
 	},
 
 	/**
-	* dispatch a message
-	* @param {string} constant
-	* @param {object} payload
-	*/
-	dispatch: function(constant, payload){
+	 * dispatch a message
+	 * @param {string} constant
+	 * @param {object} payload
+	 */
+	dispatch: function (constant, payload) {
 		dispatcher.dispatch(constant, payload);
 	},
 
-  /**
-   * The global dispatcher
-   */
+	/**
+	 * The global dispatcher
+	 */
 	dispatcher: dispatcher,
 
 	/**
-	* Mixin
-	*/
-	mixin: function(){
-		console.warn("ReactFlux.mixin is deprecated. please use ReactFlux.mixinFor");
-		var args = Array.prototype.slice.call(arguments);
-		MixinFor.call(this, args);
-	},
-
-	/**
-	* Mixin
-	*/
+	 * Mixin
+	 */
 	mixinFor: MixinFor
-	
+
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/index.js","/../../lib")
 },{"./actions":158,"./configs":159,"./constants":160,"./dispatcher":161,"./mixinFor":163,"./store":164,"IrXUsu":12,"buffer":7}],163:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var _forEach = require('lodash-node/modern/collection/forEach');
+var _forEach = require('lodash/collection/forEach');
 
 
-module.exports = function(){
+module.exports = function () {
 	var stores = Array.prototype.slice.call(arguments);
-	if( !stores.length ){
+	if (!stores.length) {
 		throw new Error('Flux.mixinFor expects a store or a list of stores');
 	}
-	_forEach(stores, function(store){
+	_forEach(stores, function (store) {
 		var isNotOk = (
 			typeof store === 'undefined' || typeof store.onChange !== 'function' || typeof store.offChange !== 'function'
 		);
-		if( isNotOk ){
+		if (isNotOk) {
 			throw new Error('Flux.mixinFor expects a store or an array of stores');
 		}
 	});
@@ -21281,25 +21276,25 @@ module.exports = function(){
 
 	return {
 
-		componentWillMount: function(){
-			if( typeof this._react_flux_onChange === "undefined" ){
-				this._react_flux_onChange = function() {
-					if( this.isMounted() ){
-						this.setState( this.getStateFromStores() );
+		componentWillMount: function () {
+			if (typeof this._react_flux_onChange === "undefined") {
+				this._react_flux_onChange = function () {
+					if (this.isMounted()) {
+						this.setState(this.getStateFromStores());
 					}
 				}.bind(this);
 			}
-			this.setState( this.getStateFromStores() );
+			this.setState(this.getStateFromStores());
 		},
 
-		componentDidMount: function(){
-			for(var i=0; i < stores.length; i++){
+		componentDidMount: function () {
+			for (var i = 0; i < stores.length; i++) {
 				stores[i].onChange(this._react_flux_onChange);
 			}
 		},
 
-		componentWillUnmount: function(){
-			for(var i=0; i < stores.length; i++){
+		componentWillUnmount: function () {
+			for (var i = 0; i < stores.length; i++) {
 				stores[i].offChange(this._react_flux_onChange);
 			}
 		}
@@ -21308,71 +21303,59 @@ module.exports = function(){
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/mixinFor.js","/../../lib")
-},{"IrXUsu":12,"buffer":7,"lodash-node/modern/collection/forEach":166}],164:[function(require,module,exports){
+},{"IrXUsu":12,"buffer":7,"lodash/collection/forEach":166}],164:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var _assign = require('lodash-node/modern/object/assign');
-var _forEach = require('lodash-node/modern/collection/forEach');
-var _isArray = require('lodash-node/modern/lang/isArray');
-
+var _assign = require('lodash/object/assign');
+var _forEach = require('lodash/collection/forEach');
+var _isArray = require('lodash/lang/isArray');
+var _cloneDeep = require('lodash/lang/cloneDeep');
 var MixinFor = require('./mixinFor');
 
 var CHANGE_EVENT = 'change';
 
 var StoreActionHandler = require('./storeActionHandler');
 
-function clone(from, to){
-    if (from == null || typeof from != "object") return from;
-    if (from.constructor != Object && from.constructor != Array){
-    	return from;
-    } 
-    if(
-    		from.constructor == Date || from.constructor == RegExp 
-    		|| from.constructor == Function || from.constructor == String 
-    		|| from.constructor == Number || from.constructor == Boolean
-    ){
-    	return new from.constructor(from);
-    }
-    to = to || new from.constructor();
 
-    for (var name in from){
-        to[name] = typeof to[name] == "undefined" ? clone(from[name], null) : to[name];
-    }
-
-    return to;
-}
-
-function FluxState(initState){
+function FluxState(initState) {
 	var _state = initState;
 
-	this.assign = function(newState){
+	this.assign = function (newState) {
 		_state = _assign(_state, newState);
 	},
 
-	this.get = function(key){
+	this.get = function (key) {
+		return _state[key] || undefined;
+	},
+
+	this.getClone = function (key) {
 		var v = _state[key] || undefined;
-		if( v instanceof Object && v !== null ){
-			return clone(v);
+		if (v instanceof Object && v !== null) {
+			return _cloneDeep(v);
 		}
 		return v;
 	},
 
-	this.replaceState = function(newState){
+	this.replaceState = function (newState) {
 		_state = newState;
 	},
 
-	this.getState = function(){
-		return clone(_state);
+	this.getState = function () {
+		return _state;
+	}
+
+	this.getStateClone = function () {
+		return _cloneDeep(_state);
 	}
 
 }
 
 /**
-* Flux Store
-* @param {object} dispatcher
-* @param {object} storeMixin
-* @param {array} handlers
-*/
-var Store = function(dispatcher, storeMixin, handlers){
+ * Flux Store
+ * @param {object} dispatcher
+ * @param {object} storeMixin
+ * @param {array} handlers
+ */
+var Store = function (dispatcher, storeMixin, handlers) {
 	this.state = new FluxState({
 		_action_states: {}
 	});
@@ -21386,51 +21369,59 @@ var Store = function(dispatcher, storeMixin, handlers){
 
 	this._storeMixin(storeMixin);
 	this._setInitialState();
-	if( !!handlers ){
+	if (!!handlers) {
 		this._setConstantHandlers(handlers);
 	}
-	_forEach(this._storeDidMountCalls, function (fn){
+	_forEach(this._storeDidMountCalls, function (fn) {
 		fn();
 	});
 };
 
 
-Store.prototype =  {
+Store.prototype = {
 
 	/**
-	* @param {object} newState
-	*/
-	setState: function(newState){
+	 * @param {object} newState
+	 */
+	setState: function (newState) {
 		this.state.assign(newState);
 		this._emit(CHANGE_EVENT);
 	},
 
 	/**
-	* @param {object} newState
-	*/
-	replaceState: function(newState){
+	 * @param {object} newState
+	 */
+	replaceState: function (newState) {
 		this.state.replaceState(newState);
 		this._emit(CHANGE_EVENT);
 	},
 
 	/**
-	* @param {string} propertyName
-	* @return {mixed}
-	*/
-	get: function(propertyName){
+	 * @param {string} propertyName
+	 * @return {mixed}
+	 */
+	get: function (propertyName) {
 		return this.state.get(propertyName);
 	},
 
-	getState: function(){
+	getClone: function (propertyName) {
+		return this.state.getClone(propertyName);
+	},
+
+	getState: function () {
 		return this.state.getState();
+	},
+
+	getStateClone: function () {
+		return this.state.getStateClone();
 	},
 
 
 	/**
-	* @param {string} constant
-	* @param {object} newState
-	*/
-	setActionState: function(constant, newState){
+	 * @param {string} constant
+	 * @param {object} newState
+	 */
+	setActionState: function (constant, newState) {
 		var actionStates = this.state.get('_action_states');
 		actionStates[constant] = _assign(actionStates[constant] || {}, newState);
 		this.setState({
@@ -21439,10 +21430,10 @@ Store.prototype =  {
 	},
 
 	/**
-	* @param {string} constant
-	*/
-	resetActionState: function(constant){
-		if( typeof this._actionHandlers[constant] === 'undefined' ){
+	 * @param {string} constant
+	 */
+	resetActionState: function (constant) {
+		if (typeof this._actionHandlers[constant] === 'undefined') {
 			throw new Error('Store.resetActionState constant handler for [' + constant + '] is not defined');
 		}
 		var actionStates = this.state.get('_action_states');
@@ -21453,90 +21444,64 @@ Store.prototype =  {
 	},
 
 	/**
-	* @param {string} constant - constant to get handler state for
-	* @param {string} [key] - a specfic key to get
-	*/
-	getActionState: function(constant, key){
-		if( typeof this._actionHandlers[constant] === 'undefined' ){
+	 * @param {string} constant - constant to get handler state for
+	 * @param {string} [key] - a specfic key to get
+	 */
+	getActionState: function (constant, key) {
+		if (typeof this._actionHandlers[constant] === 'undefined') {
 			throw new Error('Store.getActionState constant handler for [' + constant + '] is not defined');
 		}
 
 		var actionState = this.state.get('_action_states');
 
-		if( typeof key === "undefined" ){
+		if (typeof key === "undefined") {
 			return actionState[constant];
 		}
 		return actionState[constant][key] || undefined;
 	},
 
-	
-
 	/**
-	* @return {object} Store's state
-	*/
-	toJS: function(){
-		console.warn('toJS is deprecated. Please use store.getState instead');
-		return this.state.getState();
-	},
-
-	/**
-	* @return {object} Store's state
-	*/
-	toObject: function(){
-		console.warn('toObject is deprecated. Please use store.getState instead');
-		return this.state.getState();
-	},
-
-	/**
-	*
-	*/
-	toJSON: function(){
-		console.warn('toJSON is deprecated. Please use store.getState instead');
-		return this.state.getState();
-	},
-
-	/**
-	*
-	*/
-	isStore: function(){
+	 *
+	 */
+	isStore: function () {
 		return true;
 	},
 
 	/**
-	* @param {function} callback
-	*/
-	onChange: function(callback){
+	 * @param {function} callback
+	 */
+	onChange: function (callback) {
 		this._on(CHANGE_EVENT, callback);
 	},
 
 	/**
-	* @param {function} callback
-	*/
-	offChange: function(callback){
+	 * @param {function} callback
+	 */
+	offChange: function (callback) {
 		this._off(CHANGE_EVENT, callback);
 	},
 
 
 	/**
-	* set extra properties & methods for this Store
-	* @param {object} storeMixin
-	*/
-	_storeMixin: function(storeMixin){
-		if (storeMixin && storeMixin.mixins && _isArray(storeMixin.mixins) ){
+	 * set extra properties & methods for this Store
+	 * @param {object} storeMixin
+	 */
+	_storeMixin: function (storeMixin) {
+		if (storeMixin && storeMixin.mixins && _isArray(storeMixin.mixins)) {
 			_forEach(storeMixin.mixins, this._storeMixin.bind(this));
 		}
-		_forEach(storeMixin, function(prop, propName){
-			if( propName === 'mixins' ) {
+		_forEach(storeMixin, function (prop, propName) {
+			if (propName === 'mixins') {
 				return;
 			}
 
-			if( typeof prop === 'function' ){
+			if (typeof prop === 'function') {
 				prop = prop.bind(this);
 			}
 
-			if ( propName === 'getInitialState' ) {
+			if (propName === 'getInitialState') {
 				this._getInitialStateCalls.push(prop);
-			} else if ( propName === 'storeDidMount' ) {
+			} else if (propName === 'storeDidMount') {
 				this._storeDidMountCalls.push(prop);
 			} else {
 				this[propName] = prop;
@@ -21545,51 +21510,51 @@ Store.prototype =  {
 	},
 
 	/**
-	* @param {string} constant
-	* @param {object} configs
-	* @return {FluxStore} self
-	*/
-	addActionHandler: function(constant, configs){
+	 * @param {string} constant
+	 * @param {object} configs
+	 * @return {FluxStore} self
+	 */
+	addActionHandler: function (constant, configs) {
 		this._actionHandlers[constant] = new StoreActionHandler(this, constant, configs);
 		return this;
 	},
 
 	/**
-	* Set constant handlers for this Store
-	* @param {array} handlers
-	*/
-	_setConstantHandlers: function(handlers){
-		if( !_isArray(handlers) ){
+	 * Set constant handlers for this Store
+	 * @param {array} handlers
+	 */
+	_setConstantHandlers: function (handlers) {
+		if (!_isArray(handlers)) {
 			throw new Error('store expects handler definitions to be an array');
 		}
-		_forEach(handlers, function(options){
-			if( !_isArray(options) ){
+		_forEach(handlers, function (options) {
+			if (!_isArray(options)) {
 				throw new Error('store expects handler definition to be an array');
 			}
 			var constant, handler, waitFor;
 
 			constant = options[0];
-			if( options.length === 2 ){
+			if (options.length === 2) {
 				waitFor = null;
 				handler = options[1];
 			}
-			else{
+			else {
 				waitFor = options[1];
 				handler = options[2];
 			}
-			if( typeof constant !== 'string' ){
+			if (typeof constant !== 'string') {
 				throw new Error('store expects all handler definitions to contain a constant as the first parameter');
 			}
-			if( typeof handler !== 'function' ){
+			if (typeof handler !== 'function') {
 				throw new Error('store expects all handler definitions to contain a callback');
 			}
-			if( !!waitFor && !_isArray(waitFor) ){
+			if (!!waitFor && !_isArray(waitFor)) {
 				throw new Error('store expects waitFor to be an array of stores');
 			}
 			var waitForIndexes = null;
-			if( waitFor ){
-				waitForIndexes = waitFor.map(function(store){
-					if( !(store instanceof Store) ){
+			if (waitFor) {
+				waitForIndexes = waitFor.map(function (store) {
+					if (!(store instanceof Store)) {
 						throw new Error('store expects waitFor to be an array of stores');
 					}
 					return store._getHandlerIndex(constant);
@@ -21603,62 +21568,55 @@ Store.prototype =  {
 	},
 
 	/**
-	* Get dispatcher idx of this constant callback for this store
-	* @param {string} constant
-	* @return {number} Index of constant callback
-	*/
-	_getHandlerIndex: function(constant){
-		if( typeof this._dispatcherIndexes[constant] === "undefined" ){
+	 * Get dispatcher idx of this constant callback for this store
+	 * @param {string} constant
+	 * @return {number} Index of constant callback
+	 */
+	_getHandlerIndex: function (constant) {
+		if (typeof this._dispatcherIndexes[constant] === "undefined") {
 			throw new Error('Can not get store handler for constant: ' + constant);
 		}
 		return this._dispatcherIndexes[constant];
 	},
 
 	/**
-	* Sets intial state of the Store
-	*/
-	_setInitialState: function(){
-		this.setState( this.getInitialState() );
+	 * Sets intial state of the Store
+	 */
+	_setInitialState: function () {
+		this.setState(this.getInitialState());
 	},
 
 	/**
-	* Gets initial state of the store
-	*
-	* @return {mixed} Store initial state
-	*/
-	getInitialState: function(){
+	 * Gets initial state of the store
+	 *
+	 * @return {mixed} Store initial state
+	 */
+	getInitialState: function () {
 		var state = {};
 
-		_forEach(this._getInitialStateCalls, function(fn){
+		_forEach(this._getInitialStateCalls, function (fn) {
 			_assign(state, fn());
 		});
 
 		return state;
 	},
 
+
 	/**
-  * @return {Object} A mixin for React Components
-  */
-	mixin: function(){
-		console.warn("store.mixin will be deprecated, please use store.mixinFor")
+	 * @return {Object} A mixin for React Components
+	 */
+	mixinFor: function () {
 		return MixinFor(this);
 	},
 
 	/**
-  * @return {Object} A mixin for React Components
-  */
-	mixinFor: function(){
-		return MixinFor(this);
-	},
-
-	/**
-	*
-	* @param {String} evt
-	* @param {Function} handler
-	* @return  {Function} handler
-	*/
-	_on: function(evt, handler){
-		if( typeof this._events[evt] === 'undefined' ) {
+	 *
+	 * @param {String} evt
+	 * @param {Function} handler
+	 * @return  {Function} handler
+	 */
+	_on: function (evt, handler) {
+		if (typeof this._events[evt] === 'undefined') {
 			this._events[evt] = [];
 		}
 		this._events[evt].push(handler);
@@ -21666,14 +21624,14 @@ Store.prototype =  {
 	},
 
 	/**
-	*
-	* @param {String} evt
-	* @param {Function} handler
-	*/
-	_off: function(evt, handler){
-		if( typeof this._events[evt] !== 'undefined' ){
-			for(var i=0, len = this._events[evt].length; i < len; i++){
-				if( this._events[evt][i] === handler ){
+	 *
+	 * @param {String} evt
+	 * @param {Function} handler
+	 */
+	_off: function (evt, handler) {
+		if (typeof this._events[evt] !== 'undefined') {
+			for (var i = 0, len = this._events[evt].length; i < len; i++) {
+				if (this._events[evt][i] === handler) {
 					this._events[evt].splice(i, 1);
 					break;
 				}
@@ -21682,15 +21640,15 @@ Store.prototype =  {
 	},
 
 	/**
-	*
-	* @param {String} evt
-	*/
-	_emit: function(evt){
-		if( typeof this._events[evt] === 'undefined' ){
+	 *
+	 * @param {String} evt
+	 */
+	_emit: function (evt) {
+		if (typeof this._events[evt] === 'undefined') {
 			return;
 		}
 		var args = Array.prototype.slice.call(arguments, 1);
-		_forEach(this._events[evt], function(listener){
+		_forEach(this._events[evt], function (listener) {
 			if ('function' === typeof listener) {
 				listener.apply(null, args);
 			}
@@ -21702,27 +21660,27 @@ Store.prototype =  {
 module.exports = Store;
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/store.js","/../../lib")
-},{"./mixinFor":163,"./storeActionHandler":165,"IrXUsu":12,"buffer":7,"lodash-node/modern/collection/forEach":166,"lodash-node/modern/lang/isArray":191,"lodash-node/modern/object/assign":198}],165:[function(require,module,exports){
+},{"./mixinFor":163,"./storeActionHandler":165,"IrXUsu":12,"buffer":7,"lodash/collection/forEach":166,"lodash/lang/cloneDeep":199,"lodash/lang/isArray":201,"lodash/object/assign":209}],165:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var _isString = require('lodash-node/modern/lang/isString');
+var _isString = require('lodash/lang/isString');
 
 var constantsConfigs = require('./configs').constants.get();
 
 var HANDLER_NAMES = ['before', 'after', 'success', 'fail'];
 
-function StoreActionHandler(store, constant, configs){
-	if( !store || typeof store.isStore !== 'function' || !store.isStore() ){
+function StoreActionHandler(store, constant, configs) {
+	if (!store || typeof store.isStore !== 'function' || !store.isStore()) {
 		throw new Error('StoreActionHandler expects first parameter to be a store');
 	}
-	if( !_isString(constant) || !constant.length ){
+	if (!_isString(constant) || !constant.length) {
 		throw new Error('StoreActionHandler expects second parameter to be a constant(string)');
 	}
-	if( typeof configs.getInitialState == 'undefined' ){
-		configs.getInitialState = function(){
+	if (typeof configs.getInitialState == 'undefined') {
+		configs.getInitialState = function () {
 			return {};
 		};
 	}
-	if( typeof configs.getInitialState != 'function' ){
+	if (typeof configs.getInitialState != 'function') {
 		throw new Error('StoreActionHandler expects getInitialState to be a function');
 	}
 
@@ -21730,7 +21688,7 @@ function StoreActionHandler(store, constant, configs){
 	this.parent = store;
 	this.constant = constant;
 	this.getInitialState = configs.getInitialState;
-	this.before =  configs.before || null;
+	this.before = configs.before || null;
 	this.after = configs.after || null;
 	this.success = configs.success || null;
 	this.fail = configs.fail || null;
@@ -21740,34 +21698,34 @@ function StoreActionHandler(store, constant, configs){
 	//register handlers for this constant
 	var handlers = [];
 	var len = HANDLER_NAMES.length;
-	for(var i = 0; i < len; i++){
+	for (var i = 0; i < len; i++) {
 		var handlerName = HANDLER_NAMES[i];
-		if( this[handlerName] === null ){
+		if (this[handlerName] === null) {
 			continue;
 		}
-		if( typeof this[handlerName] !== 'function' ){
+		if (typeof this[handlerName] !== 'function') {
 			throw new Error('StoreActionHandler expects "' + handlerName + '" to be a function');
 		}
 		var constantName = this.constant;
-		if( handlerName !== 'before' ){
+		if (handlerName !== 'before') {
 			constantName += constantsConfigs.separator + constantsConfigs[handlerName + 'Suffix'];
 		}
-		handlers.push( [constantName, this[handlerName].bind(this) ] );
+		handlers.push([constantName, this[handlerName].bind(this)]);
 	}
 	store._setConstantHandlers(handlers);
 }
 
 StoreActionHandler.prototype = {
 	/**
-	* @param {object} newState
-	*/
-	setState: function(newState){
+	 * @param {object} newState
+	 */
+	setState: function (newState) {
 		this.parent.setActionState(this.constant, newState);
 	},
 	/**
-	* @return {object} state
-	*/
-	getState: function(){
+	 * @return {object} state
+	 */
+	getState: function () {
 		return this.parent.getActionState(this.constant);
 	}
 };
@@ -21775,7 +21733,7 @@ StoreActionHandler.prototype = {
 module.exports = StoreActionHandler;
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../lib/storeActionHandler.js","/../../lib")
-},{"./configs":159,"IrXUsu":12,"buffer":7,"lodash-node/modern/lang/isString":195}],166:[function(require,module,exports){
+},{"./configs":159,"IrXUsu":12,"buffer":7,"lodash/lang/isString":206}],166:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var arrayEach = require('../internal/arrayEach'),
     baseEach = require('../internal/baseEach'),
@@ -21784,10 +21742,10 @@ var arrayEach = require('../internal/arrayEach'),
 /**
  * Iterates over elements of `collection` invoking `iteratee` for each element.
  * The `iteratee` is bound to `thisArg` and invoked with three arguments:
- * (value, index|key, collection). Iterator functions may exit iteration early
+ * (value, index|key, collection). Iteratee functions may exit iteration early
  * by explicitly returning `false`.
  *
- * **Note:** As with other "Collections" methods, objects with a `length` property
+ * **Note:** As with other "Collections" methods, objects with a "length" property
  * are iterated like arrays. To avoid this behavior `_.forIn` or `_.forOwn`
  * may be used for object iteration.
  *
@@ -21815,8 +21773,70 @@ var forEach = createForEach(arrayEach, baseEach);
 
 module.exports = forEach;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/collection/forEach.js","/../../node_modules/lodash-node/modern/collection")
-},{"../internal/arrayEach":168,"../internal/baseEach":171,"../internal/createForEach":182,"IrXUsu":12,"buffer":7}],167:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/collection/forEach.js","/../../node_modules/lodash/collection")
+},{"../internal/arrayEach":169,"../internal/baseEach":174,"../internal/createForEach":186,"IrXUsu":12,"buffer":7}],167:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/* Native method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+
+/**
+ * Creates a function that invokes `func` with the `this` binding of the
+ * created function and arguments from `start` and beyond provided as an array.
+ *
+ * **Note:** This method is based on the [rest parameter](https://developer.mozilla.org/Web/JavaScript/Reference/Functions/rest_parameters).
+ *
+ * @static
+ * @memberOf _
+ * @category Function
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @returns {Function} Returns the new function.
+ * @example
+ *
+ * var say = _.restParam(function(what, names) {
+ *   return what + ' ' + _.initial(names).join(', ') +
+ *     (_.size(names) > 1 ? ', & ' : '') + _.last(names);
+ * });
+ *
+ * say('hello', 'fred', 'barney', 'pebbles');
+ * // => 'hello fred, barney, & pebbles'
+ */
+function restParam(func, start) {
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  start = nativeMax(start === undefined ? (func.length - 1) : (+start || 0), 0);
+  return function() {
+    var args = arguments,
+        index = -1,
+        length = nativeMax(args.length - start, 0),
+        rest = Array(length);
+
+    while (++index < length) {
+      rest[index] = args[start + index];
+    }
+    switch (start) {
+      case 0: return func.call(this, rest);
+      case 1: return func.call(this, args[0], rest);
+      case 2: return func.call(this, args[0], args[1], rest);
+    }
+    var otherArgs = Array(start + 1);
+    index = -1;
+    while (++index < start) {
+      otherArgs[index] = args[index];
+    }
+    otherArgs[start] = rest;
+    return func.apply(this, otherArgs);
+  };
+}
+
+module.exports = restParam;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/function/restParam.js","/../../node_modules/lodash/function")
+},{"IrXUsu":12,"buffer":7}],168:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Copies the values of `source` to `array`.
@@ -21839,8 +21859,8 @@ function arrayCopy(source, array) {
 
 module.exports = arrayCopy;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/arrayCopy.js","/../../node_modules/lodash-node/modern/internal")
-},{"IrXUsu":12,"buffer":7}],168:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/arrayCopy.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],169:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * A specialized version of `_.forEach` for arrays without support for callback
@@ -21865,28 +21885,25 @@ function arrayEach(array, iteratee) {
 
 module.exports = arrayEach;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/arrayEach.js","/../../node_modules/lodash-node/modern/internal")
-},{"IrXUsu":12,"buffer":7}],169:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/arrayEach.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],170:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var baseCopy = require('./baseCopy'),
-    keys = require('../object/keys');
+var keys = require('../object/keys');
 
 /**
- * The base implementation of `_.assign` without support for argument juggling,
- * multiple sources, and `this` binding `customizer` functions.
+ * A specialized version of `_.assign` for customizing assigned values without
+ * support for argument juggling, multiple sources, and `this` binding `customizer`
+ * functions.
  *
  * @private
  * @param {Object} object The destination object.
  * @param {Object} source The source object.
- * @param {Function} [customizer] The function to customize assigning values.
- * @returns {Object} Returns the destination object.
+ * @param {Function} customizer The function to customize assigned values.
+ * @returns {Object} Returns `object`.
  */
-function baseAssign(object, source, customizer) {
-  var props = keys(source);
-  if (!customizer) {
-    return baseCopy(source, object, props);
-  }
+function assignWith(object, source, customizer) {
   var index = -1,
+      props = keys(source),
       length = props.length;
 
   while (++index < length) {
@@ -21895,32 +21912,185 @@ function baseAssign(object, source, customizer) {
         result = customizer(value, source[key], key, object, source);
 
     if ((result === result ? (result !== value) : (value === value)) ||
-        (typeof value == 'undefined' && !(key in object))) {
+        (value === undefined && !(key in object))) {
       object[key] = result;
     }
   }
   return object;
 }
 
+module.exports = assignWith;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/assignWith.js","/../../node_modules/lodash/internal")
+},{"../object/keys":210,"IrXUsu":12,"buffer":7}],171:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var baseCopy = require('./baseCopy'),
+    keys = require('../object/keys');
+
+/**
+ * The base implementation of `_.assign` without support for argument juggling,
+ * multiple sources, and `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssign(object, source) {
+  return source == null
+    ? object
+    : baseCopy(source, keys(source), object);
+}
+
 module.exports = baseAssign;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseAssign.js","/../../node_modules/lodash-node/modern/internal")
-},{"../object/keys":199,"./baseCopy":170,"IrXUsu":12,"buffer":7}],170:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseAssign.js","/../../node_modules/lodash/internal")
+},{"../object/keys":210,"./baseCopy":173,"IrXUsu":12,"buffer":7}],172:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var arrayCopy = require('./arrayCopy'),
+    arrayEach = require('./arrayEach'),
+    baseAssign = require('./baseAssign'),
+    baseForOwn = require('./baseForOwn'),
+    initCloneArray = require('./initCloneArray'),
+    initCloneByTag = require('./initCloneByTag'),
+    initCloneObject = require('./initCloneObject'),
+    isArray = require('../lang/isArray'),
+    isObject = require('../lang/isObject');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values supported by `_.clone`. */
+var cloneableTags = {};
+cloneableTags[argsTag] = cloneableTags[arrayTag] =
+cloneableTags[arrayBufferTag] = cloneableTags[boolTag] =
+cloneableTags[dateTag] = cloneableTags[float32Tag] =
+cloneableTags[float64Tag] = cloneableTags[int8Tag] =
+cloneableTags[int16Tag] = cloneableTags[int32Tag] =
+cloneableTags[numberTag] = cloneableTags[objectTag] =
+cloneableTags[regexpTag] = cloneableTags[stringTag] =
+cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
+cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
+cloneableTags[errorTag] = cloneableTags[funcTag] =
+cloneableTags[mapTag] = cloneableTags[setTag] =
+cloneableTags[weakMapTag] = false;
+
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objToString = objectProto.toString;
+
+/**
+ * The base implementation of `_.clone` without support for argument juggling
+ * and `this` binding `customizer` functions.
+ *
+ * @private
+ * @param {*} value The value to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @param {Function} [customizer] The function to customize cloning values.
+ * @param {string} [key] The key of `value`.
+ * @param {Object} [object] The object `value` belongs to.
+ * @param {Array} [stackA=[]] Tracks traversed source objects.
+ * @param {Array} [stackB=[]] Associates clones with source counterparts.
+ * @returns {*} Returns the cloned value.
+ */
+function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
+  var result;
+  if (customizer) {
+    result = object ? customizer(value, key, object) : customizer(value);
+  }
+  if (result !== undefined) {
+    return result;
+  }
+  if (!isObject(value)) {
+    return value;
+  }
+  var isArr = isArray(value);
+  if (isArr) {
+    result = initCloneArray(value);
+    if (!isDeep) {
+      return arrayCopy(value, result);
+    }
+  } else {
+    var tag = objToString.call(value),
+        isFunc = tag == funcTag;
+
+    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
+      result = initCloneObject(isFunc ? {} : value);
+      if (!isDeep) {
+        return baseAssign(result, value);
+      }
+    } else {
+      return cloneableTags[tag]
+        ? initCloneByTag(value, tag, isDeep)
+        : (object ? value : {});
+    }
+  }
+  // Check for circular references and return its corresponding clone.
+  stackA || (stackA = []);
+  stackB || (stackB = []);
+
+  var length = stackA.length;
+  while (length--) {
+    if (stackA[length] == value) {
+      return stackB[length];
+    }
+  }
+  // Add the source value to the stack of traversed objects and associate it with its clone.
+  stackA.push(value);
+  stackB.push(result);
+
+  // Recursively populate clone (susceptible to call stack limits).
+  (isArr ? arrayEach : baseForOwn)(value, function(subValue, key) {
+    result[key] = baseClone(subValue, isDeep, customizer, key, value, stackA, stackB);
+  });
+  return result;
+}
+
+module.exports = baseClone;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseClone.js","/../../node_modules/lodash/internal")
+},{"../lang/isArray":201,"../lang/isObject":204,"./arrayCopy":168,"./arrayEach":169,"./baseAssign":171,"./baseForOwn":177,"./initCloneArray":189,"./initCloneByTag":190,"./initCloneObject":191,"IrXUsu":12,"buffer":7}],173:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
- * Copies the properties of `source` to `object`.
+ * Copies properties of `source` to `object`.
  *
  * @private
  * @param {Object} source The object to copy properties from.
- * @param {Object} [object={}] The object to copy properties to.
  * @param {Array} props The property names to copy.
+ * @param {Object} [object={}] The object to copy properties to.
  * @returns {Object} Returns `object`.
  */
-function baseCopy(source, object, props) {
-  if (!props) {
-    props = object;
-    object = {};
-  }
+function baseCopy(source, props, object) {
+  object || (object = {});
+
   var index = -1,
       length = props.length;
 
@@ -21933,8 +22103,8 @@ function baseCopy(source, object, props) {
 
 module.exports = baseCopy;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseCopy.js","/../../node_modules/lodash-node/modern/internal")
-},{"IrXUsu":12,"buffer":7}],171:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseCopy.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],174:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var baseForOwn = require('./baseForOwn'),
     createBaseEach = require('./createBaseEach');
@@ -21952,15 +22122,15 @@ var baseEach = createBaseEach(baseForOwn);
 
 module.exports = baseEach;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseEach.js","/../../node_modules/lodash-node/modern/internal")
-},{"./baseForOwn":174,"./createBaseEach":180,"IrXUsu":12,"buffer":7}],172:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseEach.js","/../../node_modules/lodash/internal")
+},{"./baseForOwn":177,"./createBaseEach":184,"IrXUsu":12,"buffer":7}],175:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var createBaseFor = require('./createBaseFor');
 
 /**
  * The base implementation of `baseForIn` and `baseForOwn` which iterates
  * over `object` properties returned by `keysFunc` invoking `iteratee` for
- * each property. Iterator functions may exit iteration early by explicitly
+ * each property. Iteratee functions may exit iteration early by explicitly
  * returning `false`.
  *
  * @private
@@ -21973,8 +22143,8 @@ var baseFor = createBaseFor();
 
 module.exports = baseFor;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseFor.js","/../../node_modules/lodash-node/modern/internal")
-},{"./createBaseFor":181,"IrXUsu":12,"buffer":7}],173:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseFor.js","/../../node_modules/lodash/internal")
+},{"./createBaseFor":185,"IrXUsu":12,"buffer":7}],176:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var baseFor = require('./baseFor'),
     keysIn = require('../object/keysIn');
@@ -21994,8 +22164,8 @@ function baseForIn(object, iteratee) {
 
 module.exports = baseForIn;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseForIn.js","/../../node_modules/lodash-node/modern/internal")
-},{"../object/keysIn":200,"./baseFor":172,"IrXUsu":12,"buffer":7}],174:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseForIn.js","/../../node_modules/lodash/internal")
+},{"../object/keysIn":211,"./baseFor":175,"IrXUsu":12,"buffer":7}],177:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var baseFor = require('./baseFor'),
     keys = require('../object/keys');
@@ -22015,17 +22185,17 @@ function baseForOwn(object, iteratee) {
 
 module.exports = baseForOwn;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseForOwn.js","/../../node_modules/lodash-node/modern/internal")
-},{"../object/keys":199,"./baseFor":172,"IrXUsu":12,"buffer":7}],175:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseForOwn.js","/../../node_modules/lodash/internal")
+},{"../object/keys":210,"./baseFor":175,"IrXUsu":12,"buffer":7}],178:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var arrayEach = require('./arrayEach'),
-    baseForOwn = require('./baseForOwn'),
     baseMergeDeep = require('./baseMergeDeep'),
     isArray = require('../lang/isArray'),
-    isLength = require('./isLength'),
+    isArrayLike = require('./isArrayLike'),
     isObject = require('../lang/isObject'),
     isObjectLike = require('./isObjectLike'),
-    isTypedArray = require('../lang/isTypedArray');
+    isTypedArray = require('../lang/isTypedArray'),
+    keys = require('../object/keys');
 
 /**
  * The base implementation of `_.merge` without support for argument juggling,
@@ -22034,32 +22204,40 @@ var arrayEach = require('./arrayEach'),
  * @private
  * @param {Object} object The destination object.
  * @param {Object} source The source object.
- * @param {Function} [customizer] The function to customize merging properties.
+ * @param {Function} [customizer] The function to customize merged values.
  * @param {Array} [stackA=[]] Tracks traversed source objects.
  * @param {Array} [stackB=[]] Associates values with source counterparts.
- * @returns {Object} Returns the destination object.
+ * @returns {Object} Returns `object`.
  */
 function baseMerge(object, source, customizer, stackA, stackB) {
   if (!isObject(object)) {
     return object;
   }
-  var isSrcArr = isLength(source.length) && (isArray(source) || isTypedArray(source));
-  (isSrcArr ? arrayEach : baseForOwn)(source, function(srcValue, key, source) {
+  var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source)),
+      props = isSrcArr ? undefined : keys(source);
+
+  arrayEach(props || source, function(srcValue, key) {
+    if (props) {
+      key = srcValue;
+      srcValue = source[key];
+    }
     if (isObjectLike(srcValue)) {
       stackA || (stackA = []);
       stackB || (stackB = []);
-      return baseMergeDeep(object, source, key, baseMerge, customizer, stackA, stackB);
+      baseMergeDeep(object, source, key, baseMerge, customizer, stackA, stackB);
     }
-    var value = object[key],
-        result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
-        isCommon = typeof result == 'undefined';
+    else {
+      var value = object[key],
+          result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
+          isCommon = result === undefined;
 
-    if (isCommon) {
-      result = srcValue;
-    }
-    if ((isSrcArr || typeof result != 'undefined') &&
-        (isCommon || (result === result ? (result !== value) : (value === value)))) {
-      object[key] = result;
+      if (isCommon) {
+        result = srcValue;
+      }
+      if ((result !== undefined || (isSrcArr && !(key in object))) &&
+          (isCommon || (result === result ? (result !== value) : (value === value)))) {
+        object[key] = result;
+      }
     }
   });
   return object;
@@ -22067,13 +22245,13 @@ function baseMerge(object, source, customizer, stackA, stackB) {
 
 module.exports = baseMerge;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseMerge.js","/../../node_modules/lodash-node/modern/internal")
-},{"../lang/isArray":191,"../lang/isObject":193,"../lang/isTypedArray":196,"./arrayEach":168,"./baseForOwn":174,"./baseMergeDeep":176,"./isLength":185,"./isObjectLike":186,"IrXUsu":12,"buffer":7}],176:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseMerge.js","/../../node_modules/lodash/internal")
+},{"../lang/isArray":201,"../lang/isObject":204,"../lang/isTypedArray":207,"../object/keys":210,"./arrayEach":169,"./baseMergeDeep":179,"./isArrayLike":192,"./isObjectLike":196,"IrXUsu":12,"buffer":7}],179:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var arrayCopy = require('./arrayCopy'),
     isArguments = require('../lang/isArguments'),
     isArray = require('../lang/isArray'),
-    isLength = require('./isLength'),
+    isArrayLike = require('./isArrayLike'),
     isPlainObject = require('../lang/isPlainObject'),
     isTypedArray = require('../lang/isTypedArray'),
     toPlainObject = require('../lang/toPlainObject');
@@ -22088,7 +22266,7 @@ var arrayCopy = require('./arrayCopy'),
  * @param {Object} source The source object.
  * @param {string} key The key of the value to merge.
  * @param {Function} mergeFunc The function to merge values.
- * @param {Function} [customizer] The function to customize merging properties.
+ * @param {Function} [customizer] The function to customize merged values.
  * @param {Array} [stackA=[]] Tracks traversed source objects.
  * @param {Array} [stackB=[]] Associates values with source counterparts.
  * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
@@ -22105,14 +22283,14 @@ function baseMergeDeep(object, source, key, mergeFunc, customizer, stackA, stack
   }
   var value = object[key],
       result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
-      isCommon = typeof result == 'undefined';
+      isCommon = result === undefined;
 
   if (isCommon) {
     result = srcValue;
-    if (isLength(srcValue.length) && (isArray(srcValue) || isTypedArray(srcValue))) {
+    if (isArrayLike(srcValue) && (isArray(srcValue) || isTypedArray(srcValue))) {
       result = isArray(value)
         ? value
-        : ((value && value.length) ? arrayCopy(value) : []);
+        : (isArrayLike(value) ? arrayCopy(value) : []);
     }
     else if (isPlainObject(srcValue) || isArguments(srcValue)) {
       result = isArguments(value)
@@ -22138,28 +22316,26 @@ function baseMergeDeep(object, source, key, mergeFunc, customizer, stackA, stack
 
 module.exports = baseMergeDeep;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseMergeDeep.js","/../../node_modules/lodash-node/modern/internal")
-},{"../lang/isArguments":190,"../lang/isArray":191,"../lang/isPlainObject":194,"../lang/isTypedArray":196,"../lang/toPlainObject":197,"./arrayCopy":167,"./isLength":185,"IrXUsu":12,"buffer":7}],177:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseMergeDeep.js","/../../node_modules/lodash/internal")
+},{"../lang/isArguments":200,"../lang/isArray":201,"../lang/isPlainObject":205,"../lang/isTypedArray":207,"../lang/toPlainObject":208,"./arrayCopy":168,"./isArrayLike":192,"IrXUsu":12,"buffer":7}],180:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
- * Converts `value` to a string if it is not one. An empty string is returned
- * for `null` or `undefined` values.
+ * The base implementation of `_.property` without support for deep paths.
  *
  * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new function.
  */
-function baseToString(value) {
-  if (typeof value == 'string') {
-    return value;
-  }
-  return value == null ? '' : (value + '');
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
 }
 
-module.exports = baseToString;
+module.exports = baseProperty;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/baseToString.js","/../../node_modules/lodash-node/modern/internal")
-},{"IrXUsu":12,"buffer":7}],178:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/baseProperty.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],181:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var identity = require('../utility/identity');
 
@@ -22177,7 +22353,7 @@ function bindCallback(func, thisArg, argCount) {
   if (typeof func != 'function') {
     return identity;
   }
-  if (typeof thisArg == 'undefined') {
+  if (thisArg === undefined) {
     return func;
   }
   switch (argCount) {
@@ -22201,63 +22377,80 @@ function bindCallback(func, thisArg, argCount) {
 
 module.exports = bindCallback;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/bindCallback.js","/../../node_modules/lodash-node/modern/internal")
-},{"../utility/identity":204,"IrXUsu":12,"buffer":7}],179:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/bindCallback.js","/../../node_modules/lodash/internal")
+},{"../utility/identity":213,"IrXUsu":12,"buffer":7}],182:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var bindCallback = require('./bindCallback'),
-    isIterateeCall = require('./isIterateeCall');
+/** Native method references. */
+var ArrayBuffer = global.ArrayBuffer,
+    Uint8Array = global.Uint8Array;
 
 /**
- * Creates a function that assigns properties of source object(s) to a given
- * destination object.
+ * Creates a clone of the given array buffer.
  *
- * **Note:** This function is used to create `_.assign`, `_.defaults`, and `_.merge`.
+ * @private
+ * @param {ArrayBuffer} buffer The array buffer to clone.
+ * @returns {ArrayBuffer} Returns the cloned array buffer.
+ */
+function bufferClone(buffer) {
+  var result = new ArrayBuffer(buffer.byteLength),
+      view = new Uint8Array(result);
+
+  view.set(new Uint8Array(buffer));
+  return result;
+}
+
+module.exports = bufferClone;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/bufferClone.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],183:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var bindCallback = require('./bindCallback'),
+    isIterateeCall = require('./isIterateeCall'),
+    restParam = require('../function/restParam');
+
+/**
+ * Creates a `_.assign`, `_.defaults`, or `_.merge` function.
  *
  * @private
  * @param {Function} assigner The function to assign values.
  * @returns {Function} Returns the new assigner function.
  */
 function createAssigner(assigner) {
-  return function() {
-    var args = arguments,
-        length = args.length,
-        object = args[0];
+  return restParam(function(object, sources) {
+    var index = -1,
+        length = object == null ? 0 : sources.length,
+        customizer = length > 2 ? sources[length - 2] : undefined,
+        guard = length > 2 ? sources[2] : undefined,
+        thisArg = length > 1 ? sources[length - 1] : undefined;
 
-    if (length < 2 || object == null) {
-      return object;
-    }
-    var customizer = args[length - 2],
-        thisArg = args[length - 1],
-        guard = args[3];
-
-    if (length > 3 && typeof customizer == 'function') {
+    if (typeof customizer == 'function') {
       customizer = bindCallback(customizer, thisArg, 5);
       length -= 2;
     } else {
-      customizer = (length > 2 && typeof thisArg == 'function') ? thisArg : null;
+      customizer = typeof thisArg == 'function' ? thisArg : undefined;
       length -= (customizer ? 1 : 0);
     }
-    if (guard && isIterateeCall(args[1], args[2], guard)) {
-      customizer = length == 3 ? null : customizer;
-      length = 2;
+    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+      customizer = length < 3 ? undefined : customizer;
+      length = 1;
     }
-    var index = 0;
     while (++index < length) {
-      var source = args[index];
+      var source = sources[index];
       if (source) {
         assigner(object, source, customizer);
       }
     }
     return object;
-  };
+  });
 }
 
 module.exports = createAssigner;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/createAssigner.js","/../../node_modules/lodash-node/modern/internal")
-},{"./bindCallback":178,"./isIterateeCall":184,"IrXUsu":12,"buffer":7}],180:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/createAssigner.js","/../../node_modules/lodash/internal")
+},{"../function/restParam":167,"./bindCallback":181,"./isIterateeCall":194,"IrXUsu":12,"buffer":7}],184:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var isLength = require('./isLength'),
+var getLength = require('./getLength'),
+    isLength = require('./isLength'),
     toObject = require('./toObject');
 
 /**
@@ -22270,7 +22463,7 @@ var isLength = require('./isLength'),
  */
 function createBaseEach(eachFunc, fromRight) {
   return function(collection, iteratee) {
-    var length = collection ? collection.length : 0;
+    var length = collection ? getLength(collection) : 0;
     if (!isLength(length)) {
       return eachFunc(collection, iteratee);
     }
@@ -22288,8 +22481,8 @@ function createBaseEach(eachFunc, fromRight) {
 
 module.exports = createBaseEach;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/createBaseEach.js","/../../node_modules/lodash-node/modern/internal")
-},{"./isLength":185,"./toObject":189,"IrXUsu":12,"buffer":7}],181:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/createBaseEach.js","/../../node_modules/lodash/internal")
+},{"./getLength":187,"./isLength":195,"./toObject":198,"IrXUsu":12,"buffer":7}],185:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var toObject = require('./toObject');
 
@@ -22319,8 +22512,8 @@ function createBaseFor(fromRight) {
 
 module.exports = createBaseFor;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/createBaseFor.js","/../../node_modules/lodash-node/modern/internal")
-},{"./toObject":189,"IrXUsu":12,"buffer":7}],182:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/createBaseFor.js","/../../node_modules/lodash/internal")
+},{"./toObject":198,"IrXUsu":12,"buffer":7}],186:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var bindCallback = require('./bindCallback'),
     isArray = require('../lang/isArray');
@@ -22335,7 +22528,7 @@ var bindCallback = require('./bindCallback'),
  */
 function createForEach(arrayFunc, eachFunc) {
   return function(collection, iteratee, thisArg) {
-    return (typeof iteratee == 'function' && typeof thisArg == 'undefined' && isArray(collection))
+    return (typeof iteratee == 'function' && thisArg === undefined && isArray(collection))
       ? arrayFunc(collection, iteratee)
       : eachFunc(collection, bindCallback(iteratee, thisArg, 3));
   };
@@ -22343,14 +22536,192 @@ function createForEach(arrayFunc, eachFunc) {
 
 module.exports = createForEach;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/createForEach.js","/../../node_modules/lodash-node/modern/internal")
-},{"../lang/isArray":191,"./bindCallback":178,"IrXUsu":12,"buffer":7}],183:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/createForEach.js","/../../node_modules/lodash/internal")
+},{"../lang/isArray":201,"./bindCallback":181,"IrXUsu":12,"buffer":7}],187:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var baseProperty = require('./baseProperty');
+
+/**
+ * Gets the "length" property value of `object`.
+ *
+ * **Note:** This function is used to avoid a [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792)
+ * that affects Safari on at least iOS 8.1-8.3 ARM64.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {*} Returns the "length" value.
+ */
+var getLength = baseProperty('length');
+
+module.exports = getLength;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/getLength.js","/../../node_modules/lodash/internal")
+},{"./baseProperty":180,"IrXUsu":12,"buffer":7}],188:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var isNative = require('../lang/isNative');
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = object == null ? undefined : object[key];
+  return isNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/getNative.js","/../../node_modules/lodash/internal")
+},{"../lang/isNative":203,"IrXUsu":12,"buffer":7}],189:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Initializes an array clone.
+ *
+ * @private
+ * @param {Array} array The array to clone.
+ * @returns {Array} Returns the initialized clone.
+ */
+function initCloneArray(array) {
+  var length = array.length,
+      result = new array.constructor(length);
+
+  // Add array properties assigned by `RegExp#exec`.
+  if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
+    result.index = array.index;
+    result.input = array.input;
+  }
+  return result;
+}
+
+module.exports = initCloneArray;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/initCloneArray.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],190:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var bufferClone = require('./bufferClone');
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    numberTag = '[object Number]',
+    regexpTag = '[object RegExp]',
+    stringTag = '[object String]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to match `RegExp` flags from their coerced string values. */
+var reFlags = /\w*$/;
+
+/**
+ * Initializes an object clone based on its `toStringTag`.
+ *
+ * **Note:** This function only supports cloning values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @param {string} tag The `toStringTag` of the object to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneByTag(object, tag, isDeep) {
+  var Ctor = object.constructor;
+  switch (tag) {
+    case arrayBufferTag:
+      return bufferClone(object);
+
+    case boolTag:
+    case dateTag:
+      return new Ctor(+object);
+
+    case float32Tag: case float64Tag:
+    case int8Tag: case int16Tag: case int32Tag:
+    case uint8Tag: case uint8ClampedTag: case uint16Tag: case uint32Tag:
+      var buffer = object.buffer;
+      return new Ctor(isDeep ? bufferClone(buffer) : buffer, object.byteOffset, object.length);
+
+    case numberTag:
+    case stringTag:
+      return new Ctor(object);
+
+    case regexpTag:
+      var result = new Ctor(object.source, reFlags.exec(object));
+      result.lastIndex = object.lastIndex;
+  }
+  return result;
+}
+
+module.exports = initCloneByTag;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/initCloneByTag.js","/../../node_modules/lodash/internal")
+},{"./bufferClone":182,"IrXUsu":12,"buffer":7}],191:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
- * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
+ * Initializes an object clone.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneObject(object) {
+  var Ctor = object.constructor;
+  if (!(typeof Ctor == 'function' && Ctor instanceof Ctor)) {
+    Ctor = Object;
+  }
+  return new Ctor;
+}
+
+module.exports = initCloneObject;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/initCloneObject.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],192:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var getLength = require('./getLength'),
+    isLength = require('./isLength');
+
+/**
+ * Checks if `value` is array-like.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ */
+function isArrayLike(value) {
+  return value != null && isLength(getLength(value));
+}
+
+module.exports = isArrayLike;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/isArrayLike.js","/../../node_modules/lodash/internal")
+},{"./getLength":187,"./isLength":195,"IrXUsu":12,"buffer":7}],193:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+/** Used to detect unsigned integer values. */
+var reIsUint = /^\d+$/;
+
+/**
+ * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
  * of an array-like value.
  */
-var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
+var MAX_SAFE_INTEGER = 9007199254740991;
 
 /**
  * Checks if `value` is a valid array-like index.
@@ -22361,18 +22732,18 @@ var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
  * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
  */
 function isIndex(value, length) {
-  value = +value;
+  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
   length = length == null ? MAX_SAFE_INTEGER : length;
   return value > -1 && value % 1 == 0 && value < length;
 }
 
 module.exports = isIndex;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/isIndex.js","/../../node_modules/lodash-node/modern/internal")
-},{"IrXUsu":12,"buffer":7}],184:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/isIndex.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],194:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var isIndex = require('./isIndex'),
-    isLength = require('./isLength'),
+var isArrayLike = require('./isArrayLike'),
+    isIndex = require('./isIndex'),
     isObject = require('../lang/isObject');
 
 /**
@@ -22389,13 +22760,9 @@ function isIterateeCall(value, index, object) {
     return false;
   }
   var type = typeof index;
-  if (type == 'number') {
-    var length = object.length,
-        prereq = isLength(length) && isIndex(index, length);
-  } else {
-    prereq = type == 'string' && index in object;
-  }
-  if (prereq) {
+  if (type == 'number'
+      ? (isArrayLike(object) && isIndex(index, object.length))
+      : (type == 'string' && index in object)) {
     var other = object[index];
     return value === value ? (value === other) : (other !== other);
   }
@@ -22404,19 +22771,19 @@ function isIterateeCall(value, index, object) {
 
 module.exports = isIterateeCall;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/isIterateeCall.js","/../../node_modules/lodash-node/modern/internal")
-},{"../lang/isObject":193,"./isIndex":183,"./isLength":185,"IrXUsu":12,"buffer":7}],185:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/isIterateeCall.js","/../../node_modules/lodash/internal")
+},{"../lang/isObject":204,"./isArrayLike":192,"./isIndex":193,"IrXUsu":12,"buffer":7}],195:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
- * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
+ * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
  * of an array-like value.
  */
-var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
+var MAX_SAFE_INTEGER = 9007199254740991;
 
 /**
  * Checks if `value` is a valid array-like length.
  *
- * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
+ * **Note:** This function is based on [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
  *
  * @private
  * @param {*} value The value to check.
@@ -22428,8 +22795,8 @@ function isLength(value) {
 
 module.exports = isLength;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/isLength.js","/../../node_modules/lodash-node/modern/internal")
-},{"IrXUsu":12,"buffer":7}],186:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/isLength.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],196:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Checks if `value` is object-like.
@@ -22444,69 +22811,14 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/isObjectLike.js","/../../node_modules/lodash-node/modern/internal")
-},{"IrXUsu":12,"buffer":7}],187:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var baseForIn = require('./baseForIn'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var objectTag = '[object Object]';
-
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
- * of values.
- */
-var objToString = objectProto.toString;
-
-/**
- * A fallback implementation of `_.isPlainObject` which checks if `value`
- * is an object created by the `Object` constructor or has a `[[Prototype]]`
- * of `null`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
- */
-function shimIsPlainObject(value) {
-  var Ctor;
-
-  // Exit early for non `Object` objects.
-  if (!(isObjectLike(value) && objToString.call(value) == objectTag) ||
-      (!hasOwnProperty.call(value, 'constructor') &&
-        (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
-    return false;
-  }
-  // IE < 9 iterates inherited properties before own properties. If the first
-  // iterated property is an object's own property then there are no inherited
-  // enumerable properties.
-  var result;
-  // In most environments an object's own properties are iterated before
-  // its inherited properties. If the last iterated property is an object's
-  // own property then there are no inherited enumerable properties.
-  baseForIn(value, function(subValue, key) {
-    result = key;
-  });
-  return typeof result == 'undefined' || hasOwnProperty.call(value, result);
-}
-
-module.exports = shimIsPlainObject;
-
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/shimIsPlainObject.js","/../../node_modules/lodash-node/modern/internal")
-},{"./baseForIn":173,"./isObjectLike":186,"IrXUsu":12,"buffer":7}],188:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/isObjectLike.js","/../../node_modules/lodash/internal")
+},{"IrXUsu":12,"buffer":7}],197:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var isArguments = require('../lang/isArguments'),
     isArray = require('../lang/isArray'),
     isIndex = require('./isIndex'),
     isLength = require('./isLength'),
-    keysIn = require('../object/keysIn'),
-    support = require('../support');
+    keysIn = require('../object/keysIn');
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -22519,7 +22831,7 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * own enumerable property names of `object`.
  *
  * @private
- * @param {Object} object The object to inspect.
+ * @param {Object} object The object to query.
  * @returns {Array} Returns the array of property names.
  */
 function shimKeys(object) {
@@ -22527,8 +22839,8 @@ function shimKeys(object) {
       propsLength = props.length,
       length = propsLength && object.length;
 
-  var allowIndexes = length && isLength(length) &&
-    (isArray(object) || (support.nonEnumArgs && isArguments(object)));
+  var allowIndexes = !!length && isLength(length) &&
+    (isArray(object) || isArguments(object));
 
   var index = -1,
       result = [];
@@ -22544,13 +22856,13 @@ function shimKeys(object) {
 
 module.exports = shimKeys;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/shimKeys.js","/../../node_modules/lodash-node/modern/internal")
-},{"../lang/isArguments":190,"../lang/isArray":191,"../object/keysIn":200,"../support":203,"./isIndex":183,"./isLength":185,"IrXUsu":12,"buffer":7}],189:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/shimKeys.js","/../../node_modules/lodash/internal")
+},{"../lang/isArguments":200,"../lang/isArray":201,"../object/keysIn":211,"./isIndex":193,"./isLength":195,"IrXUsu":12,"buffer":7}],198:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var isObject = require('../lang/isObject');
 
 /**
- * Converts `value` to an object if it is not one.
+ * Converts `value` to an object if it's not one.
  *
  * @private
  * @param {*} value The value to process.
@@ -22562,23 +22874,79 @@ function toObject(value) {
 
 module.exports = toObject;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/internal/toObject.js","/../../node_modules/lodash-node/modern/internal")
-},{"../lang/isObject":193,"IrXUsu":12,"buffer":7}],190:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/internal/toObject.js","/../../node_modules/lodash/internal")
+},{"../lang/isObject":204,"IrXUsu":12,"buffer":7}],199:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var isLength = require('../internal/isLength'),
-    isObjectLike = require('../internal/isObjectLike');
+var baseClone = require('../internal/baseClone'),
+    bindCallback = require('../internal/bindCallback');
 
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]';
+/**
+ * Creates a deep clone of `value`. If `customizer` is provided it's invoked
+ * to produce the cloned values. If `customizer` returns `undefined` cloning
+ * is handled by the method instead. The `customizer` is bound to `thisArg`
+ * and invoked with up to three argument; (value [, index|key, object]).
+ *
+ * **Note:** This method is loosely based on the
+ * [structured clone algorithm](http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm).
+ * The enumerable properties of `arguments` objects and objects created by
+ * constructors other than `Object` are cloned to plain `Object` objects. An
+ * empty object is returned for uncloneable values such as functions, DOM nodes,
+ * Maps, Sets, and WeakMaps.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to deep clone.
+ * @param {Function} [customizer] The function to customize cloning values.
+ * @param {*} [thisArg] The `this` binding of `customizer`.
+ * @returns {*} Returns the deep cloned value.
+ * @example
+ *
+ * var users = [
+ *   { 'user': 'barney' },
+ *   { 'user': 'fred' }
+ * ];
+ *
+ * var deep = _.cloneDeep(users);
+ * deep[0] === users[0];
+ * // => false
+ *
+ * // using a customizer callback
+ * var el = _.cloneDeep(document.body, function(value) {
+ *   if (_.isElement(value)) {
+ *     return value.cloneNode(true);
+ *   }
+ * });
+ *
+ * el === document.body
+ * // => false
+ * el.nodeName
+ * // => BODY
+ * el.childNodes.length;
+ * // => 20
+ */
+function cloneDeep(value, customizer, thisArg) {
+  return typeof customizer == 'function'
+    ? baseClone(value, true, bindCallback(customizer, thisArg, 3))
+    : baseClone(value, true);
+}
+
+module.exports = cloneDeep;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/cloneDeep.js","/../../node_modules/lodash/lang")
+},{"../internal/baseClone":172,"../internal/bindCallback":181,"IrXUsu":12,"buffer":7}],200:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var isArrayLike = require('../internal/isArrayLike'),
+    isObjectLike = require('../internal/isObjectLike');
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
 
-/**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
- * of values.
- */
-var objToString = objectProto.toString;
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Native method references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
 
 /**
  * Checks if `value` is classified as an `arguments` object.
@@ -22597,17 +22965,17 @@ var objToString = objectProto.toString;
  * // => false
  */
 function isArguments(value) {
-  var length = isObjectLike(value) ? value.length : undefined;
-  return isLength(length) && objToString.call(value) == argsTag;
+  return isObjectLike(value) && isArrayLike(value) &&
+    hasOwnProperty.call(value, 'callee') && !propertyIsEnumerable.call(value, 'callee');
 }
 
 module.exports = isArguments;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/isArguments.js","/../../node_modules/lodash-node/modern/lang")
-},{"../internal/isLength":185,"../internal/isObjectLike":186,"IrXUsu":12,"buffer":7}],191:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isArguments.js","/../../node_modules/lodash/lang")
+},{"../internal/isArrayLike":192,"../internal/isObjectLike":196,"IrXUsu":12,"buffer":7}],201:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var isLength = require('../internal/isLength'),
-    isNative = require('./isNative'),
+var getNative = require('../internal/getNative'),
+    isLength = require('../internal/isLength'),
     isObjectLike = require('../internal/isObjectLike');
 
 /** `Object#toString` result references. */
@@ -22617,13 +22985,13 @@ var arrayTag = '[object Array]';
 var objectProto = Object.prototype;
 
 /**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
  * of values.
  */
 var objToString = objectProto.toString;
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeIsArray = isNative(nativeIsArray = Array.isArray) && nativeIsArray;
+var nativeIsArray = getNative(Array, 'isArray');
 
 /**
  * Checks if `value` is classified as an `Array` object.
@@ -22647,17 +23015,56 @@ var isArray = nativeIsArray || function(value) {
 
 module.exports = isArray;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/isArray.js","/../../node_modules/lodash-node/modern/lang")
-},{"../internal/isLength":185,"../internal/isObjectLike":186,"./isNative":192,"IrXUsu":12,"buffer":7}],192:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isArray.js","/../../node_modules/lodash/lang")
+},{"../internal/getNative":188,"../internal/isLength":195,"../internal/isObjectLike":196,"IrXUsu":12,"buffer":7}],202:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var escapeRegExp = require('../string/escapeRegExp'),
-    isObjectLike = require('../internal/isObjectLike');
+var isObject = require('./isObject');
 
 /** `Object#toString` result references. */
 var funcTag = '[object Function]';
 
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objToString = objectProto.toString;
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in older versions of Chrome and Safari which return 'function' for regexes
+  // and Safari 8 which returns 'object' for typed array constructors.
+  return isObject(value) && objToString.call(value) == funcTag;
+}
+
+module.exports = isFunction;
+
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isFunction.js","/../../node_modules/lodash/lang")
+},{"./isObject":204,"IrXUsu":12,"buffer":7}],203:[function(require,module,exports){
+(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
+var isFunction = require('./isFunction'),
+    isObjectLike = require('../internal/isObjectLike');
+
 /** Used to detect host constructors (Safari > 5). */
-var reHostCtor = /^\[object .+?Constructor\]$/;
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -22665,16 +23072,13 @@ var objectProto = Object.prototype;
 /** Used to resolve the decompiled source of functions. */
 var fnToString = Function.prototype.toString;
 
-/**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
- * of values.
- */
-var objToString = objectProto.toString;
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
 
 /** Used to detect if a method is native. */
-var reNative = RegExp('^' +
-  escapeRegExp(objToString)
-  .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+var reIsNative = RegExp('^' +
+  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
 );
 
 /**
@@ -22697,16 +23101,16 @@ function isNative(value) {
   if (value == null) {
     return false;
   }
-  if (objToString.call(value) == funcTag) {
-    return reNative.test(fnToString.call(value));
+  if (isFunction(value)) {
+    return reIsNative.test(fnToString.call(value));
   }
-  return isObjectLike(value) && reHostCtor.test(value);
+  return isObjectLike(value) && reIsHostCtor.test(value);
 }
 
 module.exports = isNative;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/isNative.js","/../../node_modules/lodash-node/modern/lang")
-},{"../internal/isObjectLike":186,"../string/escapeRegExp":202,"IrXUsu":12,"buffer":7}],193:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isNative.js","/../../node_modules/lodash/lang")
+},{"../internal/isObjectLike":196,"./isFunction":202,"IrXUsu":12,"buffer":7}],204:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
@@ -22732,16 +23136,17 @@ function isObject(value) {
   // Avoid a V8 JIT bug in Chrome 19-20.
   // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
   var type = typeof value;
-  return type == 'function' || (!!value && type == 'object');
+  return !!value && (type == 'object' || type == 'function');
 }
 
 module.exports = isObject;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/isObject.js","/../../node_modules/lodash-node/modern/lang")
-},{"IrXUsu":12,"buffer":7}],194:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isObject.js","/../../node_modules/lodash/lang")
+},{"IrXUsu":12,"buffer":7}],205:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var isNative = require('./isNative'),
-    shimIsPlainObject = require('../internal/shimIsPlainObject');
+var baseForIn = require('../internal/baseForIn'),
+    isArguments = require('./isArguments'),
+    isObjectLike = require('../internal/isObjectLike');
 
 /** `Object#toString` result references. */
 var objectTag = '[object Object]';
@@ -22749,14 +23154,14 @@ var objectTag = '[object Object]';
 /** Used for native method references. */
 var objectProto = Object.prototype;
 
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
 /**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
  * of values.
  */
 var objToString = objectProto.toString;
-
-/** Native method references. */
-var getPrototypeOf = isNative(getPrototypeOf = Object.getPrototypeOf) && getPrototypeOf;
 
 /**
  * Checks if `value` is a plain object, that is, an object created by the
@@ -22788,22 +23193,31 @@ var getPrototypeOf = isNative(getPrototypeOf = Object.getPrototypeOf) && getProt
  * _.isPlainObject(Object.create(null));
  * // => true
  */
-var isPlainObject = !getPrototypeOf ? shimIsPlainObject : function(value) {
-  if (!(value && objToString.call(value) == objectTag)) {
+function isPlainObject(value) {
+  var Ctor;
+
+  // Exit early for non `Object` objects.
+  if (!(isObjectLike(value) && objToString.call(value) == objectTag && !isArguments(value)) ||
+      (!hasOwnProperty.call(value, 'constructor') && (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
     return false;
   }
-  var valueOf = value.valueOf,
-      objProto = isNative(valueOf) && (objProto = getPrototypeOf(valueOf)) && getPrototypeOf(objProto);
-
-  return objProto
-    ? (value == objProto || getPrototypeOf(value) == objProto)
-    : shimIsPlainObject(value);
-};
+  // IE < 9 iterates inherited properties before own properties. If the first
+  // iterated property is an object's own property then there are no inherited
+  // enumerable properties.
+  var result;
+  // In most environments an object's own properties are iterated before
+  // its inherited properties. If the last iterated property is an object's
+  // own property then there are no inherited enumerable properties.
+  baseForIn(value, function(subValue, key) {
+    result = key;
+  });
+  return result === undefined || hasOwnProperty.call(value, result);
+}
 
 module.exports = isPlainObject;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/isPlainObject.js","/../../node_modules/lodash-node/modern/lang")
-},{"../internal/shimIsPlainObject":187,"./isNative":192,"IrXUsu":12,"buffer":7}],195:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isPlainObject.js","/../../node_modules/lodash/lang")
+},{"../internal/baseForIn":176,"../internal/isObjectLike":196,"./isArguments":200,"IrXUsu":12,"buffer":7}],206:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var isObjectLike = require('../internal/isObjectLike');
 
@@ -22814,7 +23228,7 @@ var stringTag = '[object String]';
 var objectProto = Object.prototype;
 
 /**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
  * of values.
  */
 var objToString = objectProto.toString;
@@ -22841,8 +23255,8 @@ function isString(value) {
 
 module.exports = isString;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/isString.js","/../../node_modules/lodash-node/modern/lang")
-},{"../internal/isObjectLike":186,"IrXUsu":12,"buffer":7}],196:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isString.js","/../../node_modules/lodash/lang")
+},{"../internal/isObjectLike":196,"IrXUsu":12,"buffer":7}],207:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var isLength = require('../internal/isLength'),
     isObjectLike = require('../internal/isObjectLike');
@@ -22892,7 +23306,7 @@ typedArrayTags[stringTag] = typedArrayTags[weakMapTag] = false;
 var objectProto = Object.prototype;
 
 /**
- * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
  * of values.
  */
 var objToString = objectProto.toString;
@@ -22919,8 +23333,8 @@ function isTypedArray(value) {
 
 module.exports = isTypedArray;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/isTypedArray.js","/../../node_modules/lodash-node/modern/lang")
-},{"../internal/isLength":185,"../internal/isObjectLike":186,"IrXUsu":12,"buffer":7}],197:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/isTypedArray.js","/../../node_modules/lodash/lang")
+},{"../internal/isLength":195,"../internal/isObjectLike":196,"IrXUsu":12,"buffer":7}],208:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var baseCopy = require('../internal/baseCopy'),
     keysIn = require('../object/keysIn');
@@ -22954,18 +23368,22 @@ function toPlainObject(value) {
 
 module.exports = toPlainObject;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/lang/toPlainObject.js","/../../node_modules/lodash-node/modern/lang")
-},{"../internal/baseCopy":170,"../object/keysIn":200,"IrXUsu":12,"buffer":7}],198:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/lang/toPlainObject.js","/../../node_modules/lodash/lang")
+},{"../internal/baseCopy":173,"../object/keysIn":211,"IrXUsu":12,"buffer":7}],209:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var baseAssign = require('../internal/baseAssign'),
+var assignWith = require('../internal/assignWith'),
+    baseAssign = require('../internal/baseAssign'),
     createAssigner = require('../internal/createAssigner');
 
 /**
  * Assigns own enumerable properties of source object(s) to the destination
  * object. Subsequent sources overwrite property assignments of previous sources.
- * If `customizer` is provided it is invoked to produce the assigned values.
+ * If `customizer` is provided it's invoked to produce the assigned values.
  * The `customizer` is bound to `thisArg` and invoked with five arguments:
  * (objectValue, sourceValue, key, object, source).
+ *
+ * **Note:** This method mutates `object` and is based on
+ * [`Object.assign`](http://ecma-international.org/ecma-262/6.0/#sec-object.assign).
  *
  * @static
  * @memberOf _
@@ -22973,7 +23391,7 @@ var baseAssign = require('../internal/baseAssign'),
  * @category Object
  * @param {Object} object The destination object.
  * @param {...Object} [sources] The source objects.
- * @param {Function} [customizer] The function to customize assigning values.
+ * @param {Function} [customizer] The function to customize assigned values.
  * @param {*} [thisArg] The `this` binding of `customizer`.
  * @returns {Object} Returns `object`.
  * @example
@@ -22983,38 +23401,42 @@ var baseAssign = require('../internal/baseAssign'),
  *
  * // using a customizer callback
  * var defaults = _.partialRight(_.assign, function(value, other) {
- *   return typeof value == 'undefined' ? other : value;
+ *   return _.isUndefined(value) ? other : value;
  * });
  *
  * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
  * // => { 'user': 'barney', 'age': 36 }
  */
-var assign = createAssigner(baseAssign);
+var assign = createAssigner(function(object, source, customizer) {
+  return customizer
+    ? assignWith(object, source, customizer)
+    : baseAssign(object, source);
+});
 
 module.exports = assign;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/object/assign.js","/../../node_modules/lodash-node/modern/object")
-},{"../internal/baseAssign":169,"../internal/createAssigner":179,"IrXUsu":12,"buffer":7}],199:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/object/assign.js","/../../node_modules/lodash/object")
+},{"../internal/assignWith":170,"../internal/baseAssign":171,"../internal/createAssigner":183,"IrXUsu":12,"buffer":7}],210:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var isLength = require('../internal/isLength'),
-    isNative = require('../lang/isNative'),
+var getNative = require('../internal/getNative'),
+    isArrayLike = require('../internal/isArrayLike'),
     isObject = require('../lang/isObject'),
     shimKeys = require('../internal/shimKeys');
 
 /* Native method references for those with the same name as other `lodash` methods. */
-var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
+var nativeKeys = getNative(Object, 'keys');
 
 /**
  * Creates an array of the own enumerable property names of `object`.
  *
  * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.keys)
+ * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
  * for more details.
  *
  * @static
  * @memberOf _
  * @category Object
- * @param {Object} object The object to inspect.
+ * @param {Object} object The object to query.
  * @returns {Array} Returns the array of property names.
  * @example
  *
@@ -23032,12 +23454,9 @@ var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
  * // => ['0', '1']
  */
 var keys = !nativeKeys ? shimKeys : function(object) {
-  if (object) {
-    var Ctor = object.constructor,
-        length = object.length;
-  }
+  var Ctor = object == null ? undefined : object.constructor;
   if ((typeof Ctor == 'function' && Ctor.prototype === object) ||
-      (typeof object != 'function' && (length && isLength(length)))) {
+      (typeof object != 'function' && isArrayLike(object))) {
     return shimKeys(object);
   }
   return isObject(object) ? nativeKeys(object) : [];
@@ -23045,15 +23464,14 @@ var keys = !nativeKeys ? shimKeys : function(object) {
 
 module.exports = keys;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/object/keys.js","/../../node_modules/lodash-node/modern/object")
-},{"../internal/isLength":185,"../internal/shimKeys":188,"../lang/isNative":192,"../lang/isObject":193,"IrXUsu":12,"buffer":7}],200:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/object/keys.js","/../../node_modules/lodash/object")
+},{"../internal/getNative":188,"../internal/isArrayLike":192,"../internal/shimKeys":197,"../lang/isObject":204,"IrXUsu":12,"buffer":7}],211:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var isArguments = require('../lang/isArguments'),
     isArray = require('../lang/isArray'),
     isIndex = require('../internal/isIndex'),
     isLength = require('../internal/isLength'),
-    isObject = require('../lang/isObject'),
-    support = require('../support');
+    isObject = require('../lang/isObject');
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -23069,7 +23487,7 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  * @static
  * @memberOf _
  * @category Object
- * @param {Object} object The object to inspect.
+ * @param {Object} object The object to query.
  * @returns {Array} Returns the array of property names.
  * @example
  *
@@ -23092,7 +23510,7 @@ function keysIn(object) {
   }
   var length = object.length;
   length = (length && isLength(length) &&
-    (isArray(object) || (support.nonEnumArgs && isArguments(object))) && length) || 0;
+    (isArray(object) || isArguments(object)) && length) || 0;
 
   var Ctor = object.constructor,
       index = -1,
@@ -23114,8 +23532,8 @@ function keysIn(object) {
 
 module.exports = keysIn;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/object/keysIn.js","/../../node_modules/lodash-node/modern/object")
-},{"../internal/isIndex":183,"../internal/isLength":185,"../lang/isArguments":190,"../lang/isArray":191,"../lang/isObject":193,"../support":203,"IrXUsu":12,"buffer":7}],201:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/object/keysIn.js","/../../node_modules/lodash/object")
+},{"../internal/isIndex":193,"../internal/isLength":195,"../lang/isArguments":200,"../lang/isArray":201,"../lang/isObject":204,"IrXUsu":12,"buffer":7}],212:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 var baseMerge = require('../internal/baseMerge'),
     createAssigner = require('../internal/createAssigner');
@@ -23124,7 +23542,7 @@ var baseMerge = require('../internal/baseMerge'),
  * Recursively merges own enumerable properties of the source object(s), that
  * don't resolve to `undefined` into the destination object. Subsequent sources
  * overwrite property assignments of previous sources. If `customizer` is
- * provided it is invoked to produce the merged values of the destination and
+ * provided it's invoked to produce the merged values of the destination and
  * source properties. If `customizer` returns `undefined` merging is handled
  * by the method instead. The `customizer` is bound to `thisArg` and invoked
  * with five arguments: (objectValue, sourceValue, key, object, source).
@@ -23134,7 +23552,7 @@ var baseMerge = require('../internal/baseMerge'),
  * @category Object
  * @param {Object} object The destination object.
  * @param {...Object} [sources] The source objects.
- * @param {Function} [customizer] The function to customize merging properties.
+ * @param {Function} [customizer] The function to customize assigned values.
  * @param {*} [thisArg] The `this` binding of `customizer`.
  * @returns {Object} Returns `object`.
  * @example
@@ -23172,118 +23590,8 @@ var merge = createAssigner(baseMerge);
 
 module.exports = merge;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/object/merge.js","/../../node_modules/lodash-node/modern/object")
-},{"../internal/baseMerge":175,"../internal/createAssigner":179,"IrXUsu":12,"buffer":7}],202:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-var baseToString = require('../internal/baseToString');
-
-/**
- * Used to match `RegExp` [special characters](http://www.regular-expressions.info/characters.html#special).
- * In addition to special characters the forward slash is escaped to allow for
- * easier `eval` use and `Function` compilation.
- */
-var reRegExpChars = /[.*+?^${}()|[\]\/\\]/g,
-    reHasRegExpChars = RegExp(reRegExpChars.source);
-
-/**
- * Escapes the `RegExp` special characters "\", "/", "^", "$", ".", "|", "?",
- * "*", "+", "(", ")", "[", "]", "{" and "}" in `string`.
- *
- * @static
- * @memberOf _
- * @category String
- * @param {string} [string=''] The string to escape.
- * @returns {string} Returns the escaped string.
- * @example
- *
- * _.escapeRegExp('[lodash](https://lodash.com/)');
- * // => '\[lodash\]\(https:\/\/lodash\.com\/\)'
- */
-function escapeRegExp(string) {
-  string = baseToString(string);
-  return (string && reHasRegExpChars.test(string))
-    ? string.replace(reRegExpChars, '\\$&')
-    : string;
-}
-
-module.exports = escapeRegExp;
-
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/string/escapeRegExp.js","/../../node_modules/lodash-node/modern/string")
-},{"../internal/baseToString":177,"IrXUsu":12,"buffer":7}],203:[function(require,module,exports){
-(function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
-/** Used for native method references. */
-var objectProto = Object.prototype;
-
-/** Used to detect DOM support. */
-var document = (document = global.window) && document.document;
-
-/** Native method references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/**
- * An object environment feature flags.
- *
- * @static
- * @memberOf _
- * @type Object
- */
-var support = {};
-
-(function(x) {
-
-  /**
-   * Detect if functions can be decompiled by `Function#toString`
-   * (all but Firefox OS certified apps, older Opera mobile browsers, and
-   * the PlayStation 3; forced `false` for Windows 8 apps).
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  support.funcDecomp = /\bthis\b/.test(function() { return this; });
-
-  /**
-   * Detect if `Function#name` is supported (all but IE).
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  support.funcNames = typeof Function.name == 'string';
-
-  /**
-   * Detect if the DOM is supported.
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  try {
-    support.dom = document.createDocumentFragment().nodeType === 11;
-  } catch(e) {
-    support.dom = false;
-  }
-
-  /**
-   * Detect if `arguments` object indexes are non-enumerable.
-   *
-   * In Firefox < 4, IE < 9, PhantomJS, and Safari < 5.1 `arguments` object
-   * indexes are non-enumerable. Chrome < 25 and Node.js < 0.11.0 treat
-   * `arguments` object indexes as non-enumerable and fail `hasOwnProperty`
-   * checks for indexes that exceed their function's formal parameters with
-   * associated values of `0`.
-   *
-   * @memberOf _.support
-   * @type boolean
-   */
-  try {
-    support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
-  } catch(e) {
-    support.nonEnumArgs = true;
-  }
-}(0, 0));
-
-module.exports = support;
-
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/support.js","/../../node_modules/lodash-node/modern")
-},{"IrXUsu":12,"buffer":7}],204:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/object/merge.js","/../../node_modules/lodash/object")
+},{"../internal/baseMerge":178,"../internal/createAssigner":183,"IrXUsu":12,"buffer":7}],213:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /**
  * This method returns the first argument provided to it.
@@ -23306,15 +23614,15 @@ function identity(value) {
 
 module.exports = identity;
 
-}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash-node/modern/utility/identity.js","/../../node_modules/lodash-node/modern/utility")
-},{"IrXUsu":12,"buffer":7}],205:[function(require,module,exports){
+}).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/lodash/utility/identity.js","/../../node_modules/lodash/utility")
+},{"IrXUsu":12,"buffer":7}],214:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
 module.exports = require('./lib')
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/index.js","/../../node_modules/promise")
-},{"./lib":210,"IrXUsu":12,"buffer":7}],206:[function(require,module,exports){
+},{"./lib":219,"IrXUsu":12,"buffer":7}],215:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -23376,13 +23684,13 @@ function Promise(fn) {
   if (typeof fn !== 'function') {
     throw new TypeError('not a function');
   }
-  this._32 = 0;
-  this._8 = null;
-  this._89 = [];
+  this._37 = 0;
+  this._12 = null;
+  this._59 = [];
   if (fn === noop) return;
   doResolve(fn, this);
 }
-Promise._83 = noop;
+Promise._99 = noop;
 
 Promise.prototype.then = function(onFulfilled, onRejected) {
   if (this.constructor !== Promise) {
@@ -23401,24 +23709,24 @@ function safeThen(self, onFulfilled, onRejected) {
   });
 };
 function handle(self, deferred) {
-  while (self._32 === 3) {
-    self = self._8;
+  while (self._37 === 3) {
+    self = self._12;
   }
-  if (self._32 === 0) {
-    self._89.push(deferred);
+  if (self._37 === 0) {
+    self._59.push(deferred);
     return;
   }
   asap(function() {
-    var cb = self._32 === 1 ? deferred.onFulfilled : deferred.onRejected;
+    var cb = self._37 === 1 ? deferred.onFulfilled : deferred.onRejected;
     if (cb === null) {
-      if (self._32 === 1) {
-        resolve(deferred.promise, self._8);
+      if (self._37 === 1) {
+        resolve(deferred.promise, self._12);
       } else {
-        reject(deferred.promise, self._8);
+        reject(deferred.promise, self._12);
       }
       return;
     }
-    var ret = tryCallOne(cb, self._8);
+    var ret = tryCallOne(cb, self._12);
     if (ret === IS_ERROR) {
       reject(deferred.promise, LAST_ERROR);
     } else {
@@ -23446,8 +23754,8 @@ function resolve(self, newValue) {
       then === self.then &&
       newValue instanceof Promise
     ) {
-      self._32 = 3;
-      self._8 = newValue;
+      self._37 = 3;
+      self._12 = newValue;
       finale(self);
       return;
     } else if (typeof then === 'function') {
@@ -23455,21 +23763,21 @@ function resolve(self, newValue) {
       return;
     }
   }
-  self._32 = 1;
-  self._8 = newValue;
+  self._37 = 1;
+  self._12 = newValue;
   finale(self);
 }
 
 function reject(self, newValue) {
-  self._32 = 2;
-  self._8 = newValue;
+  self._37 = 2;
+  self._12 = newValue;
   finale(self);
 }
 function finale(self) {
-  for (var i = 0; i < self._89.length; i++) {
-    handle(self, self._89[i]);
+  for (var i = 0; i < self._59.length; i++) {
+    handle(self, self._59[i]);
   }
-  self._89 = null;
+  self._59 = null;
 }
 
 function Handler(onFulfilled, onRejected, promise){
@@ -23502,7 +23810,7 @@ function doResolve(fn, promise) {
 }
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/lib/core.js","/../../node_modules/promise/lib")
-},{"IrXUsu":12,"asap/raw":214,"buffer":7}],207:[function(require,module,exports){
+},{"IrXUsu":12,"asap/raw":223,"buffer":7}],216:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -23519,14 +23827,13 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/lib/done.js","/../../node_modules/promise/lib")
-},{"./core.js":206,"IrXUsu":12,"buffer":7}],208:[function(require,module,exports){
+},{"./core.js":215,"IrXUsu":12,"buffer":7}],217:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
 //This file contains the ES6 extensions to the core Promises/A+ API
 
 var Promise = require('./core.js');
-var asap = require('asap/raw');
 
 module.exports = Promise;
 
@@ -23540,9 +23847,9 @@ var ZERO = valuePromise(0);
 var EMPTYSTRING = valuePromise('');
 
 function valuePromise(value) {
-  var p = new Promise(Promise._83);
-  p._32 = 1;
-  p._8 = value;
+  var p = new Promise(Promise._99);
+  p._37 = 1;
+  p._12 = value;
   return p;
 }
 Promise.resolve = function (value) {
@@ -23579,11 +23886,11 @@ Promise.all = function (arr) {
     function res(i, val) {
       if (val && (typeof val === 'object' || typeof val === 'function')) {
         if (val instanceof Promise && val.then === Promise.prototype.then) {
-          while (val._32 === 3) {
-            val = val._8;
+          while (val._37 === 3) {
+            val = val._12;
           }
-          if (val._32 === 1) return res(i, val._8);
-          if (val._32 === 2) reject(val._8);
+          if (val._37 === 1) return res(i, val._12);
+          if (val._37 === 2) reject(val._12);
           val.then(function (val) {
             res(i, val);
           }, reject);
@@ -23631,7 +23938,7 @@ Promise.prototype['catch'] = function (onRejected) {
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/lib/es6-extensions.js","/../../node_modules/promise/lib")
-},{"./core.js":206,"IrXUsu":12,"asap/raw":214,"buffer":7}],209:[function(require,module,exports){
+},{"./core.js":215,"IrXUsu":12,"buffer":7}],218:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -23651,7 +23958,7 @@ Promise.prototype['finally'] = function (f) {
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/lib/finally.js","/../../node_modules/promise/lib")
-},{"./core.js":206,"IrXUsu":12,"buffer":7}],210:[function(require,module,exports){
+},{"./core.js":215,"IrXUsu":12,"buffer":7}],219:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -23662,7 +23969,7 @@ require('./es6-extensions.js');
 require('./node-extensions.js');
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/lib/index.js","/../../node_modules/promise/lib")
-},{"./core.js":206,"./done.js":207,"./es6-extensions.js":208,"./finally.js":209,"./node-extensions.js":211,"IrXUsu":12,"buffer":7}],211:[function(require,module,exports){
+},{"./core.js":215,"./done.js":216,"./es6-extensions.js":217,"./finally.js":218,"./node-extensions.js":220,"IrXUsu":12,"buffer":7}],220:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 'use strict';
 
@@ -23680,11 +23987,9 @@ Promise.denodeify = function (fn, argumentCount) {
   argumentCount = argumentCount || Infinity;
   return function () {
     var self = this;
-    var args = Array.prototype.slice.call(arguments);
+    var args = Array.prototype.slice.call(arguments, 0,
+        argumentCount > 0 ? argumentCount : 0);
     return new Promise(function (resolve, reject) {
-      while (args.length && args.length > argumentCount) {
-        args.pop();
-      }
       args.push(function (err, res) {
         if (err) reject(err);
         else resolve(res);
@@ -23739,7 +24044,7 @@ Promise.prototype.nodeify = function (callback, ctx) {
 }
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/lib/node-extensions.js","/../../node_modules/promise/lib")
-},{"./core.js":206,"IrXUsu":12,"asap":212,"buffer":7}],212:[function(require,module,exports){
+},{"./core.js":215,"IrXUsu":12,"asap":221,"buffer":7}],221:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 "use strict";
 
@@ -23809,7 +24114,7 @@ RawTask.prototype.call = function () {
 };
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/node_modules/asap/browser-asap.js","/../../node_modules/promise/node_modules/asap")
-},{"./raw":213,"IrXUsu":12,"buffer":7}],213:[function(require,module,exports){
+},{"./raw":222,"IrXUsu":12,"buffer":7}],222:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 "use strict";
 
@@ -24033,7 +24338,7 @@ rawAsap.makeRequestCallFromTimer = makeRequestCallFromTimer;
 // https://github.com/tildeio/rsvp.js/blob/cddf7232546a9cf858524b75cde6f9edf72620a7/lib/rsvp/asap.js
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/../../node_modules/promise/node_modules/asap/browser-raw.js","/../../node_modules/promise/node_modules/asap")
-},{"IrXUsu":12,"buffer":7}],214:[function(require,module,exports){
+},{"IrXUsu":12,"buffer":7}],223:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 "use strict";
 
