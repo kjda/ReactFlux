@@ -5,6 +5,9 @@ USE REDUX!
 ==========
 This library is not maintained anymore! I personaly use REDUX instead...
 
+React-Flux
+==========
+
 Read about [Flux-Data-Flow](http://facebook.github.io/flux/docs/overview.html)
 
 Install
