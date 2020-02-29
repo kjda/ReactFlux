@@ -3,7 +3,7 @@
 
 USE REDUX/RELAY!
 ==========
-This library is not maintained anymore! I personaly prefer REDUX/RELAY instead...
+This library is not maintained anymore! I personaly prefer REDUX/MOBX instead...
 
 React-Flux
 ==========
