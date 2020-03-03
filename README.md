@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/kjda/ReactFlux/badge.svg?branch=master)](https://coveralls.io/r/kjda/ReactFlux?branch=master)
 
 
-*This library is not maintained anymore!*
+**This library is not maintained anymore!**
 
 React-Flux
 ==========
