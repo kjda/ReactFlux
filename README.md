@@ -1,9 +1,8 @@
 [![Build Status](https://travis-ci.org/kjda/ReactFlux.svg?branch=master)](https://travis-ci.org/kjda/ReactFlux)
 [![Coverage Status](https://coveralls.io/repos/kjda/ReactFlux/badge.svg?branch=master)](https://coveralls.io/r/kjda/ReactFlux?branch=master)
 
-USE REDUX/RELAY!
-==========
-This library is not maintained anymore! I personaly prefer REDUX/MOBX instead...
+
+*This library is not maintained anymore!*
 
 React-Flux
 ==========
